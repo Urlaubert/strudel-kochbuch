@@ -18,8 +18,14 @@ import re
 from pathlib import Path
 
 WEB_DIR = Path(__file__).parent
-LEHRBUCH_DIR = WEB_DIR.parent / "lehrbuch"
-DOCS_DIR = WEB_DIR / "docs"
+# Repo layout (parent of WEB_DIR is the repo root):
+#   strudel-kochbuch/
+#     lehrbuch/        source .strudel files
+#     kochbuch_web/    this build script
+#     docs/            output, GitHub Pages serves /docs
+REPO_ROOT = WEB_DIR.parent
+LEHRBUCH_DIR = REPO_ROOT / "lehrbuch"
+DOCS_DIR = REPO_ROOT / "docs"
 
 CHAPTER_HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="de">
