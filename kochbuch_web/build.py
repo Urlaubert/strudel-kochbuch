@@ -33,7 +33,7 @@ CHAPTER_HTML_TEMPLATE = """<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title} — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v={css_hash}">
 </head>
 <body class="chapter">
 <header>
@@ -74,7 +74,7 @@ INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v={css_hash}">
 </head>
 <body class="index">
 <header>
@@ -127,10 +127,13 @@ html, body {
 body.chapter {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;          /* dynamic viewport — fixes iOS Safari URL-bar */
+  overflow: hidden;
 }
 
 body.chapter header {
+  flex: 0 0 auto;
   padding: 0.75rem 1rem;
   border-bottom: 1px solid #333;
   display: flex;
@@ -178,23 +181,23 @@ body.chapter header h1 {
 }
 
 body.chapter main {
-  flex: 1;
+  flex: 1 1 auto;
   display: block;
   width: 100%;
   position: relative;
-  min-height: 60vh;
+  min-height: 0;           /* lets the iframe shrink within flex parent */
 }
 
 #strudel {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 70vh;
   border: 0;
   background: #1a1a1a;
 }
 
 body.chapter footer {
+  flex: 0 0 auto;
   padding: 0.75rem 1rem;
   border-top: 1px solid #333;
   font-size: 0.85rem;
@@ -335,14 +338,11 @@ body.index footer a {
   }
   body.chapter footer p { margin: 0.15rem 0; }
   .chapter-nav { font-size: 0.85rem; }
-  /* Give the REPL the maximum vertical space possible. */
-  #strudel { min-height: 75vh; }
 }
 
-/* iPhone in portrait: even tighter, hide footer hints. */
+/* iPhone in portrait: hide footer for max REPL height. */
 @media (max-width: 480px) {
   body.chapter footer { display: none; }
-  #strudel { min-height: 88vh; }
 }
 """
 
@@ -424,11 +424,14 @@ def build_chapter_links() -> str:
 
 
 def build() -> None:
+    import hashlib
+
     DOCS_DIR.mkdir(exist_ok=True)
 
-    # Write CSS.
+    # Hash CSS so HTML can reference it cache-busted.
+    css_hash = hashlib.sha1(CSS.encode("utf-8")).hexdigest()[:10]
     (DOCS_DIR / "style.css").write_text(CSS, encoding="utf-8")
-    print(f"  wrote {DOCS_DIR / 'style.css'}")
+    print(f"  wrote {DOCS_DIR / 'style.css'} (hash {css_hash})")
 
     # Write each chapter HTML.
     total = len(CHAPTER_META)
@@ -443,13 +446,17 @@ def build() -> None:
             title=title,
             nav=build_chapter_nav(idx, total),
             code=code_safe,
+            css_hash=css_hash,
         )
         out = DOCS_DIR / f"{stem}.html"
         out.write_text(html, encoding="utf-8")
         print(f"  wrote {out}")
 
     # Write index.
-    index = INDEX_HTML_TEMPLATE.format(chapter_links=build_chapter_links())
+    index = INDEX_HTML_TEMPLATE.format(
+        chapter_links=build_chapter_links(),
+        css_hash=css_hash,
+    )
     (DOCS_DIR / "index.html").write_text(index, encoding="utf-8")
     print(f"  wrote {DOCS_DIR / 'index.html'}")
 

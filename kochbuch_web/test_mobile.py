@@ -8,7 +8,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-URL = "http://localhost:8765/01_hello_sound.html"
+URL = "https://urlaubert.github.io/strudel-kochbuch/01_hello_sound.html"
 OUT = Path(__file__).parent / "_diag"
 OUT.mkdir(exist_ok=True)
 
