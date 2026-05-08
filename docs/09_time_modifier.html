@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>09 — Time Modifier — Strudel Kochbuch</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://unpkg.com/@strudel/embed@latest"></script>
 </head>
 <body class="chapter">
 <header>
@@ -14,8 +13,13 @@
 <nav class="chapter-nav"><a href="08_signale_und_modulation.html" title="08 — Signale und Modulation">← Vorheriges</a><a href="10_samples_eigene.html" title="10 — Eigene Samples">Nächstes →</a></nav>
 </header>
 <main>
-<strudel-repl>
-<!--
+<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
+</main>
+<footer>
+<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
+<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
+</footer>
+<script id="strudel-code" type="text/plain">
 // =====================================================
 // Kapitel 09 — Time Modifier
 // =====================================================
@@ -346,12 +350,19 @@ stack(
 //
 // Weiter zu 10_samples_eigene.strudel.
 
--->
-</strudel-repl>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
+</script>
+<script>
+// Inline UTF-8-safe variant of @strudel/embed.
+// The original package uses btoa() which only handles Latin-1 — chokes
+// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
+(function () {
+  var code = document.getElementById('strudel-code').textContent;
+  var bytes = new TextEncoder().encode(code);
+  var binary = '';
+  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
+  document.getElementById('strudel').setAttribute('src', src);
+})();
+</script>
 </body>
 </html>

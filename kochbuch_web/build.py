@@ -34,7 +34,6 @@ CHAPTER_HTML_TEMPLATE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title} — Strudel Kochbuch</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://unpkg.com/@strudel/embed@latest"></script>
 </head>
 <body class="chapter">
 <header>
@@ -43,16 +42,28 @@ CHAPTER_HTML_TEMPLATE = """<!DOCTYPE html>
 {nav}
 </header>
 <main>
-<strudel-repl>
-<!--
-{code}
--->
-</strudel-repl>
+<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
 </main>
 <footer>
 <p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
 <p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
 </footer>
+<script id="strudel-code" type="text/plain">
+{code}
+</script>
+<script>
+// Inline UTF-8-safe variant of @strudel/embed.
+// The original package uses btoa() which only handles Latin-1 — chokes
+// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
+(function () {{
+  var code = document.getElementById('strudel-code').textContent;
+  var bytes = new TextEncoder().encode(code);
+  var binary = '';
+  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
+  document.getElementById('strudel').setAttribute('src', src);
+}})();
+</script>
 </body>
 </html>
 """
@@ -168,15 +179,19 @@ body.chapter header h1 {
 
 body.chapter main {
   flex: 1;
-  display: flex;
+  display: block;
+  width: 100%;
+  position: relative;
   min-height: 60vh;
 }
 
-strudel-repl {
-  flex: 1;
+#strudel {
   display: block;
   width: 100%;
+  height: 100%;
   min-height: 70vh;
+  border: 0;
+  background: #1a1a1a;
 }
 
 body.chapter footer {
@@ -305,8 +320,29 @@ body.index footer a {
 
 /* Mobile / iPad tweaks */
 @media (max-width: 700px) {
-  body.chapter header h1 { font-size: 0.95rem; }
-  body.chapter footer { font-size: 0.8rem; }
+  body.chapter header {
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+  body.chapter header h1 {
+    font-size: 0.95rem;
+    width: 100%;
+    order: 3;
+  }
+  body.chapter footer {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+  body.chapter footer p { margin: 0.15rem 0; }
+  .chapter-nav { font-size: 0.85rem; }
+  /* Give the REPL the maximum vertical space possible. */
+  #strudel { min-height: 75vh; }
+}
+
+/* iPhone in portrait: even tighter, hide footer hints. */
+@media (max-width: 480px) {
+  body.chapter footer { display: none; }
+  #strudel { min-height: 88vh; }
 }
 """
 
@@ -338,14 +374,16 @@ CHAPTER_META: list[tuple[str, str, str]] = [
 ]
 
 
-def sanitize_for_html_comment(code: str) -> str:
-    """Strudel code goes inside an HTML comment <!-- ... -->.
-    Replace the literal sequence '-->' (which would close the comment) with
-    a safe variant. The Strudel embed parser strips the comment markers
-    later, so the actual code is unaffected by ASCII content normally."""
-    # The closing sequence is rare in code, but defensive replacement avoids
-    # accidental comment termination.
-    return code.replace("-->", "--&gt;")
+def sanitize_for_script_tag(code: str) -> str:
+    """Code lives inside <script id="strudel-code" type="text/plain">.
+    The HTML parser only stops at the literal sequence '</script' (case
+    insensitive). The lehrbuch never writes that, but we replace it
+    defensively so nobody surprises us later."""
+    # Insert zero-width space inside any '</script' so the parser sees a
+    # different tag name. The decoded code on the JS side will contain the
+    # zero-width char too, but it's invisible and harmless inside comments.
+    import re as _re
+    return _re.sub(r"</(script)", r"</​\1", code, flags=_re.IGNORECASE)
 
 
 def build_chapter_nav(idx: int, total: int) -> str:
@@ -400,7 +438,7 @@ def build() -> None:
             print(f"  ! missing: {src}")
             continue
         code = src.read_text(encoding="utf-8")
-        code_safe = sanitize_for_html_comment(code)
+        code_safe = sanitize_for_script_tag(code)
         html = CHAPTER_HTML_TEMPLATE.format(
             title=title,
             nav=build_chapter_nav(idx, total),
