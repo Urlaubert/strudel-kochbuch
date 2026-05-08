@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12 — Mini-Track — Strudel Kochbuch</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/@strudel/embed@latest"></script>
+</head>
+<body class="chapter">
+<header>
+<a href="index.html" class="back">← Inhalt</a>
+<h1>12 — Mini-Track</h1>
+<nav class="chapter-nav"><a href="11_song_struktur.html" title="11 — Song-Struktur">← Vorheriges</a><a href="13_synthese_tief.html" title="13 — Synthese tief">Nächstes →</a></nav>
+</header>
+<main>
+<strudel-repl>
+<!--
+// =====================================================
+// Kapitel 12 — Mini-Track in 50 Zeilen
+// =====================================================
+// Alles zusammen: Mini-Notation, Skalen, Effekte,
+// Modulation, Time-Modifier, Song-Struktur. Ein
+// vollständiger Track in einer Datei.
+// =====================================================
+
+
+// -----------------------------------------------------
+// Der Track — erstmal ausführen
+// -----------------------------------------------------
+
+setcps(0.55)
+
+const skl = "<C:minor C:minor F:minor G:minor>"
+
+const drums = stack(
+  s("bd*4").gain(0.9),
+  s("~ cp ~ cp").room(0.2),
+  s("hh*16").gain(sine.range(0.3, 0.5).slow(2)).pan(perlin.range(0.3, 0.7)),
+  s("[~ ~ ~ oh]/2").gain(0.4).cut(1)
+)
+
+const bass = note("c2 c2 eb2 g2").scale(skl).sub(0)
+  .s("sawtooth")
+  .lpf(sine.range(400, 1500).slow(8)).lpq(8)
+  .gain(0.75)
+
+const arp = note("0 4 7 4 0 5 7 4").scale(skl).add(14)
+  .s("triangle")
+  .attack(0.01).release(0.3)
+  .delay(0.4).delaytime(0.375).delayfeedback(0.5)
+  .room(0.5)
+  .gain(0.4)
+
+const pad = note("[0, 2, 4]").scale(skl)
+  .s("sawtooth")
+  .attack(1).release(3)
+  .lpf(1500)
+  .gain(0.35)
+
+const intro     = stack(drums.gain(0.7), pad)
+const verse     = stack(drums, bass, pad)
+const drop      = stack(drums, bass, pad, arp)
+const breakdown = stack(drums.gain(0.5), pad)
+const outro     = stack(drums.gain(0.7), pad)
+
+arrange(
+  [4, intro],
+  [8, verse],
+  [4, stack(verse, arp.mask("<0 0 1 1>"))],   // arp baut sich auf
+  [16, drop],
+  [8, breakdown],
+  [16, drop],
+  [4, outro]
+)
+
+
+// -----------------------------------------------------
+// Wenn das gespielt hat — und nur dann — lies weiter
+// -----------------------------------------------------
+// Das war ein 60-Cycle-Track. Bei cps 0.55 also etwa
+// 1 Minute 50 Sekunden.
+//
+//   Cycle:    0    4    12  16          32        40            56  60
+//             |----|-----|---|------------|---------|-------------|--|
+//             intro verse pre   DROP       break       DROP        outro
+//             leise +bass +arp  voll       leise       voll        leise
+//
+// Klassischer A-B-A-B-A-Aufbau mit Build-Up.
+
+
+// -----------------------------------------------------
+// Code-Walk — was passiert in jeder Zeile
+// -----------------------------------------------------
+
+// === Zeile 17: setcps(0.55) ===
+// Tempo: 0.55 Cycles pro Sekunde. Das entspricht ungefähr
+// 132 BPM bei einem 4/4-Cycle. House-Tempo.
+
+// === Zeile 19: const skl = "<C:minor C:minor F:minor G:minor>" ===
+// Skala wechselt pro Cycle: zwei Cycles in C-Moll (Tonika),
+// dann F-Moll (Subdominante), dann G-Moll (Dominante).
+// Klassische Akkord-Bewegung — i-iv-v in Moll.
+
+// === Zeile 21-26: drums ===
+// Vier Drum-Schichten:
+//   1. bd*4         — Four-on-the-Floor
+//   2. ~ cp ~ cp    — Backbeat-Claps mit etwas Hall
+//   3. hh*16        — 16tel-Hihats, Lautstärke wackelt sanft (Sinus 2 Cycles)
+//                     und drift et stereo (Perlin)
+//   4. [~ ~ ~ oh]/2 — Open-Hihat auf Step 4 jeden zweiten Cycles, mit cut(1)
+//                     damit die Closed-Hihat sich nicht überlagert
+
+// === Zeile 28-31: bass ===
+// "c2 c2 eb2 g2" mit der wechselnden Skala — die EXAKTEN Töne
+// ändern sich pro Cycle, aber die SHAPE der Linie bleibt.
+// Sägezahn-Synth, Filter-Sweep mit Sinus über 8 Cycles
+// (slow(8)), Resonanz 8 für Charakter.
+
+// === Zeile 33-37: arp ===
+// "0 4 7 4 0 5 7 4" — Arpeggio durch Skalen-Indices.
+// Mit add(14) wird das Ganze zwei Oktaven hochgeschoben.
+// Triangle-Synth (sanfter als Sawtooth), kurzer Attack,
+// Delay (3/8-tel), Hall.
+
+// === Zeile 39-43: pad ===
+// "[0, 2, 4]" — Akkord aus Skalen-Indices: Grundton + Terz +
+// Quinte. Wegen wechselnder Skala kriegst du pro Cycle einen
+// anderen Akkord — i-i-iv-v in Moll-Folge.
+// Sägezahn mit langem Attack/Release wird zum Pad.
+// Filter etwas zurück (1500), Lautstärke moderat.
+
+// === Zeile 45-49: Sektionen ===
+// Vier Stacks für die vier Track-Phasen. Drumherum manchmal
+// .gain(0.7) um Drums herunterzuziehen, oder ein Layer fehlt.
+
+// === Zeile 51-58: arrange ===
+// Cycle-Anzahl pro Sektion. Beachte den Build-Up-Trick in
+// Zeile 53: stack(verse, arp.mask("<0 0 1 1>")).
+// Das ist 4 Cycles "Verse, dazu der Arp aber erst ab dem 3. Cycle
+// in dieser Sektion". Sanfter Übergang zum Drop.
+
+
+// -----------------------------------------------------
+// 💡 PRAXIS — der 5-Sekunden-Test
+// -----------------------------------------------------
+// Aus EDM-Foren-Konsens: Wenn du die Kern-Idee deines
+// Tracks nicht in 5 Sekunden zeigen kannst (mit Stimme,
+// am Klavier, im Kopf vorgesummt) — ist die Idee schwach.
+// Produktion rettet das nicht.
+//
+// In Strudel-Sprache: schreib den Bass mal in 4 Tönen.
+
+note("c2 g1 eb2 g1").s("sawtooth").lpf(500)
+
+// Klingt das wie deine Track-Idee? Wenn ja: gut. Wenn nicht:
+// arbeite erst am Kern, bevor du Effekte stapelst.
+
+
+// -----------------------------------------------------
+// Variationen — den Track verändern
+// -----------------------------------------------------
+// Die Magie ist: du kannst kleine Werte ändern und der Track
+// klingt komplett anders. Probier:
+
+// Variation 1: Tempo
+// setcps(0.4)   ← langsamer (96 BPM, House → Downtempo)
+// setcps(0.7)   ← schneller (168 BPM, fast Drum & Bass)
+
+// Variation 2: Tonart
+// const skl = "<F:dorian F:dorian Bb:dorian C:major>"
+//   ← gleicher Track in F-Dorisch — heller, jazziger
+
+// Variation 3: Drum-Bank
+// drums.bank("RolandTR909")  ← klassischer 909er-House-Sound
+
+// Variation 4: Bass-Charakter
+//   .lpenv(8).lpa(0).lpd(0.15).lpq(15)   ← Acid-Bass!
+//   .distort(0.3)                          ← Verzerrt
+
+// Variation 5: Arp-Pattern
+//   note("0 7 4 7 0 5 4 7")   ← anderer Verlauf
+//   note("<0 4 7 4>").fast(2) ← weniger Töne, schneller
+
+
+// -----------------------------------------------------
+// ▶ AUFGABE: Den Track personalisieren
+// -----------------------------------------------------
+// 1. Ändere die Skala zu deiner Lieblings-Stimmung.
+// 2. Ändere ZWEI Drum-Schichten — vielleicht euklidisch?
+//    s("bd").euclid(3,8) statt bd*4 macht's Latin.
+// 3. Mach einen NEUEN Lead-Layer dazu (wenn das Pad reicht,
+//    nimm das Pad raus).
+// 4. Ändere arrange() — z.B. einen Breakdown an einer
+//    überraschenden Stelle.
+//
+// Ziel: Ein Track der NICHT mehr nach diesem klingt, aber die
+// gleiche Struktur hat.
+
+
+// -----------------------------------------------------
+// Was als nächstes
+// -----------------------------------------------------
+// Die ersten 12 Kapitel decken das Grundvokabular ab. Was
+// danach kommt:
+//   13 — Synthese (eigene Sounds aus Bordmitteln)
+//   14 — MIDI (Hardware-Knobs rein, Synths raus)
+//   15 — Performance-Hygiene (Live ohne Pannen)
+//   16 — Eigene Helper-Funktionen (Achsen-Konzept)
+//   17 — Hap-Internals (Pattern-Theorie)
+//   18 — Genre-Kochbuch (Vorlagen pro Genre)
+//   19 — Valenz und Arousal (Stimmungs-Achsen)
+//   20 — Cheatsheet
+//
+// 13-17 sind themenspezifisch — nimm was du brauchst.
+// 18-19 sind anwendungsorientiert.
+
+-->
+</strudel-repl>
+</main>
+<footer>
+<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
+<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
+</footer>
+</body>
+</html>

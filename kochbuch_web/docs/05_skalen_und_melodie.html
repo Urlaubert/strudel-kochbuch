@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>05 — Skalen und Melodie — Strudel Kochbuch</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/@strudel/embed@latest"></script>
+</head>
+<body class="chapter">
+<header>
+<a href="index.html" class="back">← Inhalt</a>
+<h1>05 — Skalen und Melodie</h1>
+<nav class="chapter-nav"><a href="04_euklidisch.html" title="04 — Euklidische Rhythmen">← Vorheriges</a><a href="06_akkorde_und_voicings.html" title="06 — Akkorde und Voicings">Nächstes →</a></nav>
+</header>
+<main>
+<strudel-repl>
+<!--
+// =====================================================
+// Kapitel 05 — Skalen und Melodie
+// =====================================================
+// Bis jetzt waren Töne Buchstaben: c4, eb2, g3. Das geht.
+// Aber für Melodien ist es zäh — du musst Tonleitern im
+// Kopf haben, jede Note wissen.
+//
+// Strudel hat einen Trick: Schreib NUMMERN, sag in welcher
+// Skala du bist. Strudel sucht die Töne raus.
+// =====================================================
+
+
+// -----------------------------------------------------
+// Tonnamen — die Grundlage
+// -----------------------------------------------------
+// Erstmal Wiederholung. note() versteht:
+
+note("c4")             // mittleres C
+note("c#4")            // C-Dur halbton höher (C-Sharp)
+note("cs4")            // identisch — alternative Schreibweise
+note("db4")            // D-Flat — klingt gleich wie c#4 aber theoretisch was anderes
+note("c4 e4 g4")       // C-Dur-Dreiklang nacheinander
+
+// Achtung: Strudel benutzt englische Notation.
+// b = das, was Deutsche "H" nennen.
+// es/as/des = englisch eb/ab/db.
+
+
+// -----------------------------------------------------
+// Note als Zahl — der Wechsel zur Mathematik
+// -----------------------------------------------------
+// note() versteht auch reine Zahlen. Das sind dann MIDI-Noten:
+
+note("60")             // 60 = mittleres C
+note("60 64 67")       // C, E, G (Dreiklang)
+note("36")             // 36 = C2 (zwei Oktaven tiefer)
+
+// Jede Halbton-Stufe = +1. Eine Oktave = +12.
+
+note("60 62 64 65 67 69 71 72")
+
+// Das ist die C-Dur-Tonleiter aufwärts. Aber wer will sich
+// merken dass die Dur-Tonleiter "+2 +2 +1 +2 +2 +2 +1" geht?
+
+
+// -----------------------------------------------------
+// .scale() — Skalen-Zuweisung
+// -----------------------------------------------------
+// Trick: Schreib NULLBASIERTE Skalen-Indices, sag welche
+// Skala du meinst.
+
+note("0 1 2 3 4 5 6 7").scale("C:major")
+
+// Dasselbe wie oben, aber lesbarer. Index 0 = Grundton (C),
+// 1 = nächste Skalen-Stufe (D), 2 = E, ..., 7 = nächstes C
+// (eine Oktave höher).
+
+note("0 1 2 3 4 5 6 7").scale("C:minor")
+
+// Selbe Indices, aber mit Es statt E, As statt A.
+// Du siehst: die NUMMER bleibt, der CHARAKTER ändert sich.
+
+
+// -----------------------------------------------------
+// ▶ AUFGABE: Vergleiche Skalen
+// -----------------------------------------------------
+// Spiel "0 2 4 7" mit jeder dieser Skalen. Hör den Unterschied.
+
+note("0 2 4 7").scale("C:major")
+note("0 2 4 7").scale("C:minor")
+note("0 2 4 7").scale("C:dorian")
+note("0 2 4 7").scale("C:phrygian")
+note("0 2 4 7").scale("C:mixolydian")
+note("0 2 4 7").scale("C:lydian")
+
+// Major — fröhlich, klassisch
+// Minor — traurig, schwer
+// Dorian — minor mit hoffnungsvollem Einschlag
+// Phrygian — spanisch, dunkel
+// Mixolydian — Blues-Rock-Geschmack
+// Lydian — schwebend, "filmisch"
+
+
+// -----------------------------------------------------
+// Andere Tonarten — der Doppelpunkt
+// -----------------------------------------------------
+// "C:major" — Dur in C
+// "F:major" — Dur in F
+// "G:minor" — Moll in G
+
+note("0 2 4 7").scale("F:major")
+note("0 2 4 7").scale("G:minor")
+note("0 2 4 7").scale("Eb:dorian")
+
+
+// -----------------------------------------------------
+// Oktave wechseln — Index erhöht über die Skala hinaus
+// -----------------------------------------------------
+// Index 7 ist eine Oktave über 0. Index 14 zwei Oktaven.
+// Negative Indices gehen nach unten.
+
+note("0 7 14 7").scale("C:minor")
+
+// Grundton, Oktave hoch, zwei Oktaven hoch, Oktave hoch.
+// Ergibt einen Sprung-Bass.
+
+note("-7 0 -7 0").scale("C:minor")
+
+// Eine Oktave runter, dann hoch, runter, hoch — typischer
+// Bass-Bewegung.
+
+
+// -----------------------------------------------------
+// Skala WECHSELN während des Patterns
+// -----------------------------------------------------
+
+note("0 2 4 7").scale("<C:major D:minor F:major G:major>")
+
+// Jeder Cycle eine andere Skala. Mit denselben Indices ergibt
+// das einen klassischen vier-Akkord-Wechsel — die Indices
+// stehen für "Grundton, Terz, Quinte, Septe" und passen sich
+// pro Skala an.
+
+
+// -----------------------------------------------------
+// Pentatonik — der "sicheren Hafen" für Anfänger
+// -----------------------------------------------------
+// Pentatonische Skalen haben nur 5 Töne, klingen fast immer gut
+// zueinander. Wenn du nicht sicher bist welche Töne in einer
+// Skala "passen", nimm die Pentatonik.
+
+note("0 1 2 3 4 5 6 7").scale("C:minorPentatonic")
+
+note("0 2 4 5 7 9").scale("C:majorPentatonic")
+
+
+// -----------------------------------------------------
+// Skala mit Bass-Layer kombinieren
+// -----------------------------------------------------
+
+stack(
+  s("bd*4"),
+  s("~ cp ~ cp"),
+  s("hh*8").gain(0.4),
+  note("0 3 5 7").scale("C:minor").s("sawtooth").lpf(800)
+)
+
+// Die Bass-Linie geht: c, eb, g, c (oktav höher).
+// Das ist nicht zufällig — Index 3 in C-Moll ist Eb, Index
+// 5 ist G, Index 7 ist nächstes C.
+
+
+// -----------------------------------------------------
+// Melodien aus Indices
+// -----------------------------------------------------
+// Mit kleinen Index-Sprüngen entstehen Melodien:
+
+note("0 1 2 0 1 2 4 3").scale("C:major").s("piano")
+
+// Oder mit größeren Sprüngen:
+
+note("0 4 2 7 0 -3 5 2").scale("C:dorian").s("piano")
+
+
+// -----------------------------------------------------
+// Melodie entwickeln — Variationen
+// -----------------------------------------------------
+// Drei Standard-Tricks:
+
+// Variation 1: rev() — rückwärts spielen
+note("0 1 2 4 3").scale("C:major").rev().s("piano")
+
+// Variation 2: .add() — alle Noten transponieren
+note("0 1 2 4 3").scale("C:major").add(2).s("piano")
+
+// Variation 3: per Cycle wechselnde Skala
+note("0 2 4 7").scale("<C:major C:minor C:dorian C:phrygian>").s("piano")
+
+
+// -----------------------------------------------------
+// Drei-Stimm-Satz — Bass + Mid + Lead
+// -----------------------------------------------------
+// Wenn drei Linien dieselbe Skala teilen, klingt es immer
+// halbwegs zusammen.
+
+const skala = "C:minor"
+
+stack(
+  note("0 0 5 0").scale(skala).sub(14).s("sawtooth").lpf(400),
+  note("4 5 7 5").scale(skala).s("triangle").lpf(1200),
+  note("0 4 7 4").scale(skala).add(14).s("piano")
+)
+
+// .sub(14) zieht 14 Halbtöne ab — lässt den Bass tief.
+// .add(14) addiert 14 — lässt den Lead hoch.
+// In der Mitte unverändert.
+
+
+// -----------------------------------------------------
+// FINALE — Track mit Skala, Bass, Lead
+// -----------------------------------------------------
+
+const skl = "C:dorian"
+
+stack(
+  s("bd*4"),
+  s("~ cp ~ cp"),
+  s("hh*16").gain(0.3),
+  note("0 0 3 0 5 0 3 0").scale(skl).sub(12).s("sawtooth").lpf(500),
+  note("<7 9 5 4>").scale(skl).s("triangle").lpf(1500).slow(2)
+)
+
+// Bass-Linie unten, Lead-Note oben (jede halbe Cycle ändert er
+// sich), Drums durchgehend. Versuch's mit verschiedenen Skalen
+// in der Variable skl.
+
+
+// -----------------------------------------------------
+// ▶ AUFGABE: Eigene Melodie
+// -----------------------------------------------------
+// Wähle eine Skala. Schreib eine 8-Index-Melodie. Spiel sie
+// dreimal mit verschiedenen Sounds (piano, sawtooth, triangle).
+// Was klingt wo am besten?
+
+note("0 2 4 5 4 2 0 -2").scale("D:dorian").s("piano")
+
+
+// -----------------------------------------------------
+// Mini-Zusammenfassung Kapitel 05
+// -----------------------------------------------------
+//   note("c4")                   → Tonname
+//   note("60")                   → MIDI-Zahl
+//   note("0 2 4").scale("C:major")  → Index in Skala
+//   .scale("C:dorian")           → C-Dorisch
+//   .add(7), .sub(12)            → transponieren
+//   .scale("<A B C>")            → Skala wechselt pro Cycle
+//
+// Skalen-Mapping: 0 = Grundton, 7 = Oktave höher, 14 = zwei Oktaven.
+// Halbe Indices wie 0.5 gehen nicht — Skala ist diskret.
+//
+// Skalen die du oft brauchen wirst:
+//   major, minor, dorian, mixolydian, phrygian,
+//   minorPentatonic, majorPentatonic, harmonicMinor, blues
+//
+// Weiter zu 06_akkorde_und_voicings.strudel.
+
+-->
+</strudel-repl>
+</main>
+<footer>
+<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
+<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
+</footer>
+</body>
+</html>

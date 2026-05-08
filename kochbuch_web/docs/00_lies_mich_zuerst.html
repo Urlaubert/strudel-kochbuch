@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>00 — Lies mich zuerst — Strudel Kochbuch</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/@strudel/embed@latest"></script>
+</head>
+<body class="chapter">
+<header>
+<a href="index.html" class="back">← Inhalt</a>
+<h1>00 — Lies mich zuerst</h1>
+<nav class="chapter-nav"><span class="disabled">← Vorheriges</span><a href="01_hello_sound.html" title="01 — Hello Sound">Nächstes →</a></nav>
+</header>
+<main>
+<strudel-repl>
+<!--
+// =====================================================
+// Kapitel 00 — Lies mich zuerst
+// =====================================================
+// Drei Dinge bevor wir loslegen.
+// =====================================================
+
+
+// -----------------------------------------------------
+// 1. Die zwei wichtigsten Tasten
+// -----------------------------------------------------
+// Strg+Enter (Cmd+Enter auf Mac) — startet/aktualisiert Pattern.
+// Strg+.    (Cmd+. auf Mac)     — stoppt alles.
+//
+// Probier es gleich. Cursor irgendwo in den nächsten Block,
+// dann Strg+Enter.
+
+s("bd*4")
+
+// Du solltest eine Bass Drum hören, viermal pro Sekunde-ish.
+// Wenn nicht: Lautstärke prüfen, oder warten — Sample lädt
+// beim ersten Trigger.
+//
+// Stoppe mit Strg+. (Punkt). Mach das jetzt.
+
+
+// -----------------------------------------------------
+// 2. Strudel spielt nur EINEN Block — den untersten unkommentierten
+// -----------------------------------------------------
+// Das ist die wichtigste Regel und gleichzeitig die irritierendste.
+// Schau dir die nächsten zwei Blöcke an. Beide sind Pattern.
+// Strudel wird IMMER NUR den letzten ausführen.
+
+s("hh*8")
+
+s("cp*2")
+
+// Drück Strg+Enter. Du hörst Claps, keine Hihats. Weil "cp*2"
+// der unterste Block ist.
+//
+// Möchtest du die Hihats hören? Mach den Cp-Block zu Kommentar
+// (Cursor in die Zeile, Strg+/ kommentiert aus):
+//
+// // s("cp*2")
+//
+// Dann ist "hh*8" der unterste aktive Block. Spielt jetzt.
+//
+// Diesen Workflow nutzt du dauernd. Code schreiben heißt in
+// Strudel auch: alte Versionen oben stehen lassen,
+// auskommentieren, neue Versionen drunter.
+//
+// (Aufgabe: kommentier den cp-Block aus, drück Strg+Enter,
+// dann wieder ein, Strg+Enter. Hör den Unterschied.)
+
+
+// -----------------------------------------------------
+// 3. Wie dieses Lehrbuch geschrieben ist
+// -----------------------------------------------------
+// Jedes Kapitel ist eine Datei wie diese hier. Du arbeitest
+// dich von oben nach unten durch. Kommentare sind Lehrtext,
+// Code ist zum Hören.
+//
+// Es gibt drei Arten von Code-Blöcken:
+//
+//   (a) BEISPIELE — hörst du dir an
+//   (b) AUFGABEN  — änderst eine Zahl, hörst was passiert
+//   (c) FINALE    — ganz unten, der Höhepunkt des Kapitels
+//
+// Aufgaben sind so markiert:
+//
+// // ▶ AUFGABE: Ändere die 4 zu 8. Was passiert?
+// s("bd*4")
+
+
+// -----------------------------------------------------
+// 4. Ein erster Beat
+// -----------------------------------------------------
+
+stack(
+  s("bd*4"),
+  s("~ cp ~ cp"),
+  s("hh*8").gain(0.4),
+  note("c2 c2 eb2 g2").s("sawtooth").lpf(800).gain(0.6)
+)
+
+// Strg+Enter. Strg+. wenn du genug hast.
+// Was da steht, kommt in den nächsten Kapiteln Stück für Stück.
+//
+// Weiter zu 01_hello_sound.strudel.
+
+-->
+</strudel-repl>
+</main>
+<footer>
+<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
+<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,455 @@
+// =====================================================
+// Kapitel 07 — Effekte
+// =====================================================
+// Filter, Hall, Delay, Distortion, Hüllkurven (ADSR).
+// Strudel hat ungefähr 30 Effekte — du nutzt 5 davon
+// ständig, der Rest ist für Spezialfälle.
+// =====================================================
+
+
+// -----------------------------------------------------
+// Lowpass-Filter — der wichtigste Effekt
+// -----------------------------------------------------
+// .lpf(N) — alles über N Hz wird abgeschnitten.
+//
+//   Frequenz-Antwort:
+//
+//   Pegel
+//    1 |____
+//      |    \___
+//      |        \____
+//      |            \____
+//      |                 \___________
+//      +----+--------+--------+----- Frequenz (Hz)
+//          50      cutoff   10k
+
+note("c4*8").s("sawtooth").lpf(200)    // dumpf
+note("c4*8").s("sawtooth").lpf(800)    // warm
+note("c4*8").s("sawtooth").lpf(2000)   // ausgewogen
+note("c4*8").s("sawtooth").lpf(8000)   // spitz / fast offen
+
+
+// -----------------------------------------------------
+// Resonanz — der Filter brüllt zurück
+// -----------------------------------------------------
+// .lpq(N) — wie stark der Filter an seiner Cutoff-Frequenz
+// "zurückbeißt". 0 = neutral, 30+ = sehr resonant.
+//
+//   lpq(0)            lpq(10)            lpq(30)
+//
+//   ____               ___                .
+//       \___          /   \__            /|
+//           \___    _/       \__       _/ |\__
+//                                          \  \____
+//
+//   ohne Beule       sanfte Beule       scharfe Spitze
+//   "klingt zu"      "wow"              "pfeift"
+
+note("c2*8").s("sawtooth").lpf(800).lpq(0)
+note("c2*8").s("sawtooth").lpf(800).lpq(15)
+note("c2*8").s("sawtooth").lpf(800).lpq(30)
+
+// Hohe Resonanz lässt den Filter pfeifen. Klassisch für Acid-Bass.
+
+
+// -----------------------------------------------------
+// Filter-Pattern — der Sweep
+// -----------------------------------------------------
+// Cutoff kann selbst ein Pattern sein:
+
+note("c2*16").s("sawtooth").lpf("200 800 2000 4000")
+
+// Der Filter wandert pro Cycle vier Stufen hoch — von dumpf
+// zu offen.
+
+
+// -----------------------------------------------------
+// Highpass-Filter — alles UNTER abschneiden
+// -----------------------------------------------------
+
+note("c4*8").s("sawtooth").hpf(800)
+
+// Nur Höhen bleiben. Klingt wie durch Telefon, oder wie ein
+// Sound, der von hinten kommt.
+
+s("bd*4").hpf(200)
+
+// Auch auf Drums. Highpass auf bd nimmt den Bauch raus —
+// nützlich wenn ein anderer Bass-Layer den tiefen Bereich
+// braucht.
+
+
+// -----------------------------------------------------
+// Bandpass — nur eine Mitte
+// -----------------------------------------------------
+
+note("c4*8").s("sawtooth").bpf(1000)
+
+// Alles über UND unter 1000 Hz wird abgeschnitten. Klingt
+// wie aus einer Blechdose.
+
+
+// -----------------------------------------------------
+// Vowel-Filter — Vokal als Klang
+// -----------------------------------------------------
+
+s("bd*4 sd").vowel("<a e i o u>")
+
+// Pro Cycle ein anderer Vokal. Klingt wie ein Mund, der
+// "Aaah Eeeh Iiih Ooh Uuuh" formt.
+
+
+// -----------------------------------------------------
+// ADSR — die Hüllkurve
+// -----------------------------------------------------
+// Jeder Sound hat eine Form über die Zeit:
+//   Attack:  wie schnell rauf
+//   Decay:   wie schnell zur Sustain-Phase
+//   Sustain: Pegel während die Note hält
+//   Release: wie schnell aus
+//
+//   Pegel
+//   1.0 |   /\
+//       |  /  \____
+//   sus |..      ‾‾‾‾‾‾‾‾\
+//       | /              .\
+//       |/               . \___
+//   0.0 +----+---+-------+---+--→ Zeit
+//          A    D     hold    R
+//                     (sustain)
+
+note("c4").s("sawtooth").attack(0.001).release(0.05)
+// Pluck:
+//   |\
+//   | \____.________
+
+note("c4").s("sawtooth").attack(0.5).release(2)
+// Pad:
+//      ___________
+//     /            \____
+//    /                  \____
+//   /                        \___
+
+note("c4").s("sawtooth").attack(0.01).decay(0.1).sustain(0.5).release(0.4)
+// Klassisch — schneller Attack, sanfter Decay, mittel halten,
+// kurzer Release.
+//   /\
+//   | \___________
+//   |             \____
+
+
+// -----------------------------------------------------
+// Filter-Envelope — der "Wow"-Effekt
+// -----------------------------------------------------
+// Cutoff bewegt sich automatisch beim Anschlag.
+//   .lpa(s) — Filter-Attack (in Sekunden)
+//   .lpd(s) — Filter-Decay
+//   .lps(0..1) — Filter-Sustain-Pegel
+//   .lpr(s) — Filter-Release
+//   .lpenv(N) — Modulationstiefe (Oktaven)
+//
+//   Cutoff
+//      |  /\
+//      | /  \___
+//   lpf|/       ‾‾‾‾‾‾‾‾‾‾‾  ← Basis-Cutoff
+//      +--+----+-------------→ Zeit
+//        lpa  lpd
+//
+//   "wow" = Filter geht beim Hit auf, fällt zurück.
+//   Klassisch für Acid-Bass.
+
+note("c2*4").s("sawtooth").lpf(200).lpenv(4).lpa(0.01).lpd(0.2)
+
+// Bei jedem Anschlag öffnet der Filter um 4 Oktaven, fällt
+// dann in 0.2 s zurück.
+
+note("c2*8").s("sawtooth").lpf(150).lpenv(6).lpa(0).lpd(0.15).lpq(15)
+
+// Acid-Bass-Preset. Tiefer Cutoff, hoher Envelope-Hub, hohe
+// Resonanz. Klingt nach TB-303.
+
+
+// -----------------------------------------------------
+// Reverb — Hall
+// -----------------------------------------------------
+//
+//   Original           +Reverb (room 0.5)
+//
+//   |                  |
+//   X____              X___________________
+//                       ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾→ Hall-Schwanz
+//
+// Anders als Delay: nicht klare Echos, sondern dichte
+// Mischung von Tausenden Reflexionen — wie in einem Raum.
+
+note("c4 e4 g4").s("piano").room(0)        // trocken
+note("c4 e4 g4").s("piano").room(0.3)      // mittlerer Raum
+note("c4 e4 g4").s("piano").room(0.7)      // große Halle
+note("c4 e4 g4").s("piano").room(0.95)     // Kathedrale, fast Wash
+
+note("c4 e4 g4").s("piano").room(0.5).roomsize(8)   // sehr groß
+note("c4 e4 g4").s("piano").room(0.5).roomsize(0.5) // klein
+
+
+// 💡 PRAXIS — Reverb-Faustregeln
+//   - Hall ist KLEBSTOFF, kein Effekt. Eine Spur die für sich
+//     hallt klingt billig — eine Hall-Stimmung die ALLE Spuren
+//     teilen klingt nach Raum.
+//   - Reverb auf Pads/Vocals 4-15 s decay, auf Drums 0.3-0.8 s.
+//   - Hochpass auf den Reverb-Anteil (200-400 Hz), sonst Matsch.
+//   - "Mehr Pre-Delay" (in Strudel begrenzt machbar) = naeher,
+//     "kein Pre-Delay" = im Hall drin = weit weg.
+//   - room(0.95) klingt im Solo super, im Mix wie Wand-Wash.
+//     Realistische Werte sind 0.3-0.5.
+//   - JND-Schwelle: room < 0.05 ist faktisch unhörbar. Wenn
+//     Bypass-Test keinen klaren Unterschied zeigt — weglassen.
+
+
+// -----------------------------------------------------
+// Delay — Echo
+// -----------------------------------------------------
+//
+//   Original-Hit                  Echos (feedback=0.6, time=0.25)
+//
+//   |                              |   .   .   .   .
+//   X.............................X...X...X...X...X........
+//   ^                              ^   ^   ^   ^   ^
+//   100%                           60% 36% 22% 13% 8%
+//
+//   Echos werden bei jedem Durchlauf um 60% leiser.
+
+note("c4 e4 g4").s("piano").delay(0.5).delaytime(0.25).delayfeedback(0.6)
+
+// .delay(0.5) — wieviel vom Echo gemischt
+// .delaytime(0.25) — Echo-Zeit (Viertel-Cycle)
+// .delayfeedback(0.6) — wie oft das Echo zurückkommt
+//
+// VORSICHT: delayfeedback >= 1 → Lautstärke explodiert.
+
+note("c4").s("piano").delay(0.6).delaytime(0.125).delayfeedback(0.7)
+// Schnelles, langes Echo. Ping-Pong-artig.
+
+
+// -----------------------------------------------------
+// Pan — links/rechts
+// -----------------------------------------------------
+
+s("hh*8").pan("0 0.3 0.7 1 0.7 0.3 0 0.5")
+
+// Hihat wandert: links, mitte-links, mitte-rechts, ganz rechts, ...
+
+s("hh*16").pan(perlin.range(0.2, 0.8))
+
+// Sanfter, organischer Pan-Drift mit Perlin-Noise.
+// (Mehr zu Perlin und Signalen in Kapitel 08.)
+
+
+// -----------------------------------------------------
+// jux(rev) — der Stereo-Klassiker
+// -----------------------------------------------------
+
+note("c4 e4 g4 b4").s("piano").jux(rev)
+
+// Der LINKE Kanal spielt das Pattern normal. Der RECHTE
+// rückwärts. Klingt nach 70er-Jahre-Psychedelic, aber
+// funktioniert in jedem Genre.
+
+
+// -----------------------------------------------------
+// Distortion — Schmutz
+// -----------------------------------------------------
+// Verzerrung beschneidet die Wellenform an den Rändern.
+//
+//   Original         distort(0.3)       distort(2.0)
+//
+//      /\              /‾‾\              ____
+//     /  \            /    \            |    |
+//   _/    \_        _/      \_        _/      \_
+//      \  /            \    /            |    |
+//       \/              \__/              ‾‾‾‾
+//
+//   "rund"           "etwas        "Rechteck"
+//                    angekantet"
+
+note("c2*8").s("sawtooth").distort(0.3)
+note("c2*8").s("sawtooth").distort(1.0)
+note("c2*8").s("sawtooth").distort(3.0)
+
+// Ab 1.0 wird's knackig. 3.0 ist schon Wand-zu-Wand-Sägezahn.
+
+note("c2*8").s("sawtooth").shape(0.3)
+
+// .shape ist Waveshaping — etwas weicher als distort.
+
+
+// 💡 PRAXIS — Drive-Schwelle und Output-Kompensation
+// Saturation/Distortion macht den Sound LAUTER (mehr Energie
+// in den Obertönen). Wer's eindreht und dann denkt "klingt
+// besser" — testet meist nur lauter vs. leiser.
+//
+// Deshalb beim Drive-A/B IMMER Pegel-Match:
+note("c2*4").s("sawtooth").lpf(800).gain(0.7)
+note("c2*4").s("sawtooth").lpf(800).distort(0.5).gain(0.45)
+//                                                 ↑
+//                              gain runter um Saturations-Boost auszugleichen
+//
+// Wenn du den Unterschied jetzt noch hörst, ist es echte
+// Klangfärbung — nicht nur Pegel-Illusion.
+//
+// Drive-JND: < 0.05 (also distort(0.05) und drunter) ist
+// im Mix-Kontext kaum hörbar. Mindestens 0.1 wenn du
+// es tatsächlich willst.
+
+
+// -----------------------------------------------------
+// Bitcrusher — Lo-Fi
+// -----------------------------------------------------
+
+s("bd*4 sd").crush(4)
+s("bd*4 sd").crush(2)
+s("bd*4 sd").coarse(2)
+
+// .crush(N) — Bit-Reduktion. 1 = drastisch, 16 = fast original.
+// .coarse(N) — Sample-Rate-Reduktion. 1 = original, 4+ = roh.
+//
+// Beide zusammen ergeben den "kaputter alter Sampler"-Sound.
+
+s("bd*4 sd ~ cp ~").crush(5).coarse(2).hpf(80)
+
+
+// -----------------------------------------------------
+// Compressor — pumpen / zähmen
+// -----------------------------------------------------
+
+s("bd*4, ~ cp ~ cp, hh*16").compressor("-20:4:6:0.005:0.2")
+
+// Format: "threshold:ratio:knee:attack:release"
+// -20 dB = ab da wird komprimiert
+// 4 = 4:1 Ratio (mittel)
+// 6 dB Knee
+// 5 ms Attack, 200 ms Release
+
+
+// -----------------------------------------------------
+// Sidechain-Ducking
+// -----------------------------------------------------
+// Bass wird leise wenn Kick spielt — der Track "atmet".
+
+stack(
+  s("bd*4").orbit(1),                          // Kick im Orbit 1
+  note("c2*8").s("sawtooth").lpf(400)
+    .duckorbit(1).duckdepth(0.7).duckattack(0.05)
+)
+
+// Bass wird gegen Kick geduckt. .orbit gruppiert Patterns
+// in Effekt-Bussen.
+
+
+// -----------------------------------------------------
+// Phaser — schwebend
+// -----------------------------------------------------
+
+note("c4 e4 g4").s("sawtooth").phaser(2)
+note("c4*16").s("sawtooth").phaser("<0.5 1 2 4>").phaserdepth(0.8)
+
+// Pro Cycle eine andere Phaser-Geschwindigkeit. Tiefe 0.8
+// macht's deutlich.
+
+
+// -----------------------------------------------------
+// Tremolo — pulsierend
+// -----------------------------------------------------
+
+note("c4*8").s("sawtooth").tremolosync(2).tremolodepth(0.5)
+
+// Zweimal pro Cycle pulsiert die Lautstärke um 50%.
+
+
+// -----------------------------------------------------
+// Mehrere Effekte in einer Kette
+// -----------------------------------------------------
+
+note("c2*8").s("sawtooth")
+  .lpf(800).lpq(10).lpenv(8).lpa(0).lpd(0.15)
+  .distort(0.2)
+  .delay(0.3).delaytime(0.125).delayfeedback(0.5)
+  .room(0.4)
+
+// Acid-Bass mit Distortion, Delay und Reverb.
+// Reihenfolge spielt keine Rolle in Strudel — die einzelnen
+// .lpf, .delay, .room werden intern in fester Engine-Reihenfolge
+// angewendet.
+
+
+// -----------------------------------------------------
+// Wo-anders-rum: Effekt-Pattern
+// -----------------------------------------------------
+// Effekte können selbst Patterns sein — pro Step ein
+// anderer Wert.
+
+s("hh*16").gain("0.3 0.5 0.7 0.4")
+s("bd*4").room("<0 0.3 0.6 0.9>")
+note("c4*8").s("sawtooth").lpf("200 4000 800 1500")
+
+// Das ist ein häufig übersehener Trick. Effekte sind nicht
+// statisch — alles ist Pattern-fähig.
+
+
+// -----------------------------------------------------
+// FINALE — voller Track mit allen Effekten
+// -----------------------------------------------------
+
+stack(
+  s("bd*4").gain(0.9),
+  s("~ cp ~ cp").room(0.3),
+  s("hh*16").gain("0.3 0.4 0.5 0.4").pan(perlin.range(0.3, 0.7)),
+  note("c2 c2 eb2 g2")
+    .s("sawtooth")
+    .lpf(800).lpenv(6).lpa(0).lpd(0.15).lpq(8)
+    .distort(0.1)
+    .gain(0.7),
+  note("<eb4 g4 c5 bb4>")
+    .s("triangle")
+    .attack(0.05).release(0.5)
+    .lpf(2000)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.6)
+    .room(0.5)
+    .gain(0.4)
+)
+
+// Drums knochentrocken vorne, Snare mit Hall, Hihats wandern
+// stereo, Acid-Bass mit Filter-Envelope und Distortion,
+// Lead mit Echo und Reverb.
+
+
+// -----------------------------------------------------
+// ▶ AUFGABE: Eigenes Setup
+// -----------------------------------------------------
+// Nimm das FINALE und ändere systematisch:
+//   - hpf(200) auf den Bass packen — was ändert sich?
+//   - Lead-Delay auf delaytime("<0.125 0.25 0.375 0.5>") — wandernder Echo
+//   - Drums mit crush(6) — Lo-Fi-Drums
+//   - Lead-Reverb auf 0.95 — Wand-Wash
+
+
+// -----------------------------------------------------
+// Mini-Zusammenfassung Kapitel 07 — die Top 8
+// -----------------------------------------------------
+// Die acht häufigsten:
+//   .gain(0..1)           → Lautstärke
+//   .lpf(Hz)              → Lowpass-Filter
+//   .hpf(Hz)              → Highpass-Filter
+//   .room(0..1)           → Hall
+//   .delay(0..1)          → Echo
+//   .pan(0..1)            → Stereo-Position
+//   .attack(s) .release(s) → Hüllkurve
+//   .lpenv(N) .lpa() .lpd() → Filter-Envelope
+//
+// Den Rest brauchst du seltener — aber er ist da wenn nötig.
+//
+// Ein Hinweis: Effekte sind GLOBAL pro Spur. Wenn du auf ein
+// Pattern einen Reverb packst, hat ALLES in dem Pattern den
+// Reverb. Willst du nur einen Teil halligen → eigenen Layer
+// im stack().
+//
+// Weiter zu 08_signale_und_modulation.strudel.

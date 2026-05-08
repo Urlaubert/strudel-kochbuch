@@ -1,0 +1,160 @@
+// =====================================================
+// Kapitel 01 — Hello Sound
+// =====================================================
+// Bevor wir über Pattern reden, machen wir EINEN TON.
+// Dann EIN SAMPLE. Damit du das Werkzeug spürst, bevor wir
+// es benennen.
+// =====================================================
+
+
+// -----------------------------------------------------
+// Eine Note
+// -----------------------------------------------------
+// note() nimmt einen Tonnamen. "c4" ist mittleres C.
+// Strg+Enter.
+
+note("c4")
+
+// Du hörst eine kurze Klavier-artige Note, und dann Stille.
+// Strudel spielt sie einmal pro "Cycle", was ungefähr 2 Sekunden
+// sind. Hör nochmal hin, du wirst die Wiederholung bemerken.
+//
+// Wenn nichts kommt, drück nochmal Strg+Enter. Das Sample muss
+// erst geladen werden.
+
+
+// -----------------------------------------------------
+// Ein anderer Ton, ein anderer Klang
+// -----------------------------------------------------
+// note() hat einen Default-Sound (triangle, glaube ich). Mit .s()
+// hängen wir einen anderen dran. Es heißt "sound" oder "s" —
+// beides geht.
+
+note("c4").s("piano")
+
+// Ein Klavier. Probier:
+
+note("c4").s("sawtooth")
+note("c4").s("square")
+note("c4").s("gm_acoustic_grand_piano")
+
+// (Den letzten nur ausführen wenn du Bock auf vollen GM-Soundbank
+// hast — wird beim ersten Mal etwas dauern zu laden.)
+
+
+// -----------------------------------------------------
+// ▶ AUFGABE: Ändere "c4" zu "c5". Was passiert?
+// -----------------------------------------------------
+note("c4").s("piano")
+
+// Octave höher. c3 wäre tiefer. c2 noch tiefer.
+//
+// Tonnamen funktionieren wie auf dem Papier:
+// c, d, e, f, g, a, b — gefolgt von Oktave (1-7 üblich).
+// b ist H im deutschen System, wenn das verwirrt: Strudel benutzt
+// englische Notation. b = H, kein Es-Reflex.
+// Vorzeichen: cs = c#, db = des, fs = f#, ab = as.
+
+
+// -----------------------------------------------------
+// Ein Sample (= aufgenommener Sound, kein Synth)
+// -----------------------------------------------------
+// s() ohne note() spielt ein Sample. "bd" ist eine Bass Drum.
+
+s("bd")
+
+// "sd" ist Snare. "hh" ist Hi-Hat. "cp" ist Clap.
+// Diese Kürzel kommen aus den Roland-Drum-Computer-Tagen
+// (TR-808/909) und sind in der Live-Coding-Welt Standard.
+
+s("sd")
+s("hh")
+s("cp")
+
+// Du kannst ALLE eingebauten Sounds anschauen: rechts unten im
+// Strudel-Editor gibt's einen "sounds"-Tab. Da kannst du klicken
+// und reinhören.
+
+
+// -----------------------------------------------------
+// Sample-Varianten mit :n
+// -----------------------------------------------------
+// Manche Sounds haben mehrere Varianten. "jazz:0" ist die erste
+// Jazz-Drum, "jazz:1" die zweite, etc.
+
+s("jazz:0")
+s("jazz:3")
+s("jazz:7")
+
+// ▶ AUFGABE: Probier verschiedene Zahlen 0-7 mit "jazz:N".
+// Welche gefällt dir?
+
+
+// -----------------------------------------------------
+// Lautstärke regeln mit .gain()
+// -----------------------------------------------------
+// 1 = normal. 0.5 = halb so laut. 0 = stumm. Werte über 1 gehen
+// auch, aber Vorsicht — kann clippen.
+
+s("bd").gain(0.3)
+s("bd").gain(1.0)
+s("bd").gain(1.5)
+
+
+// -----------------------------------------------------
+// Ein Klang, ein Effekt
+// -----------------------------------------------------
+// .lpf() ist ein Lowpass-Filter. Macht den Klang dumpfer.
+// Die Zahl ist die Cutoff-Frequenz in Hz — alles darüber
+// wird abgeschnitten.
+
+note("c4").s("sawtooth").lpf(200)
+note("c4").s("sawtooth").lpf(2000)
+note("c4").s("sawtooth").lpf(8000)
+
+// 200 Hz: dumpf, wie hinter einer Wand.
+// 2000 Hz: warm, ausgewogen.
+// 8000 Hz: spitz, alle Obertöne durch.
+
+
+// -----------------------------------------------------
+// Method-Chaining — jeder Punkt ist ein neuer Effekt
+// -----------------------------------------------------
+// Du hängst Effekte einfach hintereinander. Liest sich von
+// links nach rechts wie ein Effekt-Pedalboard.
+
+note("c4").s("sawtooth").lpf(800).gain(0.6).room(0.5)
+
+// .room() ist Hall ("room"). 0 = trocken, 1 = stark hallig.
+
+
+// -----------------------------------------------------
+// Mini-Zusammenfassung Kapitel 01
+// -----------------------------------------------------
+// Du kannst:
+//   - Eine Note spielen      → note("c4")
+//   - Sound wechseln         → .s("piano")
+//   - Ein Sample triggern    → s("bd")
+//   - Sample-Varianten       → s("jazz:3")
+//   - Lautstärke regeln      → .gain(0.7)
+//   - Filtern                → .lpf(800)
+//   - Hall                   → .room(0.4)
+//   - Effekte verketten      → .lpf(800).gain(0.6).room(0.5)
+//
+// Das ist das ganze Vokabular für die Eingangsschicht.
+
+
+// -----------------------------------------------------
+// FINALE — alles zusammen
+// -----------------------------------------------------
+
+note("c3")
+  .s("sawtooth")
+  .lpf(600)
+  .gain(0.8)
+  .room(0.6)
+
+// Tiefer Bass-Ton, etwas dumpf, mit Hall.
+//
+// Im nächsten Kapitel: mehrere Töne. Pattern. Klammern.
+// 02_mininotation.strudel.

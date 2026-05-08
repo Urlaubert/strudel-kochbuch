@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>19 — Valenz und Arousal — Strudel Kochbuch</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/@strudel/embed@latest"></script>
+</head>
+<body class="chapter">
+<header>
+<a href="index.html" class="back">← Inhalt</a>
+<h1>19 — Valenz und Arousal</h1>
+<nav class="chapter-nav"><a href="18_genre_kochbuch.html" title="18 — Genre-Kochbuch">← Vorheriges</a><a href="20_cheatsheet.html" title="20 — Cheatsheet">Nächstes →</a></nav>
+</header>
+<main>
+<strudel-repl>
+<!--
+// =====================================================
+// Kapitel 19 — Valenz und Arousal
+// =====================================================
+// Zwei Slider, vier Stimmungs-Quadranten. Russells
+// Circumplex-Modell (1980) sagt: jede musikalische
+// Stimmung lässt sich als Punkt in einem 2D-Raum
+// beschreiben. Die zwei Achsen sind unabhängig.
+//
+// Hier wird das in Strudel spielbar — du kannst durch
+// den Stimmungs-Raum live wandern. Verbindet Kapitel 16
+// (Helper) mit konkreter Anwendung.
+// =====================================================
+
+
+// -----------------------------------------------------
+// Das Modell — was sind die zwei Achsen?
+// -----------------------------------------------------
+//
+//                     hohes Arousal
+//                          ▲
+//              wütend ─────┼──── ekstatisch
+//                          │
+//   negative Valenz ◀──────┼──────▶ positive Valenz
+//                          │
+//              traurig ────┼──── friedlich
+//                          ▼
+//                    niedriges Arousal
+//
+// Arousal = Energie, Aktivierung. "Wieviel passiert?"
+// Valenz  = Wohlgefühl. "Klingt es freundlich?"
+//
+// Beide unabhängig. Du kannst hohe Arousal + niedrige
+// Valenz haben (wütend) — oder niedrige Arousal + hohe
+// Valenz (friedlich). Eine Achse allein reicht nicht für
+// "Stimmung".
+
+
+// -----------------------------------------------------
+// Die empirisch belegten Audio-Treiber
+// -----------------------------------------------------
+//
+// Arousal-Treiber (sortiert nach Stärke):
+//   1. Tempo            — schneller = mehr Arousal
+//   2. Event-Dichte     — mehr Onsets/s = mehr Arousal
+//   3. Spectral Flux    — schnelle Spektrums-Änderung
+//   4. Spectral Energy  — laut/leise
+//   5. Brightness       — heller = mehr Arousal
+//
+// Valenz-Treiber (sortiert nach Stärke):
+//   1. Modalität        — Dur positiv, Moll negativ
+//   2. Konsonanz        — Quinten/Terzen positiv,
+//                          Tritonus/Sekunden negativ
+//   3. Spectral Slope   — heller = positiver
+//   4. Attack-Schärfe   — scharf positiv, slow attack
+//                          melancholisch
+//   5. Detune           — leicht detunet positiv-organisch,
+//                          stark detunet instabil-negativ
+
+
+// -----------------------------------------------------
+// Zwei Slider, Stimmungs-Steuerung
+// -----------------------------------------------------
+
+const A = slider(0.5, 0, 1, 0.01)   // Arousal
+const V = slider(0.5, 0, 1, 0.01)   // Valenz
+
+// Helper-Funktion: Glättung mit Quadrat-Kurve
+function sq(p) { return p.fmap(v => v * v) }
+
+// Skala wechseln nach Valenz (kontinuierlicher Mood-Shift):
+// hohe Valenz → Dur-artige Modi (lydian, ionian, mixolydian)
+// niedrige Valenz → Moll-artige Modi (aeolian, phrygian, locrian)
+
+// Diskreter 5-Stufen-Pick (von düster zu strahlend):
+const skala_pattern = V.range(0, 5)
+  .fmap(Math.floor)
+  .pick([
+    "C:locrian",      // V=0.0-0.2: stark negativ
+    "C:phrygian",     // V=0.2-0.4: dunkel-spanisch
+    "C:minor",        // V=0.4-0.6: traurig
+    "C:dorian",       // V=0.6-0.8: hoffnungsvoll
+    "C:lydian"        // V=0.8-1.0: strahlend
+  ])
+
+// Tempo nach Arousal:
+// niedriges Arousal → langsam, hohes → schnell
+// (setcps darf in Strudel meistens nur einmal gesetzt werden,
+// also nehmen wir hier eine fixe cps und regeln über fast/slow)
+setcps(0.5)
+
+
+// -----------------------------------------------------
+// Die Achsen-Helper
+// -----------------------------------------------------
+
+// Arousal-Helper: dichtere/hellere Klänge bei hohem A
+function arousalShift(pat, a) {
+  return pat
+    .lpf(a.range(400, 5000))                      // heller bei A=hoch
+    .gain(a.range(0.5, 1.0))                      // lauter
+}
+
+function arousalLayer(a) {
+  return stack(
+    s("hh*16").gain(a.range(0, 0.5)),             // dichte Hihats nur bei A=hoch
+    s("[~ ~ ~ oh]/2").gain(a.range(0, 0.4)).cut(1)
+  )
+}
+
+// Valenz-Helper: konsonantere und hellere Klänge bei hoher V
+function valenzShift(pat, v) {
+  return pat
+    .room(v.range(0.5, 0.2))                      // mehr Hall bei niedriger V (melancholisch)
+    .distort(v.range(0.3, 0))                     // Distortion bei niedriger V (negative Valenz)
+    .attack(v.range(0.5, 0.01))                   // Slow-Attack bei niedriger V (sad)
+}
+
+
+// -----------------------------------------------------
+// Der Track — durch den Stimmungsraum wandern
+// -----------------------------------------------------
+
+const drums = stack(
+  s("bd*4"),
+  s("~ cp ~ cp")
+)
+
+const bass = note("c2 c2 g1 c2").scale(skala_pattern)
+  .s("sawtooth")
+  .lpf(500)
+  .gain(0.7)
+
+const lead = note("0 4 7 4").scale(skala_pattern).add(14)
+  .s("triangle")
+  .release(0.5)
+  .gain(0.4)
+
+stack(
+  arousalShift(drums, sq(A)),
+  arousalLayer(sq(A)),
+  valenzShift(bass, sq(V)),
+  valenzShift(lead, sq(V))
+)
+
+// Strg+Enter, dann ZWEI Slider live drehen:
+//
+//   A=0.2, V=0.2  → wenig los, Moll, Distortion → traurig+still
+//   A=0.2, V=0.8  → wenig los, Dur, sauber       → friedlich
+//   A=0.9, V=0.2  → dichte Hihats, Moll, dirty   → wütend
+//   A=0.9, V=0.8  → dichte Hihats, Dur, hell     → ekstatisch
+//
+// Vier Quadranten, ein Track.
+
+
+// -----------------------------------------------------
+// Die vier Quadranten zum Direkt-Anhören
+// -----------------------------------------------------
+// Setze die Slider auf bestimmte Werte, hör rein:
+
+// QUADRANT 1: friedlich (A=0.2, V=0.8)
+//   Wenig Hihats, Dur, lange Releases, leichter Hall
+stack(
+  s("bd*4").gain(0.6),
+  note("c2 c2 g1 c2").scale("C:lydian")
+    .s("sawtooth").lpf(800).attack(0.05).gain(0.6),
+  note("[c4, e4, g4]").scale("C:lydian")
+    .s("sawtooth").attack(1).release(2).gain(0.4).room(0.5)
+)
+
+// QUADRANT 2: ekstatisch (A=0.9, V=0.8)
+//   Voll-Drums, Dur, alles offen
+stack(
+  s("bd*4"),
+  s("~ cp ~ cp"),
+  s("hh*16").gain(0.5),
+  note("c2*8").scale("C:mixolydian")
+    .s("sawtooth").lpf(2500).gain(0.7),
+  note("[c4, e4, g4]").scale("C:mixolydian")
+    .s("sawtooth").attack(0.05).release(0.3).gain(0.5)
+)
+
+// QUADRANT 3: wütend (A=0.9, V=0.2)
+//   Voll-Drums, Moll, Distortion
+stack(
+  s("bd*4"),
+  s("~ cp ~ cp").distort(0.2),
+  s("hh*16").gain(0.5),
+  note("c2*8").scale("C:phrygian")
+    .s("sawtooth").lpf(1200).distort(0.4).gain(0.7),
+  note("c4 eb4 c4 g4").scale("C:phrygian")
+    .s("sawtooth").attack(0.001).release(0.15).distort(0.3).gain(0.5)
+)
+
+// QUADRANT 4: traurig (A=0.2, V=0.2)
+//   Sparse, Moll, slow attack, viel Hall
+stack(
+  s("bd*4").gain(0.5),
+  note("c2 ~ ~ ~ g1 ~ ~ ~").scale("C:locrian")
+    .s("sawtooth").attack(0.5).release(2).lpf(600).gain(0.5),
+  note("[c4, eb4, gb4]").scale("C:locrian")
+    .s("sawtooth").attack(2).release(4).lpf(1200).gain(0.35).room(0.7)
+)
+
+
+// -----------------------------------------------------
+// 💡 Wann Russells Modell hilft
+// -----------------------------------------------------
+// - Wenn du eine Stimmung verändern willst und nicht
+//   weißt wo anfassen: zwei Achsen prüfen, eine drehen.
+// - Wenn dein Track "irgendwie nicht stimmt": liegt es
+//   vermutlich daran, dass V und A widersprüchlich sind
+//   (laute Drums + sehr melancholische Akkorde = oft
+//   schwer zu lesen, kann aber bewusst eingesetzt werden:
+//   z.B. wütend-traurig).
+// - Wenn du Stimmungen für Live-Performance kategorisieren
+//   willst: 4 Slider-Voreinstellungen statt 20 Patches.
+
+
+// -----------------------------------------------------
+// Was das Modell NICHT abdeckt
+// -----------------------------------------------------
+// - Tension/Resolution — Spannungsbogen über Zeit (eigene
+//   Dimension)
+// - Density — speziell rhythmische Dichte (zwar in Arousal
+//   enthalten, aber nicht damit identisch)
+// - Distance/Nähe — räumliche Dimension (Pan, Reverb)
+//
+// Russell ist ein GROBRASTER, kein Vollmodell. Spezial-
+// Achsen wie "Bedrohung" oder "Affen-Präsenz" (Kapitel 16)
+// sitzen DARAUF und addieren spezifische Wirkungen.
+
+
+// -----------------------------------------------------
+// ▶ AUFGABE: Eigenes Achsen-System
+// -----------------------------------------------------
+// Definiere zwei eigene Achsen mit Bedeutung. Beispiele:
+//   - "Naehe" (von weit weg → ganz nah)
+//     Mappings: room runter, gain hoch, lpf hoch
+//   - "Wildheit" (kontrolliert → chaotisch)
+//     Mappings: probability hoch, distort hoch, segment runter
+//   - "Sehnsucht" (gegenwärtig → entrückt)
+//     Mappings: delay hoch, attack lang, vowel-Filter sweep
+//
+// Bau dafür xLayer/xShift Funktionen wie in Kapitel 16.
+
+
+// -----------------------------------------------------
+// Mini-Zusammenfassung Kapitel 19
+// -----------------------------------------------------
+//   Russells 2-Achsen-Modell:
+//     Arousal = Energie  →  Tempo, Dichte, Brightness
+//     Valenz  = Wohlfühl →  Modalität, Konsonanz, Attack
+//
+//   Vier Quadranten:
+//     hoch/hoch  ekstatisch     hoch/niedrig  wütend
+//     niedrig/hoch friedlich    niedrig/niedrig  traurig
+//
+//   Code-Pattern:
+//     const A = sq(slider(0.5))
+//     const V = sq(slider(0.5))
+//     stack(arousalShift(pat, A), arousalLayer(A),
+//           valenzShift(pat, V))
+//
+//   Spezial-Achsen (Bedrohung, Nähe, Charakter) sitzen
+//   AUF diesem Grundraster.
+//
+// Weiter zu 20_cheatsheet.strudel.
+
+-->
+</strudel-repl>
+</main>
+<footer>
+<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
+<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
+</footer>
+</body>
+</html>
