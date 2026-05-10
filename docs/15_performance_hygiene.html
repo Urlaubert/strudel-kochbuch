@@ -4,364 +4,184 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>15 — Performance-Hygiene — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>15 — Performance-Hygiene</h1>
-<nav class="chapter-nav"><a href="14_midi_und_io.html" title="14 — MIDI und IO">← Vorheriges</a><a href="16_eigene_helper.html" title="16 — Eigene Helper">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="14_midi_und_io.html" title="14 — MIDI und IO">← Zurück</a><a href="16_eigene_helper.html" title="16 — Eigene Helper">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 15 — Performance-Hygiene
-// =====================================================
-// Live spielen ist anders als zuhause Pattern bauen. Stille
-// fühlt sich auf der Bühne 10x länger an. Ein Tippfehler
-// kostet 30 Sekunden — auf einem Festival ist das eine
-// Ewigkeit.
-//
-// Hier sind die Tricks die etablierte Live-Coder benutzen
-// damit aus einem Set kein Drama wird.
-// =====================================================
+<article class="prose">
+<h1>Kapitel 15 — Performance-Hygiene</h1>
+<p>Live spielen ist anders als zuhause Pattern bauen. Stille fühlt sich auf der Bühne 10x länger an. Ein Tippfehler kostet 30 Sekunden — auf einem Festival ist das eine Ewigkeit.</p>
+<p>Hier sind die Tricks die etablierte Live-Coder benutzen damit aus einem Set kein Drama wird.</p>
+<h3>1. Tempo am Anfang setzen, NICHT mitten im Set ändern</h3>
+<div class="snippet" id="snip-000" data-code-b64="c2V0Y3BzKDAuNSk="><pre class="snippet-code"><code>setcps(0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// 1. Tempo am Anfang setzen, NICHT mitten im Set ändern
-// -----------------------------------------------------
-
-setcps(0.5)
-
-// Tempo-Wechsel mitten im Set funktioniert technisch, klingt
-// aber meist holprig. Die laufenden Patterns rastet kurz aus.
-//
-// Mache stattdessen:
-//   - Setze ein Tempo am Anfang.
-//   - Wechsle innerhalb mit half-time / double-time-Patterns
-//     (.slow(2) auf einer Spur).
-//   - Wenn neuer Track-Teil ein anderes Tempo will → Pause
-//     einbauen, neuer Cps-Aufruf, neuer Block.
-
-
-// -----------------------------------------------------
-// 2. Sample-Vorlade — die "kalte" Performance vermeiden
-// -----------------------------------------------------
-// Strudel lädt Samples beim ersten Trigger. Beim ersten Mal
-// hörst du: Stille. Das ist auf einer Bühne katastrophal.
-//
-// Lösung: 5 Minuten vor Performance EINMAL alle Sounds
-// triggern, damit sie im Cache sind.
-
-stack(
-  s("bd"), s("sd"), s("cp"), s("hh"), s("oh"), s("rim"), s("cb"),
-  s("piano"), s("sawtooth"), s("triangle"),
-  s("ocean"), s("crow"),    // alle Custom-Samples
+<p>Tempo-Wechsel mitten im Set funktioniert technisch, klingt aber meist holprig. Die laufenden Patterns rastet kurz aus.</p>
+<pre><code>Mache stattdessen:
+  - Setze ein Tempo am Anfang.
+  - Wechsle innerhalb mit half-time / double-time-Patterns
+    (.slow(2) auf einer Spur).
+  - Wenn neuer Track-Teil ein anderes Tempo will → Pause
+    einbauen, neuer Cps-Aufruf, neuer Block.
+</code></pre>
+<h3>2. Sample-Vorlade — die "kalte" Performance vermeiden</h3>
+<p>Strudel lädt Samples beim ersten Trigger. Beim ersten Mal hörst du: Stille. Das ist auf einer Bühne katastrophal.</p>
+<p>Lösung: 5 Minuten vor Performance EINMAL alle Sounds triggern, damit sie im Cache sind.</p>
+<div class="snippet" id="snip-001" data-code-b64="c3RhY2soCiAgcygiYmQiKSwgcygic2QiKSwgcygiY3AiKSwgcygiaGgiKSwgcygib2giKSwgcygicmltIiksIHMoImNiIiksCiAgcygicGlhbm8iKSwgcygic2F3dG9vdGgiKSwgcygidHJpYW5nbGUiKSwKICBzKCJvY2VhbiIpLCBzKCJjcm93IiksICAgIC8vIGFsbGUgQ3VzdG9tLVNhbXBsZXMKICAvLyAuLi4gd2FzIGF1Y2ggaW1tZXIgZHUgaW0gU2V0IHZlcndlbmRlc3QKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd&quot;), s(&quot;sd&quot;), s(&quot;cp&quot;), s(&quot;hh&quot;), s(&quot;oh&quot;), s(&quot;rim&quot;), s(&quot;cb&quot;),
+  s(&quot;piano&quot;), s(&quot;sawtooth&quot;), s(&quot;triangle&quot;),
+  s(&quot;ocean&quot;), s(&quot;crow&quot;),    // alle Custom-Samples
   // ... was auch immer du im Set verwendest
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Diesen Block einmal ausführen, dann Strg+. — fertig.
+<p>Diesen Block einmal ausführen, dann Strg+. — fertig.</p>
+<h3>3. Nicht refreshen</h3>
+<p>Wenn du den Browser-Tab refresh'st, startet die Audio- Engine neu. Das gibt MINIMUM 2 Sekunden Stille, oft mehr.</p>
+<pre><code>Statt Refresh:
+  - Code editieren in Ruhe (Patterns laufen).
+  - Strg+. um zu stoppen.
+  - Strg+Enter um neu zu starten.
+</code></pre>
+<p>Wenn wirklich was kaputt ist und du Refresh BRAUCHST, hab vorher einen Backup-Block bereit den du sofort ausführen kannst.</p>
+<h3>4. Backup-File auf Desktop</h3>
+<p>Strudel speichert deinen Code im Browser. Wenn der Tab abstürzt, ist der Code WEG.</p>
+<p>Vor jeder Performance: Code in eine .txt-Datei kopieren, auf Desktop legen. Bei Crash: Datei öffnen, in den Editor pasten, Cmd+Enter.</p>
+<p>Noch besser: dieser ganze Lehrbuch-Ordner ist git-tracked. Pack deine Performance-Datei dazu.</p>
+<h3>5. Pre-Bake-Helper laden, NICHT live definieren</h3>
+<p>Eigene Helper-Funktionen (siehe Kapitel 16) gehören in die "Prebake"-Settings von Strudel. Da werden sie EINMAL geladen und sind dann immer verfügbar.</p>
+<p>Wenn du Helper mitten in der Live-Session mit "function ..." definierst, kann Strudel sie nicht zuverlässig re-evaluieren — du kriegst stille Layer ohne Fehlermeldung.</p>
+<h3>6. CPU-Spitzen vermeiden</h3>
+<p>Strudel rendert ALLES in Echtzeit. Das CPU-Budget ist nicht unendlich. Was schluckt CPU:</p>
+<pre><code>  - Reverb auf vielen Spuren           → orbit() teilen
+  - Delay mit hohem Feedback           → max 0.7
+  - sehr viele Stimmen gleichzeitig    → besonders bei supersaw + detune
+  - Sample-Manipulation (chop, slice)  → bei zu hohen N
+  - jux(rev) + room                    → doppelt rendern
+</code></pre>
+<p>Wenn du knackst/glitcht: erstmal Reverb-Tiefe runter, dann zusammenfassen mit orbit():</p>
+<div class="snippet" id="snip-002" data-code-b64="c3RhY2soCiAgcygiYmQiKS5vcmJpdCgxKSwKICBzKCJzZCIpLm9yYml0KDEpLAogIHMoImNwIikub3JiaXQoMSkgICAgICAgICAvLyBhbGxlIGRyZWkgdGVpbGVuIHNpY2ggZWluZW4gUmV2ZXJiLUJ1cwopLnJvb20oMC40KQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd&quot;).orbit(1),
+  s(&quot;sd&quot;).orbit(1),
+  s(&quot;cp&quot;).orbit(1)         // alle drei teilen sich einen Reverb-Bus
+).room(0.4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Statt Reverb auf jede Spur einzeln → einer für alle.</p>
+<h3>7. Lautstärke-Hygiene</h3>
+<p>Strudel hat einen Master-Volume rechts unten. Den NICHT ans Maximum drehen — sonst clippt es bei dichten Stacks.</p>
+<pre><code>Faustregeln:
+  - Master auf 0.7-0.8.
+  - Einzelne .gain()-Werte selten über 0.9.
+  - Bei Bass: gain(0.7) und nicht gain(1) — Bass dominiert
+    die Wahrnehmung.
+  - Hihats meist gain(0.3-0.5).
+</code></pre>
+<p>Wenn etwas zu LEISE klingt, NICHT alles andere lauter machen. Stattdessen: alles andere leiser. Dynamik ist relativ.</p>
+<h3>8. Strg+. ist dein Freund</h3>
+<p>Stoppe oft. Zwischen Patterns. Bevor du editierst. Das ist nicht Stille im Set — es sind PAUSEN, und die ehren das was kommt.</p>
+<p>Performer-Trick: bewusst Stille nach einem Drop. 4 Cycles nichts, dann der nächste Block. Das Publikum wartet gespannt, statt sich an einen sterbenden Loop zu gewöhnen.</p>
+<h3>9. Arbeitsweise im Set: Snippets reinkopieren</h3>
+<p>Live wird SELTEN from-scratch geschrieben. Stattdessen: Snippet-Sammlung in zweiter Datei oder als Kommentar am Top der Performance-Datei.</p>
+<div class="snippet" id="snip-003" data-code-b64="LyogU05JUFBFVFM6"><pre class="snippet-code"><code>/* SNIPPETS:</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// 3. Nicht refreshen
-// -----------------------------------------------------
-// Wenn du den Browser-Tab refresh'st, startet die Audio-
-// Engine neu. Das gibt MINIMUM 2 Sekunden Stille, oft mehr.
-//
-// Statt Refresh:
-//   - Code editieren in Ruhe (Patterns laufen).
-//   - Strg+. um zu stoppen.
-//   - Strg+Enter um neu zu starten.
-//
-// Wenn wirklich was kaputt ist und du Refresh BRAUCHST,
-// hab vorher einen Backup-Block bereit den du sofort
-// ausführen kannst.
+<p>Drum-Variationen</p>
+<div class="snippet" id="snip-004" data-code-b64="Y29uc3QgZHJtX3NpbXBsZSA9IHN0YWNrKHMoImJkKjQiKSwgcygiaGgqOCIpLmdhaW4oMC4zKSkKY29uc3QgZHJtX2hvdXNlICA9IHN0YWNrKHMoImJkKjQiKSwgcygifiBjcCB+IGNwIiksIHMoImhoKjE2IikuZ2FpbigwLjQpLCBzKCJbfiB+IH4gb2hdLzIiKSkKY29uc3QgZHJtX2JyZWFrICA9IHMoImJyZWFrYmVhdCIpLnNsaWNlKDgsICI8MCAxIDIgMyA0IDUgNiA3PiIp"><pre class="snippet-code"><code>const drm_simple = stack(s(&quot;bd*4&quot;), s(&quot;hh*8&quot;).gain(0.3))
+const drm_house  = stack(s(&quot;bd*4&quot;), s(&quot;~ cp ~ cp&quot;), s(&quot;hh*16&quot;).gain(0.4), s(&quot;[~ ~ ~ oh]/2&quot;))
+const drm_break  = s(&quot;breakbeat&quot;).slice(8, &quot;&lt;0 1 2 3 4 5 6 7&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Bass-Variationen</p>
+<div class="snippet" id="snip-005" data-code-b64="Y29uc3QgYmFzc19zaW1wbGUgPSBub3RlKCJjMiBjMiBlYjIgZzIiKS5zKCJzYXd0b290aCIpLmxwZig1MDApCmNvbnN0IGJhc3NfYWNpZCAgID0gbm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKDE1MCkubHBlbnYoOCkubHBhKDApLmxwZCgwLjE1KS5scHEoMTUpCmNvbnN0IGJhc3Nfc3ViICAgID0gbm90ZSgiYzIqNCIpLnMoInNpbmUiKS5hdHRhY2soMC4wMSkucmVsZWFzZSgwLjMp"><pre class="snippet-code"><code>const bass_simple = note(&quot;c2 c2 eb2 g2&quot;).s(&quot;sawtooth&quot;).lpf(500)
+const bass_acid   = note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(150).lpenv(8).lpa(0).lpd(0.15).lpq(15)
+const bass_sub    = note(&quot;c2*4&quot;).s(&quot;sine&quot;).attack(0.01).release(0.3)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// 4. Backup-File auf Desktop
-// -----------------------------------------------------
-// Strudel speichert deinen Code im Browser. Wenn der Tab
-// abstürzt, ist der Code WEG.
-//
-// Vor jeder Performance: Code in eine .txt-Datei kopieren,
-// auf Desktop legen. Bei Crash: Datei öffnen, in den
-// Editor pasten, Cmd+Enter.
-//
-// Noch besser: dieser ganze Lehrbuch-Ordner ist git-tracked.
-// Pack deine Performance-Datei dazu.
+<p>...</p>
+<div class="snippet" id="snip-006" data-code-b64="Ki8="><pre class="snippet-code"><code>*/</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Während Performance: Snippet rauskopieren, einfügen, Cmd+Enter, fertig.</p>
+<h3>10. Visuelles Feedback im Set</h3>
+<p>Strudel highlightet aktive Patterns. Das hilft DIR den Überblick zu behalten — und ist für das Publikum interessant zu beobachten.</p>
+<p>Was zusätzlich nützlich ist:</p>
+<div class="snippet" id="snip-007" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLl9wdW5jaGNhcmQoKSwKICBzKCJoaCoxNiIpLmdhaW4oMC40KS5fcHVuY2hjYXJkKCksCiAgbm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKDgwMCkuX3Njb3BlKCkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;)._punchcard(),
+  s(&quot;hh*16&quot;).gain(0.4)._punchcard(),
+  note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(800)._scope()
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// 5. Pre-Bake-Helper laden, NICHT live definieren
-// -----------------------------------------------------
-// Eigene Helper-Funktionen (siehe Kapitel 16) gehören in
-// die "Prebake"-Settings von Strudel. Da werden sie EINMAL
-// geladen und sind dann immer verfügbar.
-//
-// Wenn du Helper mitten in der Live-Session mit
-// "function ..." definierst, kann Strudel sie nicht zuverlässig
-// re-evaluieren — du kriegst stille Layer ohne Fehlermeldung.
-
-
-// -----------------------------------------------------
-// 6. CPU-Spitzen vermeiden
-// -----------------------------------------------------
-// Strudel rendert ALLES in Echtzeit. Das CPU-Budget ist
-// nicht unendlich. Was schluckt CPU:
-//
-//   - Reverb auf vielen Spuren           → orbit() teilen
-//   - Delay mit hohem Feedback           → max 0.7
-//   - sehr viele Stimmen gleichzeitig    → besonders bei supersaw + detune
-//   - Sample-Manipulation (chop, slice)  → bei zu hohen N
-//   - jux(rev) + room                    → doppelt rendern
-//
-// Wenn du knackst/glitcht: erstmal Reverb-Tiefe runter,
-// dann zusammenfassen mit orbit():
-
-stack(
-  s("bd").orbit(1),
-  s("sd").orbit(1),
-  s("cp").orbit(1)         // alle drei teilen sich einen Reverb-Bus
-).room(0.4)
-
-// Statt Reverb auf jede Spur einzeln → einer für alle.
-
-
-// -----------------------------------------------------
-// 7. Lautstärke-Hygiene
-// -----------------------------------------------------
-// Strudel hat einen Master-Volume rechts unten. Den NICHT
-// ans Maximum drehen — sonst clippt es bei dichten Stacks.
-//
-// Faustregeln:
-//   - Master auf 0.7-0.8.
-//   - Einzelne .gain()-Werte selten über 0.9.
-//   - Bei Bass: gain(0.7) und nicht gain(1) — Bass dominiert
-//     die Wahrnehmung.
-//   - Hihats meist gain(0.3-0.5).
-//
-// Wenn etwas zu LEISE klingt, NICHT alles andere lauter machen.
-// Stattdessen: alles andere leiser. Dynamik ist relativ.
-
-
-// -----------------------------------------------------
-// 8. Strg+. ist dein Freund
-// -----------------------------------------------------
-// Stoppe oft. Zwischen Patterns. Bevor du editierst.
-// Das ist nicht Stille im Set — es sind PAUSEN, und die
-// ehren das was kommt.
-//
-// Performer-Trick: bewusst Stille nach einem Drop. 4 Cycles
-// nichts, dann der nächste Block. Das Publikum wartet
-// gespannt, statt sich an einen sterbenden Loop zu gewöhnen.
-
-
-// -----------------------------------------------------
-// 9. Arbeitsweise im Set: Snippets reinkopieren
-// -----------------------------------------------------
-// Live wird SELTEN from-scratch geschrieben. Stattdessen:
-// Snippet-Sammlung in zweiter Datei oder als Kommentar
-// am Top der Performance-Datei.
-
-/* SNIPPETS:
-
-// Drum-Variationen
-const drm_simple = stack(s("bd*4"), s("hh*8").gain(0.3))
-const drm_house  = stack(s("bd*4"), s("~ cp ~ cp"), s("hh*16").gain(0.4), s("[~ ~ ~ oh]/2"))
-const drm_break  = s("breakbeat").slice(8, "<0 1 2 3 4 5 6 7>")
-
-// Bass-Variationen
-const bass_simple = note("c2 c2 eb2 g2").s("sawtooth").lpf(500)
-const bass_acid   = note("c2*8").s("sawtooth").lpf(150).lpenv(8).lpa(0).lpd(0.15).lpq(15)
-const bass_sub    = note("c2*4").s("sine").attack(0.01).release(0.3)
-
-// ...
-*/
-
-// Während Performance: Snippet rauskopieren, einfügen,
-// Cmd+Enter, fertig.
-
-
-// -----------------------------------------------------
-// 10. Visuelles Feedback im Set
-// -----------------------------------------------------
-// Strudel highlightet aktive Patterns. Das hilft DIR den
-// Überblick zu behalten — und ist für das Publikum
-// interessant zu beobachten.
-//
-// Was zusätzlich nützlich ist:
-
-stack(
-  s("bd*4")._punchcard(),
-  s("hh*16").gain(0.4)._punchcard(),
-  note("c2*8").s("sawtooth").lpf(800)._scope()
-)
-
-// _punchcard zeigt das Pattern als Mini-Visualisierung neben
-// der Spur. _scope zeigt eine Wellenform.
-// Hilft beim Live-Auf-Den-Bildschirm-Schauen.
-
-
-// -----------------------------------------------------
-// 11. Übergänge planen — die "Zwischen-Sektionen"
-// -----------------------------------------------------
-// Plötzliche Wechsel zwischen Sektionen klingen oft hart.
-// Plane Übergangs-Sektionen ein:
-
-const bridge_fade = stack(
+<p>_punchcard zeigt das Pattern als Mini-Visualisierung neben der Spur. _scope zeigt eine Wellenform. Hilft beim Live-Auf-Den-Bildschirm-Schauen.</p>
+<h3>11. Übergänge planen — die "Zwischen-Sektionen"</h3>
+<p>Plötzliche Wechsel zwischen Sektionen klingen oft hart. Plane Übergangs-Sektionen ein:</p>
+<div class="snippet" id="snip-008" data-code-b64="Y29uc3QgYnJpZGdlX2ZhZGUgPSBzdGFjaygKICBkcm1faG91c2UuZ2FpbihzYXcucmFuZ2UoMSwgMC4zKS5zbG93KDQpKSwgIC8vIERydW1zIGZhZGVuIGF1cwogIHBhZAop"><pre class="snippet-code"><code>const bridge_fade = stack(
   drm_house.gain(saw.range(1, 0.3).slow(4)),  // Drums faden aus
   pad
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Drums werden in 4 Cycles leiser, Pad bleibt — sanfter
-// Übergang in den Breakdown.
+<p>Drums werden in 4 Cycles leiser, Pad bleibt — sanfter Übergang in den Breakdown.</p>
+<h3>12. Vor dem Set: Probe-Run</h3>
+<p>Egal wie sicher du dich fühlst: einmal das ganze Set durchspielen, mit den echten Knobs/Pads/Equipment.</p>
+<pre><code>Was du dabei lernst:
+  - Sample-Lade-Zeiten siehst du jetzt.
+  - Pattern-Wechsel die nicht funktionieren findest du.
+  - Knob-Bereiche die zu schmal sind merkst du.
+  - Lautstärke-Sprünge zwischen Sektionen erkennst du.
+</code></pre>
+<p>Das spart auf der Bühne Nerven.</p>
+<h3>13. Wenn etwas schief geht: weiterspielen</h3>
+<p>Loop hängt, Pattern macht Quatsch, Sample lädt nicht?</p>
+<p>Erste Reaktion: NICHT reparieren. Stoppen, neuen Block starten. Das Publikum hat keine Ahnung was kaputt war — es hört nur was kommt.</p>
+<p>Reparieren während es läuft führt fast immer zu MEHR Problemen. "Frische Anfänge" sind im Live-Coding Standard-Praxis, kein Versagen.</p>
+<h3>14. Set-Aufbau — die Erzähl-Logik</h3>
+<p>Ein 30-Minuten-Set ist nicht 6x 5 Minuten Loop. Es ist:</p>
+<pre><code>  0-3 min   warmup, vorsichtig, low energy
+  3-8 min   bauen, erste Drops
+  8-15 min  Höhepunkt, dichte, mehrere Layer
+  15-22 min Variationen, neue Sektionen
+  22-27 min zweiter Höhepunkt
+  27-30 min Ausklang, leiser, Pad-Wash, Stille
+</code></pre>
+<p>Plan vorher. Schreib dir Sektionen mit Cycle-Zahlen runter. Im Set führst du den Plan aus, mit Improvisation in den Knobs.</p>
+<h3>15. Audio-Aufnahme parallel</h3>
+<p>IMMER aufnehmen. Du wirst nach dem Set wissen wollen was du gespielt hast.</p>
+<pre><code>Setup:
+  Mac:  BlackHole + QuickTime
+  Win:  VB-CABLE + Audacity oder Reaper
+</code></pre>
+<p>Auch wenn du nicht veröffentlichen willst — beim Anhören danach lernst du was funktionierte und was nicht.</p>
+<h3>FINALE — eine Performance-Vorlage</h3>
+<p>=== SETUP (vor dem Spielen einmal ausführen) === samples('http://localhost:5432/') const cc = await midin('Akai MPK Mini') (alle Sounds einmal triggern für Cache)</p>
+<p>=== ACHSEN (live über MIDI-Knobs) === const E = cc(0).range(0, 1)    // Energy const F = cc(1).range(200, 5000) // Filter const R = cc(2).range(0, 0.7)    // Reverb const D = cc(3).range(0, 0.6)    // Delay</p>
+<p>=== MATERIAL === const drums_low  = ... const drums_full = ... const bass_simple = ... const bass_acid   = ... const lead       = ... const pad        = ...</p>
+<p>=== SEKTIONEN === const intro      = stack(...) const verse      = stack(...) const drop       = stack(...) const breakdown  = stack(...) const drop2      = stack(...) const outro      = stack(...)</p>
+<p>=== LIVE — UNTERSTER BLOCK SPIELT ===</p>
+<p>stack(intro) stack(verse) stack(drop) stack(breakdown)</p>
+<div class="snippet" id="snip-009" data-code-b64="c3RhY2soc2lsZW5jZSkgICAgICAgIC8vIEJhY2t1cDogaW5zdGFudC1zdG9wIG9obmUgU3RyZysu"><pre class="snippet-code"><code>stack(silence)        // Backup: instant-stop ohne Strg+.</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// 12. Vor dem Set: Probe-Run
-// -----------------------------------------------------
-// Egal wie sicher du dich fühlst: einmal das ganze Set
-// durchspielen, mit den echten Knobs/Pads/Equipment.
-//
-// Was du dabei lernst:
-//   - Sample-Lade-Zeiten siehst du jetzt.
-//   - Pattern-Wechsel die nicht funktionieren findest du.
-//   - Knob-Bereiche die zu schmal sind merkst du.
-//   - Lautstärke-Sprünge zwischen Sektionen erkennst du.
-//
-// Das spart auf der Bühne Nerven.
-
-
-// -----------------------------------------------------
-// 13. Wenn etwas schief geht: weiterspielen
-// -----------------------------------------------------
-// Loop hängt, Pattern macht Quatsch, Sample lädt nicht?
-//
-// Erste Reaktion: NICHT reparieren. Stoppen, neuen Block
-// starten. Das Publikum hat keine Ahnung was kaputt war —
-// es hört nur was kommt.
-//
-// Reparieren während es läuft führt fast immer zu MEHR
-// Problemen. "Frische Anfänge" sind im Live-Coding
-// Standard-Praxis, kein Versagen.
-
-
-// -----------------------------------------------------
-// 14. Set-Aufbau — die Erzähl-Logik
-// -----------------------------------------------------
-// Ein 30-Minuten-Set ist nicht 6x 5 Minuten Loop. Es ist:
-//
-//   0-3 min   warmup, vorsichtig, low energy
-//   3-8 min   bauen, erste Drops
-//   8-15 min  Höhepunkt, dichte, mehrere Layer
-//   15-22 min Variationen, neue Sektionen
-//   22-27 min zweiter Höhepunkt
-//   27-30 min Ausklang, leiser, Pad-Wash, Stille
-//
-// Plan vorher. Schreib dir Sektionen mit Cycle-Zahlen
-// runter. Im Set führst du den Plan aus, mit Improvisation
-// in den Knobs.
-
-
-// -----------------------------------------------------
-// 15. Audio-Aufnahme parallel
-// -----------------------------------------------------
-// IMMER aufnehmen. Du wirst nach dem Set wissen wollen
-// was du gespielt hast.
-//
-// Setup:
-//   Mac:  BlackHole + QuickTime
-//   Win:  VB-CABLE + Audacity oder Reaper
-//
-// Auch wenn du nicht veröffentlichen willst — beim
-// Anhören danach lernst du was funktionierte und was
-// nicht.
-
-
-// -----------------------------------------------------
-// FINALE — eine Performance-Vorlage
-// -----------------------------------------------------
-
-// === SETUP (vor dem Spielen einmal ausführen) ===
-// samples('http://localhost:5432/')
-// const cc = await midin('Akai MPK Mini')
-// (alle Sounds einmal triggern für Cache)
-
-// === ACHSEN (live über MIDI-Knobs) ===
-// const E = cc(0).range(0, 1)    // Energy
-// const F = cc(1).range(200, 5000) // Filter
-// const R = cc(2).range(0, 0.7)    // Reverb
-// const D = cc(3).range(0, 0.6)    // Delay
-
-// === MATERIAL ===
-// const drums_low  = ...
-// const drums_full = ...
-// const bass_simple = ...
-// const bass_acid   = ...
-// const lead       = ...
-// const pad        = ...
-
-// === SEKTIONEN ===
-// const intro      = stack(...)
-// const verse      = stack(...)
-// const drop       = stack(...)
-// const breakdown  = stack(...)
-// const drop2      = stack(...)
-// const outro      = stack(...)
-
-// === LIVE — UNTERSTER BLOCK SPIELT ===
-
-// stack(intro)
-// stack(verse)
-// stack(drop)
-// stack(breakdown)
-stack(silence)        // Backup: instant-stop ohne Strg+.
-// stack(outro)
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 15
-// -----------------------------------------------------
-// Vor dem Set:
-//   - Tempo + alle Sounds in Cache laden
-//   - Backup-File irgendwo
-//   - Probe-Run komplett
-//   - Aufnahme starten
-//
-// Im Set:
-//   - Snippets reinkopieren statt schreiben
-//   - Bei Fehlern: stoppen, neuer Block
-//   - Knobs sind Hauptperformer, Code ist Bühnenbild
-//   - Stille als Werkzeug nutzen (vor Drop, nach Sektion)
-//
-// Set-Architektur:
-//   - Erzählbogen 30 min: Warmup → Build → Höhepunkt → Variation → Zweiter Höhepunkt → Ausklang
-//   - Übergangs-Sektionen explizit dazwischen
-//   - Backup-Stack(silence) als sicherer Stop
-//
-// Weiter zu 16_eigene_helper.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<p>stack(outro)</p>
+<h3>Mini-Zusammenfassung Kapitel 15</h3>
+<pre><code>Vor dem Set:
+  - Tempo + alle Sounds in Cache laden
+  - Backup-File irgendwo
+  - Probe-Run komplett
+  - Aufnahme starten
+</code></pre>
+<pre><code>Im Set:
+  - Snippets reinkopieren statt schreiben
+  - Bei Fehlern: stoppen, neuer Block
+  - Knobs sind Hauptperformer, Code ist Bühnenbild
+  - Stille als Werkzeug nutzen (vor Drop, nach Sektion)
+</code></pre>
+<pre><code>Set-Architektur:
+  - Erzählbogen 30 min: Warmup → Build → Höhepunkt → Variation → Zweiter Höhepunkt → Ausklang
+  - Übergangs-Sektionen explizit dazwischen
+  - Backup-Stack(silence) als sicherer Stop
+</code></pre>
+<p>Weiter zu 16_eigene_helper.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

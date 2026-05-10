@@ -1,0 +1,70 @@
+# Kapitel 00 — Lies mich zuerst
+
+Drei Dinge bevor wir loslegen.
+
+### 1. Die zwei wichtigsten Tasten
+
+Strg+Enter (Cmd+Enter auf Mac) — startet/aktualisiert Pattern. Strg+.    (Cmd+. auf Mac)     — stoppt alles.
+
+Probier es gleich. Cursor irgendwo in den nächsten Block, dann Strg+Enter.
+
+```strudel
+s("bd*4")
+```
+
+Du solltest eine Bass Drum hören, viermal pro Sekunde-ish. Wenn nicht: Lautstärke prüfen, oder warten — Sample lädt beim ersten Trigger.
+
+Stoppe mit Strg+. (Punkt). Mach das jetzt.
+
+### 2. Strudel spielt nur EINEN Block — den untersten unkommentierten
+
+Das ist die wichtigste Regel und gleichzeitig die irritierendste. Schau dir die nächsten zwei Blöcke an. Beide sind Pattern. Strudel wird IMMER NUR den letzten ausführen.
+
+```strudel
+s("hh*8")
+
+s("cp*2")
+```
+
+Drück Strg+Enter. Du hörst Claps, keine Hihats. Weil "cp*2" der unterste Block ist.
+
+Möchtest du die Hihats hören? Mach den Cp-Block zu Kommentar (Cursor in die Zeile, Strg+/ kommentiert aus):
+
+// s("cp*2")
+
+Dann ist "hh*8" der unterste aktive Block. Spielt jetzt.
+
+Diesen Workflow nutzt du dauernd. Code schreiben heißt in Strudel auch: alte Versionen oben stehen lassen, auskommentieren, neue Versionen drunter.
+
+(Aufgabe: kommentier den cp-Block aus, drück Strg+Enter, dann wieder ein, Strg+Enter. Hör den Unterschied.)
+
+### 3. Wie dieses Lehrbuch geschrieben ist
+
+Jedes Kapitel ist eine Datei wie diese hier. Du arbeitest dich von oben nach unten durch. Kommentare sind Lehrtext, Code ist zum Hören.
+
+Es gibt drei Arten von Code-Blöcken:
+
+```
+  (a) BEISPIELE — hörst du dir an
+  (b) AUFGABEN  — änderst eine Zahl, hörst was passiert
+  (c) FINALE    — ganz unten, der Höhepunkt des Kapitels
+```
+
+Aufgaben sind so markiert:
+
+// ▶ AUFGABE: Ändere die 4 zu 8. Was passiert? s("bd*4")
+
+### 4. Ein erster Beat
+
+```strudel
+stack(
+  s("bd*4"),
+  s("~ cp ~ cp"),
+  s("hh*8").gain(0.4),
+  note("c2 c2 eb2 g2").s("sawtooth").lpf(800).gain(0.6)
+)
+```
+
+Strg+Enter. Strg+. wenn du genug hast. Was da steht, kommt in den nächsten Kapiteln Stück für Stück.
+
+Weiter zu 01_hello_sound.strudel.

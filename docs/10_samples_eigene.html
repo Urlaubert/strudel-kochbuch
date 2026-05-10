@@ -4,348 +4,217 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>10 — Eigene Samples — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>10 — Eigene Samples</h1>
-<nav class="chapter-nav"><a href="09_time_modifier.html" title="09 — Time Modifier">← Vorheriges</a><a href="11_song_struktur.html" title="11 — Song-Struktur">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="09_time_modifier.html" title="09 — Time Modifier">← Zurück</a><a href="11_song_struktur.html" title="11 — Song-Struktur">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 10 — Eigene Samples
-// =====================================================
-// Bisher hattest du die eingebauten Drum-Sounds (bd, sd, hh)
-// und Instrumenten-Samples (piano, jazz). Jetzt: deine
-// eigenen WAVs. Aufnehmen, slicen, missbrauchen.
-//
-// Drei Wege: GitHub-Repo, lokaler Server, Freesound via Shabda.
-// =====================================================
+<article class="prose">
+<h1>Kapitel 10 — Eigene Samples</h1>
+<p>Bisher hattest du die eingebauten Drum-Sounds (bd, sd, hh) und Instrumenten-Samples (piano, jazz). Jetzt: deine eigenen WAVs. Aufnehmen, slicen, missbrauchen.</p>
+<p>Drei Wege: GitHub-Repo, lokaler Server, Freesound via Shabda.</p>
+<h3>Was zur Verfügung steht (bevor du deine eigenen lädst)</h3>
+<p>Strudel hat eine MENGE eingebauter Samples. Klick im Editor unten den "sounds"-Tab — durchscrollbar.</p>
+<pre><code>Grobe Kategorien:
+  - Drum-Machines: RolandTR808, RolandTR909, LinnDrum, ...
+  - Live-Drums: jazz, breaks, breaks165, ...
+  - Synths: piano, casio, gtr, ...
+  - GM (General MIDI): gm_acoustic_grand_piano, gm_xylophone, ...
+  - FX und Misc: fx, misc, crow, alien_f, ...
+  - Vocal: voice, alien_b (heißt im Workshop auch &quot;alien boy&quot;)
+</code></pre>
+<div class="snippet" id="snip-000" data-code-b64="cygiY3JvdyIpICAgICAgICAgICAvLyBLcsOkaGUgKEtsYXNzaWtlcikKcygiY2FzaW86MCIpICAgICAgICAvLyBDYXNpby1LbGFuZwpzKCJnbV94eWxvcGhvbmUiKSAgIC8vIFh5bG9waG9u"><pre class="snippet-code"><code>s(&quot;crow&quot;)           // Krähe (Klassiker)
+s(&quot;casio:0&quot;)        // Casio-Klang
+s(&quot;gm_xylophone&quot;)   // Xylophon</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<h3>Drum-Banken wechseln mit .bank()</h3>
+<div class="snippet" id="snip-001" data-code-b64="cygiYmQgc2QgaGggY3AiKSAgICAgICAgICAgICAgICAgICAgICAvLyBEZWZhdWx0LUJhbmsKcygiYmQgc2QgaGggY3AiKS5iYW5rKCJSb2xhbmRUUjgwOCIpICAvLyA4MDhlci1Tb3VuZApzKCJiZCBzZCBoaCBjcCIpLmJhbmsoIlJvbGFuZFRSOTA5IikgIC8vIDkwOWVyCnMoImJkIHNkIGhoIGNwIikuYmFuaygiTGlubkRydW0iKSAgICAgLy8gODBlci1MaW5uCgpzKCJiZCo0IHNkIikuYmFuaygiPFJvbGFuZFRSODA4IFJvbGFuZFRSOTA5IExpbm5EcnVtIEFrYWlMaW5uPiIp"><pre class="snippet-code"><code>s(&quot;bd sd hh cp&quot;)                      // Default-Bank
+s(&quot;bd sd hh cp&quot;).bank(&quot;RolandTR808&quot;)  // 808er-Sound
+s(&quot;bd sd hh cp&quot;).bank(&quot;RolandTR909&quot;)  // 909er
+s(&quot;bd sd hh cp&quot;).bank(&quot;LinnDrum&quot;)     // 80er-Linn
 
-// -----------------------------------------------------
-// Was zur Verfügung steht (bevor du deine eigenen lädst)
-// -----------------------------------------------------
-// Strudel hat eine MENGE eingebauter Samples. Klick im
-// Editor unten den "sounds"-Tab — durchscrollbar.
-//
-// Grobe Kategorien:
-//   - Drum-Machines: RolandTR808, RolandTR909, LinnDrum, ...
-//   - Live-Drums: jazz, breaks, breaks165, ...
-//   - Synths: piano, casio, gtr, ...
-//   - GM (General MIDI): gm_acoustic_grand_piano, gm_xylophone, ...
-//   - FX und Misc: fx, misc, crow, alien_f, ...
-//   - Vocal: voice, alien_b (heißt im Workshop auch "alien boy")
+s(&quot;bd*4 sd&quot;).bank(&quot;&lt;RolandTR808 RolandTR909 LinnDrum AkaiLinn&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-s("crow")           // Krähe (Klassiker)
-s("casio:0")        // Casio-Klang
-s("gm_xylophone")   // Xylophon
+<p>Jeder Cycle eine andere Drum-Maschine. Ist witzig.</p>
+<h3>Sample-Varianten mit n() oder :N</h3>
+<div class="snippet" id="snip-002" data-code-b64="cygiaGg6MCBoaDoxIGhoOjIgaGg6MyIp"><pre class="snippet-code"><code>s(&quot;hh:0 hh:1 hh:2 hh:3&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Vier verschiedene Hihat-Samples nacheinander.</p>
+<div class="snippet" id="snip-003" data-code-b64="cygiaGgqOCIpLm4oIjAgMSAyIDMgMCAxIDIgMyIp"><pre class="snippet-code"><code>s(&quot;hh*8&quot;).n(&quot;0 1 2 3 0 1 2 3&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Drum-Banken wechseln mit .bank()
-// -----------------------------------------------------
+<p>Identisch — n() trennt Sound und Sample-Nummer.</p>
+<div class="snippet" id="snip-004" data-code-b64="cygiaGgqOCIpLm4oaXJhbmQoNCkp"><pre class="snippet-code"><code>s(&quot;hh*8&quot;).n(irand(4))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-s("bd sd hh cp")                      // Default-Bank
-s("bd sd hh cp").bank("RolandTR808")  // 808er-Sound
-s("bd sd hh cp").bank("RolandTR909")  // 909er
-s("bd sd hh cp").bank("LinnDrum")     // 80er-Linn
+<p>Pro Step zufällig 0-3 — Round-Robin gegen Maschinengewehr.</p>
+<h3>Eigene Samples — Variante 1: GitHub-Repo</h3>
+<p>Wenn jemand ein Repo mit strudel.json hat, kannst du es direkt laden:</p>
+<div class="snippet" id="snip-005" data-code-b64="c2FtcGxlcygnZ2l0aHViOnRpZGFsY3ljbGVzL2RpcnQtc2FtcGxlcycp"><pre class="snippet-code"><code>samples(&#x27;github:tidalcycles/dirt-samples&#x27;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-s("bd*4 sd").bank("<RolandTR808 RolandTR909 LinnDrum AkaiLinn>")
-// Jeder Cycle eine andere Drum-Maschine. Ist witzig.
+<p>Lädt Standard-Tidal-Samples (riesig, dauert).</p>
+<p>Nach dem Laden:</p>
+<div class="snippet" id="snip-006" data-code-b64="cygiaW5jb21pbmcgYmFzczo1IikgIC8vIEJlaXNwaWVsLVNvdW5kcyBhdXMgZGVtIFJlcG8="><pre class="snippet-code"><code>s(&quot;incoming bass:5&quot;)  // Beispiel-Sounds aus dem Repo</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<h3>Eigene Samples — Variante 2: Direkt-URLs</h3>
+<div class="snippet" id="snip-007" data-code-b64="c2FtcGxlcyh7CiAgb2NlYW46ICd3ZWxsZW4ud2F2JywKICBtb25rZXk6IFsnYWZmZTEud2F2JywgJ2FmZmUyLndhdicsICdhZmZlMy53YXYnXSwKICByYWluOiAncmVnZW4ud2F2Jwp9LCAnaHR0cHM6Ly9teS1zZXJ2ZXIuY29tL3NhbXBsZXMvJyk="><pre class="snippet-code"><code>samples({
+  ocean: &#x27;wellen.wav&#x27;,
+  monkey: [&#x27;affe1.wav&#x27;, &#x27;affe2.wav&#x27;, &#x27;affe3.wav&#x27;],
+  rain: &#x27;regen.wav&#x27;
+}, &#x27;https://my-server.com/samples/&#x27;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Sample-Varianten mit n() oder :N
-// -----------------------------------------------------
+<p>monkey hat drei Varianten — anwählbar via monkey:0, :1, :2.</p>
+<p>Nach dem Laden:</p>
+<div class="snippet" id="snip-008" data-code-b64="cygib2NlYW4qMiwgbW9ua2V5OjAgfiBtb25rZXk6MSB+Iik="><pre class="snippet-code"><code>s(&quot;ocean*2, monkey:0 ~ monkey:1 ~&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-s("hh:0 hh:1 hh:2 hh:3")
-// Vier verschiedene Hihat-Samples nacheinander.
+<h3>Eigene Samples — Variante 3: Lokaler Server (EMPFOHLEN)</h3>
+<p>Im Terminal:</p>
+<pre><code>  cd path/to/your/samples/
+  npx @strudel/sampler
+</code></pre>
+<p>Server läuft dann auf http://localhost:5432/.</p>
+<p>In Strudel:</p>
+<div class="snippet" id="snip-009" data-code-b64="c2FtcGxlcygnaHR0cDovL2xvY2FsaG9zdDo1NDMyLycp"><pre class="snippet-code"><code>samples(&#x27;http://localhost:5432/&#x27;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-s("hh*8").n("0 1 2 3 0 1 2 3")
-// Identisch — n() trennt Sound und Sample-Nummer.
-
-s("hh*8").n(irand(4))
-// Pro Step zufällig 0-3 — Round-Robin gegen Maschinengewehr.
-
-
-// -----------------------------------------------------
-// Eigene Samples — Variante 1: GitHub-Repo
-// -----------------------------------------------------
-// Wenn jemand ein Repo mit strudel.json hat, kannst du es
-// direkt laden:
-
-samples('github:tidalcycles/dirt-samples')
-// Lädt Standard-Tidal-Samples (riesig, dauert).
-
-// Nach dem Laden:
-s("incoming bass:5")  // Beispiel-Sounds aus dem Repo
-
-
-// -----------------------------------------------------
-// Eigene Samples — Variante 2: Direkt-URLs
-// -----------------------------------------------------
-
-samples({
-  ocean: 'wellen.wav',
-  monkey: ['affe1.wav', 'affe2.wav', 'affe3.wav'],
-  rain: 'regen.wav'
-}, 'https://my-server.com/samples/')
-
-// monkey hat drei Varianten — anwählbar via monkey:0, :1, :2.
-
-// Nach dem Laden:
-s("ocean*2, monkey:0 ~ monkey:1 ~")
-
-
-// -----------------------------------------------------
-// Eigene Samples — Variante 3: Lokaler Server (EMPFOHLEN)
-// -----------------------------------------------------
-// Im Terminal:
-//
-//   cd path/to/your/samples/
-//   npx @strudel/sampler
-//
-// Server läuft dann auf http://localhost:5432/.
-//
-// In Strudel:
-
-samples('http://localhost:5432/')
-
-// Strudel liest automatisch was im Ordner liegt. Files in
-// Unterordnern werden zu "ordner_name". Mehrere Files im
-// gleichen Ordner = automatische Varianten (:0, :1, ...).
-//
-// Beispiel-Struktur:
-//
-//   samples/
-//   ├── kick/
-//   │   ├── 01.wav
-//   │   ├── 02.wav
-//   │   └── 03.wav
-//   ├── synth/
-//   │   ├── pad_warm.wav
-//   │   └── pad_cold.wav
-//   └── voice.wav
-//
-// In Strudel:
-//   s("kick*8").n(irand(3))
-//   s("synth")
-//   s("voice")
-
-
-// -----------------------------------------------------
-// Pitch-Mapping für tonale Samples
-// -----------------------------------------------------
-// Wenn das Sample mehrere Tonhöhen hat, kannst du Strudel
-// sagen welche Datei welcher Ton ist:
-
-samples({
+<p>Strudel liest automatisch was im Ordner liegt. Files in Unterordnern werden zu "ordner_name". Mehrere Files im gleichen Ordner = automatische Varianten (:0, :1, ...).</p>
+<p>Beispiel-Struktur:</p>
+<pre><code>  samples/
+  ├── kick/
+  │   ├── 01.wav
+  │   ├── 02.wav
+  │   └── 03.wav
+  ├── synth/
+  │   ├── pad_warm.wav
+  │   └── pad_cold.wav
+  └── voice.wav
+</code></pre>
+<pre><code>In Strudel:
+  s(&quot;kick*8&quot;).n(irand(3))
+  s(&quot;synth&quot;)
+  s(&quot;voice&quot;)
+</code></pre>
+<h3>Pitch-Mapping für tonale Samples</h3>
+<p>Wenn das Sample mehrere Tonhöhen hat, kannst du Strudel sagen welche Datei welcher Ton ist:</p>
+<div class="snippet" id="snip-010" data-code-b64="c2FtcGxlcyh7CiAgbW9vZzogewogICAgZzI6ICdtb29nX2cyLndhdicsCiAgICBnMzogJ21vb2dfZzMud2F2JywKICAgIGc0OiAnbW9vZ19nNC53YXYnCiAgfQp9LCAnaHR0cDovL2xvY2FsaG9zdDo1NDMyLycpCgpub3RlKCJnMiBbYzMgZWIzXSBnMyIpLnMoIm1vb2ciKS5jbGlwKDEp"><pre class="snippet-code"><code>samples({
   moog: {
-    g2: 'moog_g2.wav',
-    g3: 'moog_g3.wav',
-    g4: 'moog_g4.wav'
+    g2: &#x27;moog_g2.wav&#x27;,
+    g3: &#x27;moog_g3.wav&#x27;,
+    g4: &#x27;moog_g4.wav&#x27;
   }
-}, 'http://localhost:5432/')
+}, &#x27;http://localhost:5432/&#x27;)
 
-note("g2 [c3 eb3] g3").s("moog").clip(1)
-// Strudel nimmt das nächstliegende Sample und pitcht es.
+note(&quot;g2 [c3 eb3] g3&quot;).s(&quot;moog&quot;).clip(1)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Strudel nimmt das nächstliegende Sample und pitcht es.</p>
+<h3>Freesound via Shabda — Quick-and-dirty</h3>
+<div class="snippet" id="snip-011" data-code-b64="c2FtcGxlcygnc2hhYmRhOmJhc3M6NCxoaWhhdDo0LHdhdGVyZmFsbDoyJyk="><pre class="snippet-code"><code>samples(&#x27;shabda:bass:4,hihat:4,waterfall:2&#x27;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Freesound via Shabda — Quick-and-dirty
-// -----------------------------------------------------
+<p>Shabda fragt freesound.org für die Begriffe ab. Du kriegst 4 Bass-Samples, 4 Hihat-Samples, 2 Wasserfall-Samples.</p>
+<div class="snippet" id="snip-012" data-code-b64="bigiMCAxIDIgMyIpLnMoIndhdGVyZmFsbCIp"><pre class="snippet-code"><code>n(&quot;0 1 2 3&quot;).s(&quot;waterfall&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-samples('shabda:bass:4,hihat:4,waterfall:2')
-// Shabda fragt freesound.org für die Begriffe ab. Du kriegst
-// 4 Bass-Samples, 4 Hihat-Samples, 2 Wasserfall-Samples.
+<h3>Sprache via Shabda Speech</h3>
+<div class="snippet" id="snip-013" data-code-b64="c2FtcGxlcygnc2hhYmRhL3NwZWVjaDpoZWxsbyx3b3JsZCcpCnNhbXBsZXMoJ3NoYWJkYS9zcGVlY2gvZGUtREUvbTpoYWxsbycpCgpzKCJoYWxsbyIp"><pre class="snippet-code"><code>samples(&#x27;shabda/speech:hello,world&#x27;)
+samples(&#x27;shabda/speech/de-DE/m:hallo&#x27;)
 
-n("0 1 2 3").s("waterfall")
+s(&quot;hallo&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Spricht "hallo" mit deutscher männlicher Stimme.</p>
+<h3>Sample-Manipulation</h3>
+<p>.begin() / .end() — nur einen Ausschnitt</p>
+<div class="snippet" id="snip-014" data-code-b64="cygib2NlYW4iKS5iZWdpbigwLjIpLmVuZCgwLjcp"><pre class="snippet-code"><code>s(&quot;ocean&quot;).begin(0.2).end(0.7)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Sprache via Shabda Speech
-// -----------------------------------------------------
+<p>.speed() — Tempo + Pitch</p>
+<div class="snippet" id="snip-015" data-code-b64="cygib2NlYW4iKS5zcGVlZCgwLjUpICAgIC8vIGhhbGIgc28gc2NobmVsbCwgb2t0YXZlIHRpZWZlcgpzKCJvY2VhbiIpLnNwZWVkKDIpICAgICAgLy8gZG9wcGVsdCBzbyBzY2huZWxsLCBva3RhdmUgaMO2aGVyCnMoIm9jZWFuIikuc3BlZWQoLTEpICAgICAvLyByw7xja3fDpHJ0cyBtaXQgT3JpZ2luYWxnZXNjaHdpbmRpZ2tlaXQ="><pre class="snippet-code"><code>s(&quot;ocean&quot;).speed(0.5)    // halb so schnell, oktave tiefer
+s(&quot;ocean&quot;).speed(2)      // doppelt so schnell, oktave höher
+s(&quot;ocean&quot;).speed(-1)     // rückwärts mit Originalgeschwindigkeit</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-samples('shabda/speech:hello,world')
-samples('shabda/speech/de-DE/m:hallo')
+<p>.loop(1) — looped (nicht tempo-synced)</p>
+<div class="snippet" id="snip-016" data-code-b64="cygiZHJvbmUiKS5sb29wKDEp"><pre class="snippet-code"><code>s(&quot;drone&quot;).loop(1)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-s("hallo")
-// Spricht "hallo" mit deutscher männlicher Stimme.
+<p>.loopAt(N) — auf N Cycles strecken</p>
+<div class="snippet" id="snip-017" data-code-b64="cygiYnJlYWtiZWF0IikubG9vcEF0KDIp"><pre class="snippet-code"><code>s(&quot;breakbeat&quot;).loopAt(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>.fit() — auf Event-Dauer strecken</p>
+<div class="snippet" id="snip-018" data-code-b64="cygiYnJlYWtiZWF0IikuZml0KCk="><pre class="snippet-code"><code>s(&quot;breakbeat&quot;).fit()</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Sample-Manipulation
-// -----------------------------------------------------
+<h3>chop — Sample in N gleiche Stücke schneiden</h3>
+<div class="snippet" id="snip-019" data-code-b64="cygib2NlYW4iKS5jaG9wKDgp"><pre class="snippet-code"><code>s(&quot;ocean&quot;).chop(8)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// .begin() / .end() — nur einen Ausschnitt
-s("ocean").begin(0.2).end(0.7)
+<p>Sample wird in 8 Teile geschnitten, in einem Cycle nacheinander abgespielt.</p>
+<div class="snippet" id="snip-020" data-code-b64="cygiYnJlYWtiZWF0IikuY2hvcCgxNikuZmFzdCgyKQ=="><pre class="snippet-code"><code>s(&quot;breakbeat&quot;).chop(16).fast(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// .speed() — Tempo + Pitch
-s("ocean").speed(0.5)    // halb so schnell, oktave tiefer
-s("ocean").speed(2)      // doppelt so schnell, oktave höher
-s("ocean").speed(-1)     // rückwärts mit Originalgeschwindigkeit
+<p>16 Slices, doppelt so schnell.</p>
+<h3>slice — gezielt Slices anwählen</h3>
+<div class="snippet" id="snip-021" data-code-b64="cygiYnJlYWtiZWF0Iikuc2xpY2UoOCwgIjAgMSAyIDMgWzQgMF0gNSA2IDciKQ=="><pre class="snippet-code"><code>s(&quot;breakbeat&quot;).slice(8, &quot;0 1 2 3 [4 0] 5 6 7&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// .loop(1) — looped (nicht tempo-synced)
-s("drone").loop(1)
+<p>Sample in 8 Slices teilen, dann in dieser Reihenfolge spielen. Klassisches Beat-Repeat / Vocal-Chop-Werkzeug.</p>
+<div class="snippet" id="snip-022" data-code-b64="cygiYnJlYWtiZWF0Iikuc2xpY2UoOCwgIjAgWzMgNV0gMiA3IDQgMSA2IDAiKQ=="><pre class="snippet-code"><code>s(&quot;breakbeat&quot;).slice(8, &quot;0 [3 5] 2 7 4 1 6 0&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// .loopAt(N) — auf N Cycles strecken
-s("breakbeat").loopAt(2)
+<p>Reihenfolge umgemischt — der Beat klingt zerstückelt aber trotzdem rhythmisch.</p>
+<h3>striate — progressive Slice-Order über Cycles</h3>
+<div class="snippet" id="snip-023" data-code-b64="cygidm9jYWwiKS5zdHJpYXRlKDE2KQ=="><pre class="snippet-code"><code>s(&quot;vocal&quot;).striate(16)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// .fit() — auf Event-Dauer strecken
-s("breakbeat").fit()
+<p>Sample in 16 Stücke, jedes Cycle eine andere Reihenfolge — das Sample "wandert" über mehrere Cycles.</p>
+<h3>scrub — Tape-Style-Scrubbing</h3>
+<div class="snippet" id="snip-024" data-code-b64="cygiZHJvbmUiKS5zY3J1YigiMC4xOjEgMC41OjIgMC45OjAuNSIp"><pre class="snippet-code"><code>s(&quot;drone&quot;).scrub(&quot;0.1:1 0.5:2 0.9:0.5&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Format: position:speed. Springt zu 10% mit Speed 1, dann 50% mit Speed 2, dann 90% mit Speed 0.5.</p>
+<h3>cut — Cut-Group</h3>
+<div class="snippet" id="snip-025" data-code-b64="cygiW29oIGhoXSo0IikuY3V0KDEp"><pre class="snippet-code"><code>s(&quot;[oh hh]*4&quot;).cut(1)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// chop — Sample in N gleiche Stücke schneiden
-// -----------------------------------------------------
-
-s("ocean").chop(8)
-// Sample wird in 8 Teile geschnitten, in einem Cycle nacheinander
-// abgespielt.
-
-s("breakbeat").chop(16).fast(2)
-// 16 Slices, doppelt so schnell.
-
-
-// -----------------------------------------------------
-// slice — gezielt Slices anwählen
-// -----------------------------------------------------
-
-s("breakbeat").slice(8, "0 1 2 3 [4 0] 5 6 7")
-// Sample in 8 Slices teilen, dann in dieser Reihenfolge spielen.
-// Klassisches Beat-Repeat / Vocal-Chop-Werkzeug.
-
-s("breakbeat").slice(8, "0 [3 5] 2 7 4 1 6 0")
-// Reihenfolge umgemischt — der Beat klingt zerstückelt aber
-// trotzdem rhythmisch.
-
-
-// -----------------------------------------------------
-// striate — progressive Slice-Order über Cycles
-// -----------------------------------------------------
-
-s("vocal").striate(16)
-// Sample in 16 Stücke, jedes Cycle eine andere Reihenfolge —
-// das Sample "wandert" über mehrere Cycles.
-
-
-// -----------------------------------------------------
-// scrub — Tape-Style-Scrubbing
-// -----------------------------------------------------
-
-s("drone").scrub("0.1:1 0.5:2 0.9:0.5")
-// Format: position:speed. Springt zu 10% mit Speed 1, dann
-// 50% mit Speed 2, dann 90% mit Speed 0.5.
-
-
-// -----------------------------------------------------
-// cut — Cut-Group
-// -----------------------------------------------------
-
-s("[oh hh]*4").cut(1)
-// Wenn ein neuer Hit aus Cut-Group 1 kommt, wird der alte
-// abgeschnitten. Klassisch für Open/Closed-Hihat — ohne cut
-// klingen sie übereinander.
-
-
-// -----------------------------------------------------
-// FINALE — Sample-Beat
-// -----------------------------------------------------
-// Voraussetzung: lokaler @strudel/sampler-Server läuft.
-// Wenn nicht, ersetze "kick"/"snare" durch "bd"/"sd".
-
-samples('http://localhost:5432/')
+<p>Wenn ein neuer Hit aus Cut-Group 1 kommt, wird der alte abgeschnitten. Klassisch für Open/Closed-Hihat — ohne cut klingen sie übereinander.</p>
+<h3>FINALE — Sample-Beat</h3>
+<p>Voraussetzung: lokaler @strudel/sampler-Server läuft. Wenn nicht, ersetze "kick"/"snare" durch "bd"/"sd".</p>
+<div class="snippet" id="snip-026" data-code-b64="c2FtcGxlcygnaHR0cDovL2xvY2FsaG9zdDo1NDMyLycpCgpzdGFjaygKICBzKCJraWNrKjQiKS5uKGlyYW5kKDQpKSwKICBzKCJ+IHNuYXJlIH4gc25hcmUiKS5uKGlyYW5kKDQpKSwKICBzKCJbaGggb2hdKjQiKS5jdXQoMSkuZ2FpbigwLjQpLAogIG5vdGUoImMyIH4gZWIyIGcyIikucygic2F3dG9vdGgiKS5scGYoNjAwKS5nYWluKDAuNyksCiAgcygib2NlYW4iKS5jaG9wKDgpLmdhaW4oMC4zKS5zbG93KDIpCik="><pre class="snippet-code"><code>samples(&#x27;http://localhost:5432/&#x27;)
 
 stack(
-  s("kick*4").n(irand(4)),
-  s("~ snare ~ snare").n(irand(4)),
-  s("[hh oh]*4").cut(1).gain(0.4),
-  note("c2 ~ eb2 g2").s("sawtooth").lpf(600).gain(0.7),
-  s("ocean").chop(8).gain(0.3).slow(2)
-)
+  s(&quot;kick*4&quot;).n(irand(4)),
+  s(&quot;~ snare ~ snare&quot;).n(irand(4)),
+  s(&quot;[hh oh]*4&quot;).cut(1).gain(0.4),
+  note(&quot;c2 ~ eb2 g2&quot;).s(&quot;sawtooth&quot;).lpf(600).gain(0.7),
+  s(&quot;ocean&quot;).chop(8).gain(0.3).slow(2)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Eigene Drums mit Round-Robin, Open/Closed-Hihat-Logik,
-// Bass-Linie, gechoppter Ocean-Sound als Atmosphäre.
+<p>Eigene Drums mit Round-Robin, Open/Closed-Hihat-Logik, Bass-Linie, gechoppter Ocean-Sound als Atmosphäre.</p>
+<h3>Drum-Break-Slicen — Klassiker</h3>
+<p>Ein einziger Break-Sample, in 8 oder 16 Slices, kreativ neu zusammengesetzt.</p>
+<div class="snippet" id="snip-027" data-code-b64="cygiYnJlYWtiZWF0Iikuc2xpY2UoOCwgIjAgMSBbMiAzXSA0IDUgWzYgMF0gNyIp"><pre class="snippet-code"><code>s(&quot;breakbeat&quot;).slice(8, &quot;0 1 [2 3] 4 5 [6 0] 7&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Mit ein paar Subdivisions wird's interessanter.</p>
+<div class="snippet" id="snip-028" data-code-b64="cygiYnJlYWtiZWF0Iikuc2xpY2UoOCwgIjwwIDEgMiAzIDQgNSA2IDc+IikuZXZlcnkoNCwgcmV2KQ=="><pre class="snippet-code"><code>s(&quot;breakbeat&quot;).slice(8, &quot;&lt;0 1 2 3 4 5 6 7&gt;&quot;).every(4, rev)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Drum-Break-Slicen — Klassiker
-// -----------------------------------------------------
-// Ein einziger Break-Sample, in 8 oder 16 Slices, kreativ
-// neu zusammengesetzt.
+<p>Slice pro Cycle ein anderer, alle 4 Cycles rückwärts.</p>
+<h3>Granular-Pads aus Drone</h3>
+<div class="snippet" id="snip-029" data-code-b64="cygiZHJvbmUiKS5jaG9wKDMyKS5mYXN0KDgpLmdhaW4oMC40KS5yb29tKDAuNik="><pre class="snippet-code"><code>s(&quot;drone&quot;).chop(32).fast(8).gain(0.4).room(0.6)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-s("breakbeat").slice(8, "0 1 [2 3] 4 5 [6 0] 7")
-// Mit ein paar Subdivisions wird's interessanter.
-
-s("breakbeat").slice(8, "<0 1 2 3 4 5 6 7>").every(4, rev)
-// Slice pro Cycle ein anderer, alle 4 Cycles rückwärts.
-
-
-// -----------------------------------------------------
-// Granular-Pads aus Drone
-// -----------------------------------------------------
-
-s("drone").chop(32).fast(8).gain(0.4).room(0.6)
-// Drone-Sample in 32 Slices, 8x so schnell — wird zu körnigem
-// Gewebe. Mit Hall: Pad-Effekt.
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Eigenen Sample-Workflow probieren
-// -----------------------------------------------------
-// 1. Suche dir 3-4 WAVs (eigene Aufnahmen oder von Freesound).
-// 2. Leg sie in einen Ordner.
-// 3. Starte npx @strudel/sampler im Terminal.
-// 4. samples('http://localhost:5432/') am Top deiner Datei.
-// 5. Bau einen Beat damit. Mindestens einer der Sounds soll
-//    .chop oder .slice verwenden.
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 10
-// -----------------------------------------------------
-//   samples('github:user/repo')        → GitHub-Repo
-//   samples({...}, 'https://...')       → URL-basiert
-//   samples('http://localhost:5432/')   → Lokaler Server
-//   samples('shabda:term:n')            → Freesound
-//   .bank("RolandTR808")                → Drum-Bank
-//   .n(N) oder ":N"                     → Sample-Variante
-//   .speed(N)                           → Tempo+Pitch
-//   .begin/end                          → Ausschnitt
-//   .loop(1) .loopAt(N) .fit            → Looping
-//   .chop(N)                            → in N Slices
-//   .slice(N, "...")                    → Slices anwählen
-//   .striate(N)                         → progressive Slice-Order
-//   .cut(N)                             → Cut-Group
-//
-// Eigene Samples sind der Schritt von "Live-Coder" zu
-// "Sample-Manipulator". Hier wird Strudel zu mehr als einem
-// Drum-Computer.
-//
-// Weiter zu 11_song_struktur.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<p>Drone-Sample in 32 Slices, 8x so schnell — wird zu körnigem Gewebe. Mit Hall: Pad-Effekt.</p>
+<h3>▶ AUFGABE: Eigenen Sample-Workflow probieren</h3>
+<ol>
+<li>Suche dir 3-4 WAVs (eigene Aufnahmen oder von Freesound). 2. Leg sie in einen Ordner. 3. Starte npx @strudel/sampler im Terminal. 4. samples('http://localhost:5432/') am Top deiner Datei. 5. Bau einen Beat damit. Mindestens einer der Sounds soll    .chop oder .slice verwenden.</li>
+</ol>
+<h3>Mini-Zusammenfassung Kapitel 10</h3>
+<pre><code>  samples('github:user/repo')        → GitHub-Repo
+  samples({...}, 'https://...')       → URL-basiert
+  samples('http://localhost:5432/')   → Lokaler Server
+  samples('shabda:term:n')            → Freesound
+  .bank(&quot;RolandTR808&quot;)                → Drum-Bank
+  .n(N) oder &quot;:N&quot;                     → Sample-Variante
+  .speed(N)                           → Tempo+Pitch
+  .begin/end                          → Ausschnitt
+  .loop(1) .loopAt(N) .fit            → Looping
+  .chop(N)                            → in N Slices
+  .slice(N, &quot;...&quot;)                    → Slices anwählen
+  .striate(N)                         → progressive Slice-Order
+  .cut(N)                             → Cut-Group
+</code></pre>
+<p>Eigene Samples sind der Schritt von "Live-Coder" zu "Sample-Manipulator". Hier wird Strudel zu mehr als einem Drum-Computer.</p>
+<p>Weiter zu 11_song_struktur.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

@@ -1,0 +1,295 @@
+# Kapitel 04 — Euklidische Rhythmen
+
+Eine Mathematische Funktion verteilt N Pulse möglichst gleichmäßig über M Steps. Es gibt für jedes (N,M) genau eine optimale Lösung — und sehr oft ist diese Lösung IDENTISCH mit einem Rhythmus aus einer Volksmusik-Tradition.
+
+Der kanadische Informatiker Godfried Toussaint hat das 2004 untersucht. Sein Paper heißt: "The Euclidean Algorithm Generates Traditional Musical Rhythms".
+
+Beispiele gleich.
+
+### (3,8) — Tresillo, der wichtigste Pattern der Welt
+
+```strudel
+s("bd(3,8)")
+```
+
+Drei Schläge, möglichst gleichmäßig auf 8 Steps verteilt.
+
+```
+  X . . X . . X .
+  1 2 3 4 5 6 7 8
+```
+
+Das ist Tresillo. Kuba. Reggaeton. Latin-House.
+
+### Mit Pulse fühlen
+
+Stell dazu eine konstante Hihat als Raster:
+
+```strudel
+stack(
+  s("bd(3,8)"),
+  s("hh*8").gain(0.3)
+)
+```
+
+Jetzt hörst du die Beziehung. Die Bässe fallen unregelmäßig gegen das Hihat-Raster. Genau diese Spannung macht den Pattern interessant.
+
+### Die Welttour der Rhythmen
+
+Probier nacheinander. Stoppe nach jedem mit Strg+. und hör hin, BEVOR du weitergehst.
+
+(2,5) Khafif-e-ramal     X . X . .
+
+```strudel
+s("bd(2,5)")
+```
+
+(3,4) Cumbia/Calypso     X . X X
+
+```strudel
+s("bd(3,4)")
+```
+
+(3,5) Türkischer Rumba   X . X . X
+
+```strudel
+s("bd(3,5)")
+```
+
+(3,7) Bulgarischer Tanz  X . . X . X .
+
+```strudel
+s("bd(3,7)")
+```
+
+(3,8) Tresillo (Kuba)    X . . X . . X .
+
+```strudel
+s("bd(3,8)")
+```
+
+(4,7) Westafrika         X . X X . X .
+
+```strudel
+s("bd(4,7)")
+```
+
+(5,8) Cinquillo          X . X X . X X .
+
+```strudel
+s("bd(5,8)")
+```
+
+(5,9) Aksak              X . X . X . X . X
+
+```strudel
+s("bd(5,9)")
+```
+
+(5,12) Westafrik. Glocke X . . X . X . . X . X .
+
+```strudel
+s("bd(5,12)")
+```
+
+(5,16) Bossa Nova        X . . X . . X . . . X . . X . .
+
+```strudel
+s("bd(5,16)")
+```
+
+(7,8) Bulgarisch         X X X X . X X X
+
+```strudel
+s("bd(7,8)")
+```
+
+(7,12) Westafrika lang   X . X X . X . X X . X .
+
+```strudel
+s("bd(7,12)")
+```
+
+(7,16) Samba             X . . X . X . X . . X . X . X .
+
+```strudel
+s("bd(7,16)")
+```
+
+(9,16) Aksak             X . X X . X . X X . X . X X . X
+
+```strudel
+s("bd(9,16)")
+```
+
+(11,24) Aka Pygmäen      X . X X . X . X . X X . X . X . X . X X . X . X
+
+```strudel
+s("bd(11,24)")
+```
+
+Du hast eben einen kleinen Globus an Trommeltradition durchgehört. Kein Pattern ist langweilig.
+
+### Polyrhythmik aus zwei euklidischen Patterns
+
+Zwei verschiedene N gegen dasselbe M:
+
+```strudel
+stack(
+  s("bd(3,8)"),
+  s("cp(5,8)"),
+  s("hh*16").gain(0.3)
+)
+```
+
+Die Bässe fallen mit ihrer Logik, die Claps mit ihrer. Sie kreuzen sich, verschmelzen, rufen einander zu — und der Cycle endet, dann beginnt es nochmal.
+
+```strudel
+stack(
+  s("bd(3,8)"),
+  s("rim(5,8)"),
+  s("cb(2,8)")
+)
+```
+
+Drei euklidische Layer. Klingt sofort nach afrokubanischer Polyrhythmik.
+
+### euclidRot — der Pattern startet woanders
+
+Bisher startete ein euklidischer Pattern immer auf dem ersten Step. .euclidRot(N, M, R) verschiebt um R Steps.
+
+```strudel
+stack(
+  s("bd").euclid(3, 8),
+  s("cp").euclidRot(3, 8, 2)    // dieselben 3 Pulse, aber 2 Steps verschoben
+)
+```
+
+Jetzt sind cp und bd dieselben mathematischen Pulse, aber nicht synchron. Klingt nach Frage-Antwort.
+
+### Mini-Notation-Variante für euklidische Patterns
+
+Drei Schreibweisen für dasselbe:
+
+```strudel
+s("bd(3,8)")
+
+s("bd").euclid(3, 8)
+
+s("bd").struct("x(3,8)")
+```
+
+Die mittlere ist nützlich wenn du euclid mit anderen Methoden chainen willst:
+
+```strudel
+s("bd").euclid(3, 8).gain(0.7).room(0.3)
+```
+
+### Euklidische Patterns für Hihats
+
+Anstelle von s("hh*16"):
+
+```strudel
+s("hh(11, 16)").gain(0.4)
+```
+
+11 von 16 Steps, gleichmäßig verteilt. Klingt lebendiger als das stumpfe 16tel-Raster.
+
+```strudel
+s("hh(13, 16)").gain(0.4)
+```
+
+Noch dichter, aber immer noch nicht ganz auf jedem Step.
+
+### Pattern wechseln pro Cycle
+
+Die spitzen Klammern aus Kapitel 02 funktionieren auch hier:
+
+```strudel
+s("bd").euclid("<3 5 7 9>", 16)
+```
+
+Cycle 1: 3 von 16. Cycle 2: 5 von 16. Cycle 3: 7 von 16. Cycle 4: 9 von 16. Dann von vorn.
+
+Spannungsaufbau allein durch Dichte-Variation.
+
+### Crescendo durch (N) hochzählen
+
+```strudel
+stack(
+  s("bd").euclid("<3 4 5 6 7 8>", 16),
+  s("hh*16").gain(0.3)
+)
+```
+
+Jeden Cycle mehr Bässe. Klassischer Build-Up. Nach Cycle 6 ist der Pattern bei "fast jeder Step", dann startet er wieder mit 3.
+
+### euclidLegato — kein Gap zwischen den Schlägen
+
+Bei (3,8) ist normalerweise zwischen den Schlägen Stille. .euclidLegato hält jeden Schlag, bis der nächste kommt — gut für Pads/Bässe.
+
+```strudel
+note("c2").euclidLegato(3, 8).s("sawtooth").lpf(400)
+```
+
+Statt drei kurze Bass-Hits hörst du drei lange Töne, die nahtlos ineinander übergehen.
+
+### Tonhöhen euklidisch verteilen
+
+Du kannst auch NOTEN mit (N,M) verteilen:
+
+```strudel
+note("c2 eb2 g2").euclid(3, 8).s("sawtooth")
+```
+
+Drei Töne, euklidisch über 8 Steps. Ergibt einen melodischen Bass-Pattern.
+
+### FINALE — afrokubanischer Beat aus drei euklidischen Layern
+
+```strudel
+stack(
+  s("bd").euclid(3, 8),
+  s("rim").euclid(5, 8),
+  s("cb").euclid(2, 8),
+  s("hh*16").gain(0.3),
+  note("c2 ~ eb2 ~").s("sawtooth").lpf(500)
+)
+```
+
+Bass-Drum als Tresillo. Rim-Shot Cinquillo. Cowbell als 2-von-8. Hihats als Raster. Bass-Ton dazu.
+
+Das ist mehr Musik in 6 Zeilen als manche TR-808-Demo.
+
+### ▶ AUFGABE: Eigene Komposition
+
+Wähle drei verschiedene N für dasselbe M=16. Z.B. (3,16), (5,16), (7,16). Lege drei Sounds drauf. Was passiert wenn du eines der N um 1 erhöhst? Und um 2?
+
+```strudel
+stack(
+  s("bd(3,16)"),
+  s("rim(5,16)"),
+  s("hh(7,16)").gain(0.4)
+)
+```
+
+### Theorie-Anschluss — warum klingt das gut
+
+Toussaint hat festgestellt: Die mathematisch optimale Verteilung von N Pulsen über M Steps ist EXAKT gleichmäßig nur wenn N M teilt (z.B. 4 von 16).
+
+In allen anderen Fällen muss der Algorithmus "irregulär gleichmäßig" verteilen. Das produziert Spannung — der Hörer erwartet ein Raster, kriegt ein leicht versetztes. Genau das macht den Groove.
+
+Westliche Pop-Musik nutzt fast nur Patterns mit N|M (4-on-the-floor, 8tel-Hihat). Außereuropäische Traditionen nutzen seit Jahrhunderten die "kaputten" — und die klingen für unsere Ohren EXOTISCH, weil unser Pop sich auf das Glatte beschränkt hat.
+
+### Mini-Zusammenfassung Kapitel 04
+
+```
+  "x(N,M)"              → in Mini-Notation
+  .euclid(N, M)         → als Methode
+  .euclidRot(N, M, R)   → mit Rotation
+  .euclidLegato(N, M)   → ohne Gaps
+  "x(<3 5 7>, 16)"      → Pattern für N kann selbst pattern sein
+```
+
+Pattern-Bibliothek im Kopf: (3,8) Tresillo, (5,8) Cinquillo, (5,16) Bossa, (7,12) Westafrikanische Glocke. Damit kommst du sehr weit.
+
+Weiter zu 05_skalen_und_melodie.strudel.

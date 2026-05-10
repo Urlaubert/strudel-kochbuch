@@ -1,11 +1,13 @@
 :root {
   color-scheme: dark;
   --bg: #1a1a1a;
+  --bg-elev: #232323;
+  --bg-code: #0e0e0e;
   --fg: #e8e8e8;
   --muted: #888;
   --accent: #ffcc00;
   --link: #6cf;
-  --code-bg: #0a0a0a;
+  --border: #333;
 }
 
 * { box-sizing: border-box; }
@@ -16,226 +18,226 @@ html, body {
   background: var(--bg);
   color: var(--fg);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-body.chapter {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  height: 100dvh;          /* dynamic viewport — fixes iOS Safari URL-bar */
-  overflow: hidden;
-}
-
-body.chapter header {
-  flex: 0 0 auto;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #333;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-body.chapter header h1 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 500;
-  flex: 1;
-}
-
-.back {
-  color: var(--link);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.chapter-nav {
-  display: flex;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.chapter-nav a {
-  color: var(--link);
-  text-decoration: none;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid #333;
-  border-radius: 4px;
-}
-
-.chapter-nav a:hover {
-  border-color: var(--link);
-}
-
-.chapter-nav span.disabled {
-  color: var(--muted);
-  padding: 0.25rem 0.5rem;
-  border: 1px solid #222;
-  border-radius: 4px;
-}
-
-body.chapter main {
-  flex: 1 1 auto;
-  display: block;
-  width: 100%;
-  position: relative;
-  min-height: 0;           /* lets the iframe shrink within flex parent */
-}
-
-#strudel {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: #1a1a1a;
-}
-
-body.chapter footer {
-  flex: 0 0 auto;
-  padding: 0.75rem 1rem;
-  border-top: 1px solid #333;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-body.chapter footer p { margin: 0.3rem 0; }
+a { color: var(--link); }
 
 kbd {
-  background: var(--code-bg);
-  border: 1px solid #333;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
   border-radius: 3px;
   padding: 0.1rem 0.4rem;
   font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
   font-size: 0.85em;
 }
 
-/* index page */
+/* ---------- Chapter page ---------- */
+
+body.chapter header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1rem;
+  background: rgba(26, 26, 26, 0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border);
+}
+
+.back {
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.chapter-nav { display: flex; gap: 0.5rem; font-size: 0.9rem; }
+.chapter-nav a {
+  text-decoration: none;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.chapter-nav a:hover { border-color: var(--link); }
+.chapter-nav span.disabled {
+  color: var(--muted);
+  padding: 0.25rem 0.6rem;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+}
+
+.prose {
+  max-width: 760px;
+  margin: 1.5rem auto 4rem;
+  padding: 0 1.25rem;
+}
+
+.prose h1 {
+  font-size: 2rem;
+  margin: 0.5rem 0 1.5rem;
+  line-height: 1.2;
+}
+.prose h2 {
+  font-size: 1.4rem;
+  margin: 2.5rem 0 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.prose h3 {
+  font-size: 1.1rem;
+  margin: 1.75rem 0 0.5rem;
+  color: var(--fg);
+}
+
+.prose p { margin: 0 0 1rem; }
+.prose ul, .prose ol { margin: 0 0 1rem 1.5rem; padding: 0; }
+.prose li { margin: 0.25rem 0; }
+
+.prose code {
+  background: var(--bg-code);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.9em;
+}
+
+/* ---------- Snippet ---------- */
+
+.snippet {
+  margin: 1.25rem 0 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bg-elev);
+}
+
+.snippet-code {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  background: var(--bg-code);
+  font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+.snippet-code code { background: transparent; padding: 0; }
+
+.snippet-play {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 1rem;
+  background: var(--bg-elev);
+  color: var(--fg);
+  border: 0;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+}
+.snippet-play:hover { background: #2a2a2a; color: var(--accent); }
+
+.snippet.playing .snippet-play { display: none; }
+.snippet.playing .snippet-code { display: none; }
+.snippet iframe {
+  display: block;
+  width: 100%;
+  height: 360px;
+  border: 0;
+  background: var(--bg-code);
+}
+
+/* footer */
+
+body.chapter footer {
+  max-width: 760px;
+  margin: 2rem auto 1.5rem;
+  padding: 1rem 1.25rem 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ---------- Index page ---------- */
 
 body.index {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 2rem 1.25rem;
+  padding: 2.5rem 1.25rem 4rem;
 }
 
 body.index header h1 {
-  font-size: 2rem;
+  font-size: 2.4rem;
   margin: 0 0 0.5rem;
 }
-
 .lead {
   color: var(--muted);
   font-size: 1.05rem;
+  margin: 0 0 2rem;
 }
 
 ol.chapters {
   list-style: none;
   padding: 0;
-  margin: 2rem 0;
+  margin: 0 0 3rem;
   display: grid;
   gap: 0.5rem;
 }
-
-ol.chapters li {
-  padding: 0;
-}
-
 ol.chapters a {
   display: flex;
   align-items: baseline;
   padding: 0.85rem 1rem;
-  background: #232323;
+  background: var(--bg-elev);
   border-radius: 6px;
   text-decoration: none;
   color: var(--fg);
   border: 1px solid transparent;
-  transition: border-color 0.15s, background 0.15s;
   gap: 1rem;
+  transition: border-color 0.15s, background 0.15s;
 }
-
-ol.chapters a:hover {
-  border-color: var(--accent);
-  background: #2a2a2a;
-}
-
+ol.chapters a:hover { border-color: var(--accent); background: #2a2a2a; }
 .chap-num {
   color: var(--accent);
-  font-family: ui-monospace, "JetBrains Mono", monospace;
+  font-family: ui-monospace, monospace;
   font-weight: 600;
   flex-shrink: 0;
   width: 2.5rem;
 }
-
-.chap-title {
-  flex: 1;
-}
-
-.chap-tagline {
-  color: var(--muted);
-  font-size: 0.9rem;
-  margin-top: 0.15rem;
-}
+.chap-body { display: flex; flex-direction: column; }
+.chap-tagline { color: var(--muted); font-size: 0.9rem; }
 
 .hints {
-  margin-top: 3rem;
+  border-top: 1px solid var(--border);
   padding-top: 1.5rem;
-  border-top: 1px solid #333;
+  margin-top: 2rem;
 }
-
-.hints h2 {
-  font-size: 1rem;
-  margin: 0 0 0.5rem;
-  color: var(--muted);
-  font-weight: 500;
-}
-
-.hints ul {
-  margin: 0;
-  padding-left: 1.25rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.hints li {
-  margin: 0.3rem 0;
-}
-
-.hints a {
-  color: var(--link);
-}
+.hints h2 { font-size: 1rem; color: var(--muted); font-weight: 500; margin: 0 0 0.5rem; }
+.hints ul { margin: 0; padding-left: 1.25rem; color: var(--muted); font-size: 0.9rem; }
+.hints li { margin: 0.3rem 0; }
 
 body.index footer {
   margin-top: 3rem;
   padding-top: 1rem;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border);
   font-size: 0.85rem;
   color: var(--muted);
 }
 
-body.index footer a {
-  color: var(--link);
-}
+/* ---------- Mobile ---------- */
 
-/* Mobile / iPad tweaks */
-@media (max-width: 700px) {
-  body.chapter header {
-    padding: 0.5rem 0.75rem;
-    gap: 0.5rem;
-  }
-  body.chapter header h1 {
-    font-size: 0.95rem;
-    width: 100%;
-    order: 3;
-  }
-  body.chapter footer {
-    font-size: 0.75rem;
-    padding: 0.5rem 0.75rem;
-  }
-  body.chapter footer p { margin: 0.15rem 0; }
+@media (max-width: 600px) {
+  body.chapter header { padding: 0.5rem 0.75rem; }
   .chapter-nav { font-size: 0.85rem; }
-}
-
-/* iPhone in portrait: hide footer for max REPL height. */
-@media (max-width: 480px) {
-  body.chapter footer { display: none; }
+  .chapter-nav a, .chapter-nav span.disabled { padding: 0.2rem 0.45rem; }
+  .prose { padding: 0 1rem; margin: 1rem auto 3rem; }
+  .prose h1 { font-size: 1.7rem; }
+  .prose h2 { font-size: 1.25rem; margin-top: 2rem; }
+  .prose h3 { font-size: 1.05rem; }
+  .snippet-code { font-size: 0.82rem; padding: 0.7rem 0.85rem; }
+  .snippet iframe { height: 320px; }
+  body.index { padding: 1.5rem 1rem 3rem; }
+  body.index header h1 { font-size: 1.8rem; }
 }

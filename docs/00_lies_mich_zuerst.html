@@ -4,124 +4,60 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>00 — Lies mich zuerst — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>00 — Lies mich zuerst</h1>
-<nav class="chapter-nav"><span class="disabled">← Vorheriges</span><a href="01_hello_sound.html" title="01 — Hello Sound">Nächstes →</a></nav>
+<nav class="chapter-nav"><span class="disabled">← Zurück</span><a href="01_hello_sound.html" title="01 — Hello Sound">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
+<article class="prose">
+<h1>Kapitel 00 — Lies mich zuerst</h1>
+<p>Drei Dinge bevor wir loslegen.</p>
+<h3>1. Die zwei wichtigsten Tasten</h3>
+<p>Strg+Enter (Cmd+Enter auf Mac) — startet/aktualisiert Pattern. Strg+.    (Cmd+. auf Mac)     — stoppt alles.</p>
+<p>Probier es gleich. Cursor irgendwo in den nächsten Block, dann Strg+Enter.</p>
+<div class="snippet" id="snip-000" data-code-b64="cygiYmQqNCIp"><pre class="snippet-code"><code>s(&quot;bd*4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Du solltest eine Bass Drum hören, viermal pro Sekunde-ish. Wenn nicht: Lautstärke prüfen, oder warten — Sample lädt beim ersten Trigger.</p>
+<p>Stoppe mit Strg+. (Punkt). Mach das jetzt.</p>
+<h3>2. Strudel spielt nur EINEN Block — den untersten unkommentierten</h3>
+<p>Das ist die wichtigste Regel und gleichzeitig die irritierendste. Schau dir die nächsten zwei Blöcke an. Beide sind Pattern. Strudel wird IMMER NUR den letzten ausführen.</p>
+<div class="snippet" id="snip-001" data-code-b64="cygiaGgqOCIpCgpzKCJjcCoyIik="><pre class="snippet-code"><code>s(&quot;hh*8&quot;)
+
+s(&quot;cp*2&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Drück Strg+Enter. Du hörst Claps, keine Hihats. Weil "cp*2" der unterste Block ist.</p>
+<p>Möchtest du die Hihats hören? Mach den Cp-Block zu Kommentar (Cursor in die Zeile, Strg+/ kommentiert aus):</p>
+<p>// s("cp*2")</p>
+<p>Dann ist "hh*8" der unterste aktive Block. Spielt jetzt.</p>
+<p>Diesen Workflow nutzt du dauernd. Code schreiben heißt in Strudel auch: alte Versionen oben stehen lassen, auskommentieren, neue Versionen drunter.</p>
+<p>(Aufgabe: kommentier den cp-Block aus, drück Strg+Enter, dann wieder ein, Strg+Enter. Hör den Unterschied.)</p>
+<h3>3. Wie dieses Lehrbuch geschrieben ist</h3>
+<p>Jedes Kapitel ist eine Datei wie diese hier. Du arbeitest dich von oben nach unten durch. Kommentare sind Lehrtext, Code ist zum Hören.</p>
+<p>Es gibt drei Arten von Code-Blöcken:</p>
+<pre><code>  (a) BEISPIELE — hörst du dir an
+  (b) AUFGABEN  — änderst eine Zahl, hörst was passiert
+  (c) FINALE    — ganz unten, der Höhepunkt des Kapitels
+</code></pre>
+<p>Aufgaben sind so markiert:</p>
+<p>// ▶ AUFGABE: Ändere die 4 zu 8. Was passiert? s("bd*4")</p>
+<h3>4. Ein erster Beat</h3>
+<div class="snippet" id="snip-002" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjgiKS5nYWluKDAuNCksCiAgbm90ZSgiYzIgYzIgZWIyIGcyIikucygic2F3dG9vdGgiKS5scGYoODAwKS5nYWluKDAuNikKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*8&quot;).gain(0.4),
+  note(&quot;c2 c2 eb2 g2&quot;).s(&quot;sawtooth&quot;).lpf(800).gain(0.6)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Strg+Enter. Strg+. wenn du genug hast. Was da steht, kommt in den nächsten Kapiteln Stück für Stück.</p>
+<p>Weiter zu 01_hello_sound.strudel.</p>
+</article>
 </main>
 <footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
 </footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 00 — Lies mich zuerst
-// =====================================================
-// Drei Dinge bevor wir loslegen.
-// =====================================================
-
-
-// -----------------------------------------------------
-// 1. Die zwei wichtigsten Tasten
-// -----------------------------------------------------
-// Strg+Enter (Cmd+Enter auf Mac) — startet/aktualisiert Pattern.
-// Strg+.    (Cmd+. auf Mac)     — stoppt alles.
-//
-// Probier es gleich. Cursor irgendwo in den nächsten Block,
-// dann Strg+Enter.
-
-s("bd*4")
-
-// Du solltest eine Bass Drum hören, viermal pro Sekunde-ish.
-// Wenn nicht: Lautstärke prüfen, oder warten — Sample lädt
-// beim ersten Trigger.
-//
-// Stoppe mit Strg+. (Punkt). Mach das jetzt.
-
-
-// -----------------------------------------------------
-// 2. Strudel spielt nur EINEN Block — den untersten unkommentierten
-// -----------------------------------------------------
-// Das ist die wichtigste Regel und gleichzeitig die irritierendste.
-// Schau dir die nächsten zwei Blöcke an. Beide sind Pattern.
-// Strudel wird IMMER NUR den letzten ausführen.
-
-s("hh*8")
-
-s("cp*2")
-
-// Drück Strg+Enter. Du hörst Claps, keine Hihats. Weil "cp*2"
-// der unterste Block ist.
-//
-// Möchtest du die Hihats hören? Mach den Cp-Block zu Kommentar
-// (Cursor in die Zeile, Strg+/ kommentiert aus):
-//
-// // s("cp*2")
-//
-// Dann ist "hh*8" der unterste aktive Block. Spielt jetzt.
-//
-// Diesen Workflow nutzt du dauernd. Code schreiben heißt in
-// Strudel auch: alte Versionen oben stehen lassen,
-// auskommentieren, neue Versionen drunter.
-//
-// (Aufgabe: kommentier den cp-Block aus, drück Strg+Enter,
-// dann wieder ein, Strg+Enter. Hör den Unterschied.)
-
-
-// -----------------------------------------------------
-// 3. Wie dieses Lehrbuch geschrieben ist
-// -----------------------------------------------------
-// Jedes Kapitel ist eine Datei wie diese hier. Du arbeitest
-// dich von oben nach unten durch. Kommentare sind Lehrtext,
-// Code ist zum Hören.
-//
-// Es gibt drei Arten von Code-Blöcken:
-//
-//   (a) BEISPIELE — hörst du dir an
-//   (b) AUFGABEN  — änderst eine Zahl, hörst was passiert
-//   (c) FINALE    — ganz unten, der Höhepunkt des Kapitels
-//
-// Aufgaben sind so markiert:
-//
-// // ▶ AUFGABE: Ändere die 4 zu 8. Was passiert?
-// s("bd*4")
-
-
-// -----------------------------------------------------
-// 4. Ein erster Beat
-// -----------------------------------------------------
-
-stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*8").gain(0.4),
-  note("c2 c2 eb2 g2").s("sawtooth").lpf(800).gain(0.6)
-)
-
-// Strg+Enter. Strg+. wenn du genug hast.
-// Was da steht, kommt in den nächsten Kapiteln Stück für Stück.
-//
-// Weiter zu 01_hello_sound.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

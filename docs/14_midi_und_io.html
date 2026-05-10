@@ -4,125 +4,68 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>14 — MIDI und IO — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>14 — MIDI und IO</h1>
-<nav class="chapter-nav"><a href="13_synthese_tief.html" title="13 — Synthese tief">← Vorheriges</a><a href="15_performance_hygiene.html" title="15 — Performance-Hygiene">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="13_synthese_tief.html" title="13 — Synthese tief">← Zurück</a><a href="15_performance_hygiene.html" title="15 — Performance-Hygiene">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 14 — MIDI und IO
-// =====================================================
-// Strudel allein im Browser ist schon viel. Aber: Hardware
-// kann rein (Knobs steuern Parameter, E-Drums triggern
-// Patterns) und Hardware kann gesteuert werden (Strudel als
-// Sequencer für externe Synths wie Vital, Ableton, MPC).
-//
-// Dieses Kapitel braucht echte Hardware-Anschlüsse — du
-// kannst das Meiste hier nur ausprobieren wenn du was
-// angeschlossen hast.
-// =====================================================
+<article class="prose">
+<h1>Kapitel 14 — MIDI und IO</h1>
+<p>Strudel allein im Browser ist schon viel. Aber: Hardware kann rein (Knobs steuern Parameter, E-Drums triggern Patterns) und Hardware kann gesteuert werden (Strudel als Sequencer für externe Synths wie Vital, Ableton, MPC).</p>
+<p>Dieses Kapitel braucht echte Hardware-Anschlüsse — du kannst das Meiste hier nur ausprobieren wenn du was angeschlossen hast.</p>
+<h3>Setup-Voraussetzungen</h3>
+<p>Browser muss MIDI dürfen. Chrome auf Mac/Windows kann das out-of-the-box.</p>
+<pre><code>Für MIDI-Output an externe Synths/DAWs brauchst du eine
+virtuelle MIDI-Bridge:
+  - Mac:  IAC Driver (in Audio-MIDI-Setup aktivieren)
+  - Win:  loopMIDI (free, von Tobias Erichsen)
+  - Linux: aconnect / a2jmidid
+</code></pre>
+<h3>MIDI-Eingabe — Hardware-Knobs nach Strudel</h3>
+<div class="snippet" id="snip-000" data-code-b64="Y29uc3QgY2MgPSBhd2FpdCBtaWRpbignQWthaSBNUEsgTWluaScp"><pre class="snippet-code"><code>const cc = await midin(&#x27;Akai MPK Mini&#x27;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Setup-Voraussetzungen
-// -----------------------------------------------------
-// Browser muss MIDI dürfen. Chrome auf Mac/Windows kann das
-// out-of-the-box.
-//
-// Für MIDI-Output an externe Synths/DAWs brauchst du eine
-// virtuelle MIDI-Bridge:
-//   - Mac:  IAC Driver (in Audio-MIDI-Setup aktivieren)
-//   - Win:  loopMIDI (free, von Tobias Erichsen)
-//   - Linux: aconnect / a2jmidid
-
-
-// -----------------------------------------------------
-// MIDI-Eingabe — Hardware-Knobs nach Strudel
-// -----------------------------------------------------
-
-const cc = await midin('Akai MPK Mini')
-
-// "await" wartet bis das Gerät verbunden ist. Geräte-Name
-// muss passen — siehe Browser-Console für die verfügbaren.
-
-note("c4 e4 g4")
+<p>"await" wartet bis das Gerät verbunden ist. Geräte-Name muss passen — siehe Browser-Console für die verfügbaren.</p>
+<div class="snippet" id="snip-001" data-code-b64="bm90ZSgiYzQgZTQgZzQiKQogIC5scGYoY2MoMCkucmFuZ2UoMTAwLCA0MDAwKSkgICAgLy8gS25vYiAxIOKGkiBGaWx0ZXIKICAubHBxKGNjKDEpLnJhbmdlKDAsIDEwKSkgICAgICAgIC8vIEtub2IgMiDihpIgUmVzb25hbnoKICAuZ2FpbihjYygyKS5yYW5nZSgwLjMsIDEpKSAgICAgIC8vIEtub2IgMyDihpIgTGF1dHN0w6Rya2UKICAucygic2F3dG9vdGgiKQ=="><pre class="snippet-code"><code>note(&quot;c4 e4 g4&quot;)
   .lpf(cc(0).range(100, 4000))    // Knob 1 → Filter
   .lpq(cc(1).range(0, 10))        // Knob 2 → Resonanz
   .gain(cc(2).range(0.3, 1))      // Knob 3 → Lautstärke
-  .s("sawtooth")
+  .s(&quot;sawtooth&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// cc(N) liefert einen Pattern-Wert der live mit dem Knob
-// mitgeht. Optional zweiter Parameter: cc(0, 2) liest CC 0
-// auf MIDI-Channel 2.
+<p>cc(N) liefert einen Pattern-Wert der live mit dem Knob mitgeht. Optional zweiter Parameter: cc(0, 2) liest CC 0 auf MIDI-Channel 2.</p>
+<h3>MIDI-Notes-Eingabe — live spielen</h3>
+<div class="snippet" id="snip-002" data-code-b64="Y29uc3Qga2V5cyA9IGF3YWl0IG1pZGluKCdBa2FpIE1QSyBNaW5pJykKCiQ6IG1pZGlrZXlzKCdrZXlzJykucygicGlhbm8iKQ=="><pre class="snippet-code"><code>const keys = await midin(&#x27;Akai MPK Mini&#x27;)
 
+$: midikeys(&#x27;keys&#x27;).s(&quot;piano&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// MIDI-Notes-Eingabe — live spielen
-// -----------------------------------------------------
+<p>$: ist Strudels "Sub-Pattern"-Syntax — definiert eine laufende Spur. midikeys() liefert die gedrückten Tasten. Heißt: du spielst MIDI-Notes auf dem Keyboard, sie triggern den Piano-Sample.</p>
+<p>Geht auch mit Effekten:</p>
+<div class="snippet" id="snip-003" data-code-b64="JDogbWlkaWtleXMoJ2tleXMnKS5zKCJzYXd0b290aCIpLmxwZihjYygwKS5yYW5nZSgyMDAsIDQwMDApKQ=="><pre class="snippet-code"><code>$: midikeys(&#x27;keys&#x27;).s(&quot;sawtooth&quot;).lpf(cc(0).range(200, 4000))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-const keys = await midin('Akai MPK Mini')
+<h3>Pads als Trigger</h3>
+<p>Akai MPK Mini hat 8 Pads. Die senden MIDI-Notes, üblicherweise ab Note 36 (C2). Diese kann man auf bestimmte Aktionen mappen.</p>
+<div class="snippet" id="snip-004" data-code-b64="JDogbWlkaWtleXMoJ2tleXMnKQogIC53aGVuKChuKSA9PiBuLm5vdGUgPT09IDM2LCAoKSA9PiBzKCJiZCIpKQogIC53aGVuKChuKSA9PiBuLm5vdGUgPT09IDM3LCAoKSA9PiBzKCJjcCIpKQogIC53aGVuKChuKSA9PiBuLm5vdGUgPT09IDM4LCAoKSA9PiBzKCJoaCIpKQ=="><pre class="snippet-code"><code>$: midikeys(&#x27;keys&#x27;)
+  .when((n) =&gt; n.note === 36, () =&gt; s(&quot;bd&quot;))
+  .when((n) =&gt; n.note === 37, () =&gt; s(&quot;cp&quot;))
+  .when((n) =&gt; n.note === 38, () =&gt; s(&quot;hh&quot;))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-$: midikeys('keys').s("piano")
+<p>(Syntax kann je nach Strudel-Version etwas anders sein — Details in den Docs.)</p>
+<h3>MIDI-Ausgabe — Strudel steuert externe Synths</h3>
+<div class="snippet" id="snip-005" data-code-b64="bm90ZSgiYzQgZTQgZzQgYjQiKS5taWRpKCdJQUMgRHJpdmVyJykgICAgICAgICAgLy8gTWFjCm5vdGUoImM0IGU0IGc0IGI0IikubWlkaSgnbG9vcE1JREknKSAgICAgICAgICAgIC8vIFdpbg=="><pre class="snippet-code"><code>note(&quot;c4 e4 g4 b4&quot;).midi(&#x27;IAC Driver&#x27;)          // Mac
+note(&quot;c4 e4 g4 b4&quot;).midi(&#x27;loopMIDI&#x27;)            // Win</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// $: ist Strudels "Sub-Pattern"-Syntax — definiert eine
-// laufende Spur. midikeys() liefert die gedrückten Tasten.
-// Heißt: du spielst MIDI-Notes auf dem Keyboard, sie
-// triggern den Piano-Sample.
-
-// Geht auch mit Effekten:
-$: midikeys('keys').s("sawtooth").lpf(cc(0).range(200, 4000))
-
-
-// -----------------------------------------------------
-// Pads als Trigger
-// -----------------------------------------------------
-// Akai MPK Mini hat 8 Pads. Die senden MIDI-Notes, üblicherweise
-// ab Note 36 (C2). Diese kann man auf bestimmte Aktionen mappen.
-
-$: midikeys('keys')
-  .when((n) => n.note === 36, () => s("bd"))
-  .when((n) => n.note === 37, () => s("cp"))
-  .when((n) => n.note === 38, () => s("hh"))
-
-// (Syntax kann je nach Strudel-Version etwas anders sein —
-// Details in den Docs.)
-
-
-// -----------------------------------------------------
-// MIDI-Ausgabe — Strudel steuert externe Synths
-// -----------------------------------------------------
-
-note("c4 e4 g4 b4").midi('IAC Driver')          // Mac
-note("c4 e4 g4 b4").midi('loopMIDI')            // Win
-
-// Strudel sendet Note-On/Note-Off via MIDI. Der externe
-// Synth (Vital, Ableton, MPC) muss auf demselben Bus
-// hören.
-
-// Mit Velocity, Channel, Latenz:
-note("c4 e4 g4")
-  .velocity("0.8 1 0.6")
+<p>Strudel sendet Note-On/Note-Off via MIDI. Der externe Synth (Vital, Ableton, MPC) muss auf demselben Bus hören.</p>
+<p>Mit Velocity, Channel, Latenz:</p>
+<div class="snippet" id="snip-006" data-code-b64="bm90ZSgiYzQgZTQgZzQiKQogIC52ZWxvY2l0eSgiMC44IDEgMC42IikKICAubWlkaWNoYW5uZWwoMikKICAubGF0ZW5jeU1zKDUwKQogIC5taWRpKCdsb29wTUlESScp"><pre class="snippet-code"><code>note(&quot;c4 e4 g4&quot;)
+  .velocity(&quot;0.8 1 0.6&quot;)
   .midichannel(2)
   .latencyMs(50)
-  .midi('loopMIDI')
+  .midi(&#x27;loopMIDI&#x27;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// CC-Ausgabe — Filter etc. extern steuern
-// -----------------------------------------------------
-
-midimaps({
+<h3>CC-Ausgabe — Filter etc. extern steuern</h3>
+<div class="snippet" id="snip-007" data-code-b64="bWlkaW1hcHMoewogIHZpdGFsOiB7CiAgICBscGY6IDc0LAogICAgbHBxOiA3MSwKICAgIG1hY3JvMTogeyBjY246IDEzLCBtaW46IDAsIG1heDogMSwgZXhwOiAwLjUgfQogIH0KfSkKCm5vdGUoImM0IGU0IGc0IikKICAubHBmKDAuNykKICAubWlkaW1hcCgndml0YWwnKQogIC5taWRpKCdJQUMgRHJpdmVyJyk="><pre class="snippet-code"><code>midimaps({
   vital: {
     lpf: 74,
     lpq: 71,
@@ -130,202 +73,141 @@ midimaps({
   }
 })
 
-note("c4 e4 g4")
+note(&quot;c4 e4 g4&quot;)
   .lpf(0.7)
-  .midimap('vital')
-  .midi('IAC Driver')
+  .midimap(&#x27;vital&#x27;)
+  .midi(&#x27;IAC Driver&#x27;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Strudel sendet auf CC 74 den Wert für lpf, mappt in den
-// Bereich den der Synth versteht. macro1 hat eine eigene
-// Skalierung (0-1 mit Exponenten 0.5).
+<p>Strudel sendet auf CC 74 den Wert für lpf, mappt in den Bereich den der Synth versteht. macro1 hat eine eigene Skalierung (0-1 mit Exponenten 0.5).</p>
+<h3>E-Drum (Alesis Strata Prime) als Input</h3>
+<p>E-Drum sendet Notes wie ein Drum-Computer. Du spielst physisch auf den Pads, Strudel bekommt die MIDI-Daten.</p>
+<div class="snippet" id="snip-008" data-code-b64="Y29uc3QgZHJ1bXMgPSBhd2FpdCBtaWRpbignU3RyYXRhIFByaW1lJykKCiQ6IG1pZGlrZXlzKCdkcnVtcycpCiAgLndoZW4oKG4pID0+IG4ubm90ZSA9PT0gMzYsICgpID0+IHMoImJkIikuZ2FpbihuLnZlbG9jaXR5KSkKICAud2hlbigobikgPT4gbi5ub3RlID09PSAzOCwgKCkgPT4gcygic2QiKS5nYWluKG4udmVsb2NpdHkpKQogIC53aGVuKChuKSA9PiBuLm5vdGUgPT09IDQyLCAoKSA9PiBzKCJoaCIpLmdhaW4obi52ZWxvY2l0eSkp"><pre class="snippet-code"><code>const drums = await midin(&#x27;Strata Prime&#x27;)
 
+$: midikeys(&#x27;drums&#x27;)
+  .when((n) =&gt; n.note === 36, () =&gt; s(&quot;bd&quot;).gain(n.velocity))
+  .when((n) =&gt; n.note === 38, () =&gt; s(&quot;sd&quot;).gain(n.velocity))
+  .when((n) =&gt; n.note === 42, () =&gt; s(&quot;hh&quot;).gain(n.velocity))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// E-Drum (Alesis Strata Prime) als Input
-// -----------------------------------------------------
-// E-Drum sendet Notes wie ein Drum-Computer. Du spielst
-// physisch auf den Pads, Strudel bekommt die MIDI-Daten.
-
-const drums = await midin('Strata Prime')
-
-$: midikeys('drums')
-  .when((n) => n.note === 36, () => s("bd").gain(n.velocity))
-  .when((n) => n.note === 38, () => s("sd").gain(n.velocity))
-  .when((n) => n.note === 42, () => s("hh").gain(n.velocity))
-
-// Velocity wird mitgenommen — leise spielen = leise im Pattern.
-
-
-// -----------------------------------------------------
-// Gamepad — der Notnagel ohne MIDI-Hardware
-// -----------------------------------------------------
-
-const gp = gamepad(0)
+<p>Velocity wird mitgenommen — leise spielen = leise im Pattern.</p>
+<h3>Gamepad — der Notnagel ohne MIDI-Hardware</h3>
+<div class="snippet" id="snip-009" data-code-b64="Y29uc3QgZ3AgPSBnYW1lcGFkKDApCgpzdGFjaygKICBzKCJiZCo0IikubWFzayhncC50Z2xBKSwgICAgICAgICAgICAgICAgICAgICAgIC8vIEEtS25vcGYgYW4vYXVzCiAgbm90ZSgiYzQgZTQgZzQiKS5scGYoZ3AueDEucmFuZ2UoMjAwLCA1MDAwKSksICAgLy8gbGlua2VyIFN0aWNrIFggPSBGaWx0ZXIKICBzKCJoaCoxNiIpLmdhaW4oZ3AucnQucmFuZ2UoMCwgMSkpICAgICAgICAgICAgICAvLyByZWNodGVyIFRyaWdnZXIgPSBIaWhhdC1Wb2x1bWUKKQ=="><pre class="snippet-code"><code>const gp = gamepad(0)
 
 stack(
-  s("bd*4").mask(gp.tglA),                       // A-Knopf an/aus
-  note("c4 e4 g4").lpf(gp.x1.range(200, 5000)),   // linker Stick X = Filter
-  s("hh*16").gain(gp.rt.range(0, 1))              // rechter Trigger = Hihat-Volume
-)
+  s(&quot;bd*4&quot;).mask(gp.tglA),                       // A-Knopf an/aus
+  note(&quot;c4 e4 g4&quot;).lpf(gp.x1.range(200, 5000)),   // linker Stick X = Filter
+  s(&quot;hh*16&quot;).gain(gp.rt.range(0, 1))              // rechter Trigger = Hihat-Volume
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Bluetooth-Gamepad funktioniert. Praktisch wenn du keinen
-// MIDI-Controller dabei hast.
-//
-// Verfügbare Werte:
-//   gp.x1, y1   linker Stick (0-1)
-//   gp.x2, y2   rechter Stick (0-1)
-//   gp.x1_2     dasselbe als -1 bis 1 (manche Mappings einfacher)
-//   gp.a/b/x/y  Buttons (0/1)
-//   gp.lb/rb    Schultern
-//   gp.lt/rt    Trigger (analog 0-1)
-//   gp.tglA/B   Toggle-Variante
-//   gp.up/down  D-Pad
-
-
-// -----------------------------------------------------
-// Maus — der Letzte-Notlösung-Notnagel
-// -----------------------------------------------------
-
-note("c4*8").s("sawtooth")
+<p>Bluetooth-Gamepad funktioniert. Praktisch wenn du keinen MIDI-Controller dabei hast.</p>
+<pre><code>Verfügbare Werte:
+  gp.x1, y1   linker Stick (0-1)
+  gp.x2, y2   rechter Stick (0-1)
+  gp.x1_2     dasselbe als -1 bis 1 (manche Mappings einfacher)
+  gp.a/b/x/y  Buttons (0/1)
+  gp.lb/rb    Schultern
+  gp.lt/rt    Trigger (analog 0-1)
+  gp.tglA/B   Toggle-Variante
+  gp.up/down  D-Pad
+</code></pre>
+<h3>Maus — der Letzte-Notlösung-Notnagel</h3>
+<div class="snippet" id="snip-010" data-code-b64="bm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikKICAubHBmKG1vdXNlWC5yYW5nZSgyMDAsIDUwMDApKQogIC5wYW4obW91c2VZLnJhbmdlKDAsIDEpKQ=="><pre class="snippet-code"><code>note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;)
   .lpf(mouseX.range(200, 5000))
-  .pan(mouseY.range(0, 1))
+  .pan(mouseY.range(0, 1))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<h3>OSC — Brücke zu SuperCollider</h3>
+<div class="snippet" id="snip-011" data-code-b64="bm90ZSgiYzQgZTQgZzQiKS5vc2MoKQ=="><pre class="snippet-code"><code>note(&quot;c4 e4 g4&quot;).osc()</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// OSC — Brücke zu SuperCollider
-// -----------------------------------------------------
+<p>Strudel sendet via OSC an SuperCollider/SuperDirt. Erfordert SC-Setup mit lokalem OSC-Server (pnpm run osc).</p>
+<p>Macht nur Sinn wenn du in SuperCollider eigene SynthDefs hast die du aus Strudel triggern willst. Sonst ist Strudels eingebaute Engine direkt einfacher.</p>
+<h3>MQTT — IoT / Sensoren</h3>
+<div class="snippet" id="snip-012" data-code-b64="bXF0dCgnbXF0dC5leGFtcGxlLmNvbScsICcvdG9waWMnKS5zKCdoZWxsbycp"><pre class="snippet-code"><code>mqtt(&#x27;mqtt.example.com&#x27;, &#x27;/topic&#x27;).s(&#x27;hello&#x27;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-note("c4 e4 g4").osc()
+<p>Sendet als JSON. Aktuell nur Senden, kein Empfangen. Für Setups wo Sensoren via MQTT mit Strudel sprechen (Kunst-Installation mit Bewegungsmeldern).</p>
+<h3>Hardware-Setup-Empfehlung</h3>
+<p>Wenn du performen willst:</p>
+<pre><code>  Pflicht:
+    - Laptop mit Chrome
+    - Kopfhörer (zum Üben) und/oder Audio-Interface (Live)
+</code></pre>
+<pre><code>  Sehr empfohlen:
+    - MIDI-Controller mit Knobs (Akai MPK Mini = günstig + komplett)
+      → 8 Knobs für 8 Achsen, 8 Pads für 8 Trigger,
+        25 Tasten für Improvisation
+</code></pre>
+<pre><code>  Optional:
+    - E-Drum (Alesis Strata, Roland) für Live-Beats
+    - Gamepad als Backup
+    - DAW (Reaper) zum Aufnehmen der Performance
+</code></pre>
+<h3>Audio-Routing — Strudel zu Reaper</h3>
+<p>Browser-Audio in eine DAW kriegen ist OS-abhängig:</p>
+<pre><code>  Mac:  BlackHole oder Loopback (virtual audio device).
+        Strudel-Ausgabe an BlackHole, Reaper liest BlackHole.
+</code></pre>
+<pre><code>  Win:  VB-CABLE (free) oder Voicemeeter.
+        Strudel ausgabe an CABLE, Reaper liest CABLE.
+</code></pre>
+<p>Linux: PipeWire kann das nativ.</p>
+<h3>FINALE — Live-Setup mit allem</h3>
+<p>Voraussetzung: MIDI-Controller mit 4+ Knobs angeschlossen.</p>
+<div class="snippet" id="snip-013" data-code-b64="Y29uc3QgY2MgPSBhd2FpdCBtaWRpbignQWthaSBNUEsgTWluaScp"><pre class="snippet-code"><code>const cc = await midin(&#x27;Akai MPK Mini&#x27;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Strudel sendet via OSC an SuperCollider/SuperDirt. Erfordert
-// SC-Setup mit lokalem OSC-Server (pnpm run osc).
-//
-// Macht nur Sinn wenn du in SuperCollider eigene SynthDefs
-// hast die du aus Strudel triggern willst. Sonst ist Strudels
-// eingebaute Engine direkt einfacher.
-
-
-// -----------------------------------------------------
-// MQTT — IoT / Sensoren
-// -----------------------------------------------------
-
-mqtt('mqtt.example.com', '/topic').s('hello')
-
-// Sendet als JSON. Aktuell nur Senden, kein Empfangen.
-// Für Setups wo Sensoren via MQTT mit Strudel sprechen
-// (Kunst-Installation mit Bewegungsmeldern).
-
-
-// -----------------------------------------------------
-// Hardware-Setup-Empfehlung
-// -----------------------------------------------------
-// Wenn du performen willst:
-//
-//   Pflicht:
-//     - Laptop mit Chrome
-//     - Kopfhörer (zum Üben) und/oder Audio-Interface (Live)
-//
-//   Sehr empfohlen:
-//     - MIDI-Controller mit Knobs (Akai MPK Mini = günstig + komplett)
-//       → 8 Knobs für 8 Achsen, 8 Pads für 8 Trigger,
-//         25 Tasten für Improvisation
-//
-//   Optional:
-//     - E-Drum (Alesis Strata, Roland) für Live-Beats
-//     - Gamepad als Backup
-//     - DAW (Reaper) zum Aufnehmen der Performance
-
-
-// -----------------------------------------------------
-// Audio-Routing — Strudel zu Reaper
-// -----------------------------------------------------
-// Browser-Audio in eine DAW kriegen ist OS-abhängig:
-//
-//   Mac:  BlackHole oder Loopback (virtual audio device).
-//         Strudel-Ausgabe an BlackHole, Reaper liest BlackHole.
-//
-//   Win:  VB-CABLE (free) oder Voicemeeter.
-//         Strudel ausgabe an CABLE, Reaper liest CABLE.
-//
-//   Linux: PipeWire kann das nativ.
-
-
-// -----------------------------------------------------
-// FINALE — Live-Setup mit allem
-// -----------------------------------------------------
-// Voraussetzung: MIDI-Controller mit 4+ Knobs angeschlossen.
-
-const cc = await midin('Akai MPK Mini')
-
-// Knob-Mapping (Achsen)
-const ENERGY = cc(0).range(0, 1)
+<p>Knob-Mapping (Achsen)</p>
+<div class="snippet" id="snip-014" data-code-b64="Y29uc3QgRU5FUkdZID0gY2MoMCkucmFuZ2UoMCwgMSkKY29uc3QgRklMVEVSID0gY2MoMSkucmFuZ2UoMjAwLCA0MDAwKQpjb25zdCBSRVZFUkIgPSBjYygyKS5yYW5nZSgwLCAwLjgpCmNvbnN0IFRFTVBPICA9IGNjKDMpLnJhbmdlKDAuMywgMS4wKQ=="><pre class="snippet-code"><code>const ENERGY = cc(0).range(0, 1)
 const FILTER = cc(1).range(200, 4000)
 const REVERB = cc(2).range(0, 0.8)
-const TEMPO  = cc(3).range(0.3, 1.0)
+const TEMPO  = cc(3).range(0.3, 1.0)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Tempo-Setting via Knob (statisch beim setcps)
-setcps(0.5)  // ggf. live anpassen, hier nicht via TEMPO
+<p>Tempo-Setting via Knob (statisch beim setcps)</p>
+<div class="snippet" id="snip-015" data-code-b64="c2V0Y3BzKDAuNSkgIC8vIGdnZi4gbGl2ZSBhbnBhc3NlbiwgaGllciBuaWNodCB2aWEgVEVNUE8KCnN0YWNrKAogIHMoImJkKjQiKS5nYWluKEVORVJHWS5yYW5nZSgwLjQsIDEpKSwKICBzKCJ+IGNwIH4gY3AiKS5yb29tKFJFVkVSQiksCiAgcygiaGgqMTYiKS5nYWluKEVORVJHWS5yYW5nZSgwLjIsIDAuNikpLnBhbihwZXJsaW4ucmFuZ2UoMC4zLCAwLjcpKSwKICBub3RlKCJjMiBjMiBlYjIgZzIiKS5zY2FsZSgiQzptaW5vciIpLnMoInNhd3Rvb3RoIikKICAgIC5scGYoRklMVEVSKQogICAgLmdhaW4oMC43KSwKICBub3RlKCJbMCwyLDRdIikuc2NhbGUoIkM6bWlub3IiKQogICAgLnMoInRyaWFuZ2xlIikKICAgIC5hdHRhY2soMC41KS5yZWxlYXNlKDIpCiAgICAubHBmKDIwMDApCiAgICAucm9vbShSRVZFUkIpCiAgICAuZ2FpbihFTkVSR1kucmFuZ2UoMC4yLCAwLjUpKQop"><pre class="snippet-code"><code>setcps(0.5)  // ggf. live anpassen, hier nicht via TEMPO
 
 stack(
-  s("bd*4").gain(ENERGY.range(0.4, 1)),
-  s("~ cp ~ cp").room(REVERB),
-  s("hh*16").gain(ENERGY.range(0.2, 0.6)).pan(perlin.range(0.3, 0.7)),
-  note("c2 c2 eb2 g2").scale("C:minor").s("sawtooth")
+  s(&quot;bd*4&quot;).gain(ENERGY.range(0.4, 1)),
+  s(&quot;~ cp ~ cp&quot;).room(REVERB),
+  s(&quot;hh*16&quot;).gain(ENERGY.range(0.2, 0.6)).pan(perlin.range(0.3, 0.7)),
+  note(&quot;c2 c2 eb2 g2&quot;).scale(&quot;C:minor&quot;).s(&quot;sawtooth&quot;)
     .lpf(FILTER)
     .gain(0.7),
-  note("[0,2,4]").scale("C:minor")
-    .s("triangle")
+  note(&quot;[0,2,4]&quot;).scale(&quot;C:minor&quot;)
+    .s(&quot;triangle&quot;)
     .attack(0.5).release(2)
     .lpf(2000)
     .room(REVERB)
     .gain(ENERGY.range(0.2, 0.5))
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Vier Knobs steuern den Track:
-//   Knob 1 (ENERGY) — Drum-Lautstärke + Pad-Lautstärke
-//   Knob 2 (FILTER) — Bass-Filter-Cutoff
-//   Knob 3 (REVERB) — Hall-Tiefe für Snares und Pad
-//   Knob 4 (TEMPO)  — vorgesehen, hier nicht verbunden
-//
-// Code wird einmal evaluiert. Performance = Knobs drehen.
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 14
-// -----------------------------------------------------
-// Input:
-//   midin('Gerät')              → CC und Notes lesen
-//   cc(N)                        → CC-Wert als Pattern
-//   midikeys()                   → MIDI-Note-Input
-//   gamepad(0)                   → Gamepad
-//   mouseX/mouseY                → Maus
-//
-// Output:
-//   .midi('IAC Driver')          → MIDI an externen Synth
-//   midimaps({...})              → CC-Mapping definieren
-//   .midimap('preset')           → Mapping anwenden
-//   .osc()                       → OSC zu SuperCollider
-//   mqtt(...)                    → MQTT (experimental)
-//
-// Performance-Setup:
-//   8 Knobs auf 8 Achsen mappen, 1 Stunde proben, dann live.
-//   Code als "Material" — zur Performance werden Knobs gedreht.
-//
-// Weiter zu 15_performance_hygiene.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<pre><code>Vier Knobs steuern den Track:
+  Knob 1 (ENERGY) — Drum-Lautstärke + Pad-Lautstärke
+  Knob 2 (FILTER) — Bass-Filter-Cutoff
+  Knob 3 (REVERB) — Hall-Tiefe für Snares und Pad
+  Knob 4 (TEMPO)  — vorgesehen, hier nicht verbunden
+</code></pre>
+<p>Code wird einmal evaluiert. Performance = Knobs drehen.</p>
+<h3>Mini-Zusammenfassung Kapitel 14</h3>
+<pre><code>Input:
+  midin('Gerät')              → CC und Notes lesen
+  cc(N)                        → CC-Wert als Pattern
+  midikeys()                   → MIDI-Note-Input
+  gamepad(0)                   → Gamepad
+  mouseX/mouseY                → Maus
+</code></pre>
+<pre><code>Output:
+  .midi('IAC Driver')          → MIDI an externen Synth
+  midimaps({...})              → CC-Mapping definieren
+  .midimap('preset')           → Mapping anwenden
+  .osc()                       → OSC zu SuperCollider
+  mqtt(...)                    → MQTT (experimental)
+</code></pre>
+<pre><code>Performance-Setup:
+  8 Knobs auf 8 Achsen mappen, 1 Stunde proben, dann live.
+  Code als &quot;Material&quot; — zur Performance werden Knobs gedreht.
+</code></pre>
+<p>Weiter zu 15_performance_hygiene.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

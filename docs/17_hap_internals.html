@@ -4,333 +4,163 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>17 — Hap-Internals — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>17 — Hap-Internals</h1>
-<nav class="chapter-nav"><a href="16_eigene_helper.html" title="16 — Eigene Helper">← Vorheriges</a><a href="18_genre_kochbuch.html" title="18 — Genre-Kochbuch">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="16_eigene_helper.html" title="16 — Eigene Helper">← Zurück</a><a href="18_genre_kochbuch.html" title="18 — Genre-Kochbuch">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 17 — Hap-Internals
-// =====================================================
-// Was IST ein Pattern in Strudel eigentlich? Wir haben es
-// bisher als "musikalische Sequenz" benutzt, aber unter der
-// Haube ist es ein mathematisches Konstrukt mit klaren
-// Eigenschaften. Wenn du das verstehst, verstehst du WARUM
-// manche Sachen gehen und andere nicht.
-//
-// Optional. Für eigene Pattern-Funktionen oder wenn du
-// Strudel-Quellcode lesen willst.
-// =====================================================
+<article class="prose">
+<h1>Kapitel 17 — Hap-Internals</h1>
+<p>Was IST ein Pattern in Strudel eigentlich? Wir haben es bisher als "musikalische Sequenz" benutzt, aber unter der Haube ist es ein mathematisches Konstrukt mit klaren Eigenschaften. Wenn du das verstehst, verstehst du WARUM manche Sachen gehen und andere nicht.</p>
+<p>Optional. Für eigene Pattern-Funktionen oder wenn du Strudel-Quellcode lesen willst.</p>
+<h3>Pattern = Funktion von Zeit zu Events</h3>
+<p>Mathematisch ist ein Strudel-Pattern eine Funktion:</p>
+<p>Pattern :: TimeRange -&gt; [Hap]</p>
+<p>Du gibst der Funktion einen Zeitabschnitt (z.B. "Cycle 3, von 0.5 bis 1.0") und sie gibt dir eine Liste von "Haps" zurück — Events die in diesem Zeitabschnitt passieren.</p>
+<h3>Hap (= "happening", was passiert)</h3>
+<pre><code>Ein Hap ist:
+  - eine Zeitspanne (whole) — wann wäre das Event &quot;natürlich&quot;
+  - eine Zeitspanne (part) — welcher Teil davon liegt im query-Bereich
+  - ein Wert — was zu tun ist (z.B. {s: &quot;bd&quot;, gain: 0.7})
+</code></pre>
+<p>Wenn du ein Pattern mit "bd*4" hast und nach Events im ersten Cycle fragst, gibt's vier Haps:</p>
+<pre><code>  Hap 1:  whole = part = [0,    0.25],   value = {s: &quot;bd&quot;}
+  Hap 2:  whole = part = [0.25, 0.5 ],   value = {s: &quot;bd&quot;}
+  Hap 3:  whole = part = [0.5,  0.75],   value = {s: &quot;bd&quot;}
+  Hap 4:  whole = part = [0.75, 1.0 ],   value = {s: &quot;bd&quot;}
+</code></pre>
+<h3>Whole vs. Part — der Unterschied</h3>
+<p>"whole" ist die volle Dauer des Events. "part" ist der Teil, der in der angefragten Zeitspanne liegt.</p>
+<p>Bei einfachen Patterns sind sie gleich. Bei langen Events die teilweise außerhalb des Cycles liegen, sind sie verschieden.</p>
+<p>Beispiel: ein Sample mit attack=1 das auf Cycle-Ende startet — whole geht über die Cycle-Grenze, part nur bis Cycle-Ende.</p>
+<h3>Sehen wir's selbst — pattern.queryArc()</h3>
+<div class="snippet" id="snip-000" data-code-b64="Y29uc3QgcCA9IHMoImJkIGhoIHNkIGhoIikKCmNvbnNvbGUubG9nKHAucXVlcnlBcmMoMCwgMSkp"><pre class="snippet-code"><code>const p = s(&quot;bd hh sd hh&quot;)
 
+console.log(p.queryArc(0, 1))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Pattern = Funktion von Zeit zu Events
-// -----------------------------------------------------
-// Mathematisch ist ein Strudel-Pattern eine Funktion:
-//
-//   Pattern :: TimeRange -> [Hap]
-//
-// Du gibst der Funktion einen Zeitabschnitt (z.B. "Cycle 3,
-// von 0.5 bis 1.0") und sie gibt dir eine Liste von "Haps"
-// zurück — Events die in diesem Zeitabschnitt passieren.
-
-
-// -----------------------------------------------------
-// Hap (= "happening", was passiert)
-// -----------------------------------------------------
-// Ein Hap ist:
-//   - eine Zeitspanne (whole) — wann wäre das Event "natürlich"
-//   - eine Zeitspanne (part) — welcher Teil davon liegt im query-Bereich
-//   - ein Wert — was zu tun ist (z.B. {s: "bd", gain: 0.7})
-//
-// Wenn du ein Pattern mit "bd*4" hast und nach Events im
-// ersten Cycle fragst, gibt's vier Haps:
-//
-//   Hap 1:  whole = part = [0,    0.25],   value = {s: "bd"}
-//   Hap 2:  whole = part = [0.25, 0.5 ],   value = {s: "bd"}
-//   Hap 3:  whole = part = [0.5,  0.75],   value = {s: "bd"}
-//   Hap 4:  whole = part = [0.75, 1.0 ],   value = {s: "bd"}
-
-
-// -----------------------------------------------------
-// Whole vs. Part — der Unterschied
-// -----------------------------------------------------
-// "whole" ist die volle Dauer des Events.
-// "part" ist der Teil, der in der angefragten Zeitspanne liegt.
-//
-// Bei einfachen Patterns sind sie gleich. Bei langen Events
-// die teilweise außerhalb des Cycles liegen, sind sie
-// verschieden.
-//
-// Beispiel: ein Sample mit attack=1 das auf Cycle-Ende
-// startet — whole geht über die Cycle-Grenze, part nur bis
-// Cycle-Ende.
-
-
-// -----------------------------------------------------
-// Sehen wir's selbst — pattern.queryArc()
-// -----------------------------------------------------
-
-const p = s("bd hh sd hh")
-
-console.log(p.queryArc(0, 1))
-
-// Schauen in Browser-Console (F12). Du siehst eine Liste
-// von 4 Haps mit whole/part/value für jeden Hit.
-
-// Wenn der Code im Editor läuft, Strg+F12, schau in die
-// Konsole. Du siehst die Roh-Datenstruktur die Strudel
-// intern verwendet.
-
-
-// -----------------------------------------------------
-// Pattern als reine Funktion — Determinismus
-// -----------------------------------------------------
-// Ein Pattern ist DETERMINISTISCH. Frag dasselbe Pattern
-// mehrfach für denselben Zeitabschnitt → bekommst dieselben
-// Haps. Es gibt kein "Zustand" oder "Schritt-Zähler" intern.
-
-const q = s("bd*4")
+<p>Schauen in Browser-Console (F12). Du siehst eine Liste von 4 Haps mit whole/part/value für jeden Hit.</p>
+<p>Wenn der Code im Editor läuft, Strg+F12, schau in die Konsole. Du siehst die Roh-Datenstruktur die Strudel intern verwendet.</p>
+<h3>Pattern als reine Funktion — Determinismus</h3>
+<p>Ein Pattern ist DETERMINISTISCH. Frag dasselbe Pattern mehrfach für denselben Zeitabschnitt → bekommst dieselben Haps. Es gibt kein "Zustand" oder "Schritt-Zähler" intern.</p>
+<div class="snippet" id="snip-001" data-code-b64="Y29uc3QgcSA9IHMoImJkKjQiKQpjb25zb2xlLmxvZyhxLnF1ZXJ5QXJjKDAsIDEpKSAgIC8vIDQgYmQtSGFwcwpjb25zb2xlLmxvZyhxLnF1ZXJ5QXJjKDAsIDEpKSAgIC8vIGRpZXNlbGJlbiA0IGJkLUhhcHMKY29uc29sZS5sb2cocS5xdWVyeUFyYygwLCAxKSkgICAvLyB3aWVkZXIgZGllc2VsYmVu"><pre class="snippet-code"><code>const q = s(&quot;bd*4&quot;)
 console.log(q.queryArc(0, 1))   // 4 bd-Haps
 console.log(q.queryArc(0, 1))   // dieselben 4 bd-Haps
-console.log(q.queryArc(0, 1))   // wieder dieselben
+console.log(q.queryArc(0, 1))   // wieder dieselben</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Das ist mächtig. Es heißt:
-//   - Patterns kann man kombinieren ohne Side-Effects
-//   - "Vorwärts springen" geht (frag einfach Cycle 100)
-//   - Tests sind trivial (Input-Output-Vergleich)
+<pre><code>Das ist mächtig. Es heißt:
+  - Patterns kann man kombinieren ohne Side-Effects
+  - &quot;Vorwärts springen&quot; geht (frag einfach Cycle 100)
+  - Tests sind trivial (Input-Output-Vergleich)
+</code></pre>
+<h3>Aber: Zufall und Signale sind PSEUDO-zufällig</h3>
+<p>"rand" ist nicht echt zufällig — es ist eine Hash-Funktion auf der Zeit. Wenn du dasselbe Pattern zur selben Zeit abfragst, kriegst du denselben "Zufalls"-Wert.</p>
+<div class="snippet" id="snip-002" data-code-b64="Y29uc3QgciA9IG5vdGUoImM0KjQiKS5nYWluKHJhbmQpCmNvbnNvbGUubG9nKHIucXVlcnlBcmMoMCwgMSkpICAvLyA0IEhhcHMgbWl0ICJ6dWbDpGxsaWdlbiIgZ2FpbnMKY29uc29sZS5sb2coci5xdWVyeUFyYygwLCAxKSkgIC8vIEdMRUlDSEUgV2VydGUh"><pre class="snippet-code"><code>const r = note(&quot;c4*4&quot;).gain(rand)
+console.log(r.queryArc(0, 1))  // 4 Haps mit &quot;zufälligen&quot; gains
+console.log(r.queryArc(0, 1))  // GLEICHE Werte!</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Das ist Feature, kein Bug. Heißt: deine Performance ist reproduzierbar, auch wenn sie zufällig klingt.</p>
+<h3>Pattern-Operationen sind Function Composition</h3>
+<p>Wenn du .fast(2) auf ein Pattern packst, wird intern die Query-Funktion modifiziert: "frag das Original-Pattern auf einer doppelt so schnellen Zeitachse".</p>
+<div class="snippet" id="snip-003" data-code-b64="Y29uc3Qgc2xvd19wID0gcygiYmQgaGggc2QgaGgiKQpjb25zdCBmYXN0X3AgPSBzbG93X3AuZmFzdCgyKQ=="><pre class="snippet-code"><code>const slow_p = s(&quot;bd hh sd hh&quot;)
+const fast_p = slow_p.fast(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Aber: Zufall und Signale sind PSEUDO-zufällig
-// -----------------------------------------------------
-// "rand" ist nicht echt zufällig — es ist eine Hash-Funktion
-// auf der Zeit. Wenn du dasselbe Pattern zur selben Zeit
-// abfragst, kriegst du denselben "Zufalls"-Wert.
+<p>fast_p.query(0, 1) ist intern ungefähr:   slow_p.query(0, 2) — frag zwei Cycles vom Original</p>
+<p>Die Implementierung skaliert dann die whole/part-Zeiten zurück, damit alles im 0-1-Bereich liegt.</p>
+<h3>Stack ist Array-Verkettung</h3>
+<p>stack(a, b, c).query(0, 1) ist intern:   [...a.query(0, 1), ...b.query(0, 1), ...c.query(0, 1)]</p>
+<p>Also einfach alle Haps der Subpatterns zusammen. Wenn zwei Haps zur selben Zeit kommen — beide werden gespielt, parallel.</p>
+<h3>Das Pattern-Type-System</h3>
+<p>Patterns sind generisch über ihrem Wert-Typ:</p>
+<pre><code>  Pattern&lt;number&gt;          ← gain, lpf, etc
+  Pattern&lt;string&gt;          ← note-Namen, sample-Namen
+  Pattern&lt;{s, gain, ...}&gt;  ← komplette Sound-Events
+</code></pre>
+<p>Die Operationen fügen sich zusammen:</p>
+<p>note("c d e").s("piano").gain(0.7)</p>
+<p>Macht aus drei Pattern<string> + Pattern<string> + Pattern<number> ein Pattern<Sound-Event>.</p>
+<h3>Eigene Pattern-Operationen schreiben</h3>
+<p>Mit .fmap() transformierst du Werte:</p>
+<div class="snippet" id="snip-004" data-code-b64="Y29uc3QgbXlfcGF0dGVybiA9IG5vdGUoImMgZCBlIGciKS5mbWFwKHYgPT4gdiArICIgKHRyYW5zZm9ybWVkKSIpCmNvbnNvbGUubG9nKG15X3BhdHRlcm4ucXVlcnlBcmMoMCwgMSkp"><pre class="snippet-code"><code>const my_pattern = note(&quot;c d e g&quot;).fmap(v =&gt; v + &quot; (transformed)&quot;)
+console.log(my_pattern.queryArc(0, 1))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-const r = note("c4*4").gain(rand)
-console.log(r.queryArc(0, 1))  // 4 Haps mit "zufälligen" gains
-console.log(r.queryArc(0, 1))  // GLEICHE Werte!
-
-// Das ist Feature, kein Bug. Heißt: deine Performance ist
-// reproduzierbar, auch wenn sie zufällig klingt.
-
-
-// -----------------------------------------------------
-// Pattern-Operationen sind Function Composition
-// -----------------------------------------------------
-// Wenn du .fast(2) auf ein Pattern packst, wird intern
-// die Query-Funktion modifiziert: "frag das Original-Pattern
-// auf einer doppelt so schnellen Zeitachse".
-
-const slow_p = s("bd hh sd hh")
-const fast_p = slow_p.fast(2)
-
-// fast_p.query(0, 1) ist intern ungefähr:
-//   slow_p.query(0, 2) — frag zwei Cycles vom Original
-//
-// Die Implementierung skaliert dann die whole/part-Zeiten
-// zurück, damit alles im 0-1-Bereich liegt.
-
-
-// -----------------------------------------------------
-// Stack ist Array-Verkettung
-// -----------------------------------------------------
-// stack(a, b, c).query(0, 1) ist intern:
-//   [...a.query(0, 1), ...b.query(0, 1), ...c.query(0, 1)]
-//
-// Also einfach alle Haps der Subpatterns zusammen.
-// Wenn zwei Haps zur selben Zeit kommen — beide werden
-// gespielt, parallel.
-
-
-// -----------------------------------------------------
-// Das Pattern-Type-System
-// -----------------------------------------------------
-// Patterns sind generisch über ihrem Wert-Typ:
-//
-//   Pattern<number>          ← gain, lpf, etc
-//   Pattern<string>          ← note-Namen, sample-Namen
-//   Pattern<{s, gain, ...}>  ← komplette Sound-Events
-//
-// Die Operationen fügen sich zusammen:
-//
-//   note("c d e").s("piano").gain(0.7)
-//
-// Macht aus drei Pattern<string> + Pattern<string> +
-// Pattern<number> ein Pattern<Sound-Event>.
-
-
-// -----------------------------------------------------
-// Eigene Pattern-Operationen schreiben
-// -----------------------------------------------------
-// Mit .fmap() transformierst du Werte:
-
-const my_pattern = note("c d e g").fmap(v => v + " (transformed)")
-console.log(my_pattern.queryArc(0, 1))
-
-// Du siehst Haps mit Werten wie "c4 (transformed)".
-
-// Mit .withQueryTime() / .withHapTime() greifst du in die
-// Zeit ein (für eigene fast/slow-artige Operationen).
-
-
-// -----------------------------------------------------
-// signal — kontinuierliche Patterns
-// -----------------------------------------------------
-// sine, perlin, etc. sind technisch keine "diskreten" Patterns.
-// Sie geben für JEDEN Zeitpunkt einen Wert zurück, nicht
-// nur an Event-Punkten.
-//
-// Intern sind sie Patterns, deren queryArc() bei 0-Dauer-Frage
-// trotzdem einen Wert liefert. Das macht sie für Effekt-
-// Modulation perfekt — der Audio-Renderer fragt sehr feine
-// Zeitscheiben ab, kriegt überall einen Wert.
-
-
-// -----------------------------------------------------
-// Cycle vs. Beat — der Unterschied der Zeit-Einheiten
-// -----------------------------------------------------
-// Strudel rechnet IMMER in Cycles, nicht in Beats. Ein Cycle
-// ist eine abstrakte Einheit. Wieviele Beats da reinpassen,
-// ist Pattern-Sache.
-//
-// Default: 1 Cycle ist ein 4/4-Takt. Aber es könnte auch
-// ein 7/8-Takt sein, oder ein 13/16, oder...
-//
-// setcps(0.5) heißt: 0.5 Cycles pro Sekunde, also 2 Sekunden
-// pro Cycle. Bei 4 Beats pro Cycle = 4 Beats in 2 Sekunden
-// = 120 BPM.
-//
-// Aber: setcps gilt für CYCLES, nicht BEATS. Wenn dein Pattern
-// 7 Schritte hat statt 4, sind das 7 Schritte in 2 Sekunden,
-// also 210 "Beats" pro Minute — aber das macht Strudel egal,
-// es ist ein Cycle wie jeder andere.
-
-
-// -----------------------------------------------------
-// Mini-Demo: eigene Pattern-Funktion
-// -----------------------------------------------------
-// Verdopple ein Pattern mit Quint-Versatz:
-
-function fifthEcho(p) {
+<p>Du siehst Haps mit Werten wie "c4 (transformed)".</p>
+<p>Mit .withQueryTime() / .withHapTime() greifst du in die Zeit ein (für eigene fast/slow-artige Operationen).</p>
+<h3>signal — kontinuierliche Patterns</h3>
+<p>sine, perlin, etc. sind technisch keine "diskreten" Patterns. Sie geben für JEDEN Zeitpunkt einen Wert zurück, nicht nur an Event-Punkten.</p>
+<p>Intern sind sie Patterns, deren queryArc() bei 0-Dauer-Frage trotzdem einen Wert liefert. Das macht sie für Effekt- Modulation perfekt — der Audio-Renderer fragt sehr feine Zeitscheiben ab, kriegt überall einen Wert.</p>
+<h3>Cycle vs. Beat — der Unterschied der Zeit-Einheiten</h3>
+<p>Strudel rechnet IMMER in Cycles, nicht in Beats. Ein Cycle ist eine abstrakte Einheit. Wieviele Beats da reinpassen, ist Pattern-Sache.</p>
+<p>Default: 1 Cycle ist ein 4/4-Takt. Aber es könnte auch ein 7/8-Takt sein, oder ein 13/16, oder...</p>
+<p>setcps(0.5) heißt: 0.5 Cycles pro Sekunde, also 2 Sekunden pro Cycle. Bei 4 Beats pro Cycle = 4 Beats in 2 Sekunden = 120 BPM.</p>
+<p>Aber: setcps gilt für CYCLES, nicht BEATS. Wenn dein Pattern 7 Schritte hat statt 4, sind das 7 Schritte in 2 Sekunden, also 210 "Beats" pro Minute — aber das macht Strudel egal, es ist ein Cycle wie jeder andere.</p>
+<h3>Mini-Demo: eigene Pattern-Funktion</h3>
+<p>Verdopple ein Pattern mit Quint-Versatz:</p>
+<div class="snippet" id="snip-005" data-code-b64="ZnVuY3Rpb24gZmlmdGhFY2hvKHApIHsKICByZXR1cm4gc3RhY2socCwgcC5hZGQoNykubGF0ZSgwLjI1KSkKfQoKZmlmdGhFY2hvKG5vdGUoImM0IGU0IGc0IikpLnMoInBpYW5vIik="><pre class="snippet-code"><code>function fifthEcho(p) {
   return stack(p, p.add(7).late(0.25))
 }
 
-fifthEcho(note("c4 e4 g4")).s("piano")
+fifthEcho(note(&quot;c4 e4 g4&quot;)).s(&quot;piano&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Original + dasselbe Pattern 1/4 Cycle später, 7 Halbtöne
-// (Quinte) höher. Das ist genau was off(1/4, x => x.add(7))
-// macht — wir haben es gerade nochmal gebaut.
-
-
-// -----------------------------------------------------
-// Der Audio-Renderer — der letzte Schritt
-// -----------------------------------------------------
-// Ein Pattern ist eine reine Funktion. Bis hier passiert NICHTS
-// hörbares. Der Audio-Renderer (basierend auf WebAudio) macht
-// folgendes ungefähr alle 50 ms:
-//
-//   1. Frag das aktuell aktive Pattern für die nächsten 50 ms.
-//   2. Für jeden Hap: schedule ein WebAudio-Event zur richtigen Zeit.
-//   3. Je nach value: schedule Sample-Trigger, Synth-Stimme,
-//      Filter-Modulation, etc.
-//
-// Heißt: das Pattern wird KONTINUIERLICH abgefragt, in kleinen
-// Häppchen. Wenn du Code ÄNDERST und Strg+Enter drückst, wird
-// das alte Pattern verworfen, das neue ab JETZT abgefragt.
-
-
-// -----------------------------------------------------
-// Was wir damit gewinnen
-// -----------------------------------------------------
-// Strudels mathematische Klarheit hat praktische Folgen:
-//
-//   - Du kannst Patterns vorwärts spulen ("springe zu Cycle 100").
-//   - Tests sind möglich (Input-Pattern, Output-Haps prüfen).
-//   - Komposition ohne Side-Effects: f(g(p)) tut was du erwartest.
-//   - Live-Crossfades zwischen Pattern-Versionen sind möglich
-//     (alte Version weiter abfragen während neue beginnt).
-//   - Strudels Quellcode ist relativ klein und lesbar.
-
-
-// -----------------------------------------------------
-// Wo es aufhört, mathematisch zu sein
-// -----------------------------------------------------
-// Patterns selbst sind rein. Aber:
-//
-//   - WebAudio-Engine hat State (laufende Sample-Streams).
-//   - MIDI-Output schickt aktiv Daten raus.
-//   - Slider, Maus, MIDI-Input bringen externe State rein.
-//   - Sample-Lade-Verzögerungen brechen Determinismus.
-//
-// Heißt: das Modell ist ein Ideal, die Realität hat Lecks.
-// Aber das ist nichts ungewöhnliches — gilt für jede Sprache,
-// die mit der Außenwelt redet.
-
-
-// -----------------------------------------------------
-// Wenn du tiefer willst
-// -----------------------------------------------------
-// - Strudel-Quellcode auf GitHub: github.com/tidalcycles/strudel
-//   Das @strudel/core-Package hat den Pattern-Kern. ~1000 Zeilen.
-//
-// - TidalCycles-Original-Paper: Alex McLean (2014).
-//   "Making programming languages to dance to: Live Coding
-//   with Tidal".
-//
-// - Functional Reactive Programming (FRP) — Strudel ist eine
-//   musikalische Variante davon.
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 17
-// -----------------------------------------------------
-// Pattern :: TimeRange -> [Hap]
-//   Hap = {whole, part, value}
-//
-// Haps:
-//   whole = "natürliche" Event-Dauer
-//   part  = Teil der im Query-Bereich liegt
-//   value = was abgespielt wird
-//
-// Patterns sind:
-//   - rein (kein Side-Effect)
-//   - deterministisch (gleicher Input = gleicher Output)
-//   - komponierbar (f(g(p)) tut was erwartet)
-//
-// Zufall ist pseudo-zufällig, aber reproduzierbar.
-// Audio-Renderer fragt das Pattern in 50ms-Häppchen.
-//
-// Wenn du das verstanden hast, kannst du Strudels Verhalten
-// in Edge-Cases vorhersagen statt zu raten.
-//
-// Weiter zu 18_genre_kochbuch.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<p>Original + dasselbe Pattern 1/4 Cycle später, 7 Halbtöne (Quinte) höher. Das ist genau was off(1/4, x =&gt; x.add(7)) macht — wir haben es gerade nochmal gebaut.</p>
+<h3>Der Audio-Renderer — der letzte Schritt</h3>
+<p>Ein Pattern ist eine reine Funktion. Bis hier passiert NICHTS hörbares. Der Audio-Renderer (basierend auf WebAudio) macht folgendes ungefähr alle 50 ms:</p>
+<pre><code>  1. Frag das aktuell aktive Pattern für die nächsten 50 ms.
+  2. Für jeden Hap: schedule ein WebAudio-Event zur richtigen Zeit.
+  3. Je nach value: schedule Sample-Trigger, Synth-Stimme,
+     Filter-Modulation, etc.
+</code></pre>
+<p>Heißt: das Pattern wird KONTINUIERLICH abgefragt, in kleinen Häppchen. Wenn du Code ÄNDERST und Strg+Enter drückst, wird das alte Pattern verworfen, das neue ab JETZT abgefragt.</p>
+<h3>Was wir damit gewinnen</h3>
+<p>Strudels mathematische Klarheit hat praktische Folgen:</p>
+<pre><code>  - Du kannst Patterns vorwärts spulen (&quot;springe zu Cycle 100&quot;).
+  - Tests sind möglich (Input-Pattern, Output-Haps prüfen).
+  - Komposition ohne Side-Effects: f(g(p)) tut was du erwartest.
+  - Live-Crossfades zwischen Pattern-Versionen sind möglich
+    (alte Version weiter abfragen während neue beginnt).
+  - Strudels Quellcode ist relativ klein und lesbar.
+</code></pre>
+<h3>Wo es aufhört, mathematisch zu sein</h3>
+<p>Patterns selbst sind rein. Aber:</p>
+<pre><code>  - WebAudio-Engine hat State (laufende Sample-Streams).
+  - MIDI-Output schickt aktiv Daten raus.
+  - Slider, Maus, MIDI-Input bringen externe State rein.
+  - Sample-Lade-Verzögerungen brechen Determinismus.
+</code></pre>
+<p>Heißt: das Modell ist ein Ideal, die Realität hat Lecks. Aber das ist nichts ungewöhnliches — gilt für jede Sprache, die mit der Außenwelt redet.</p>
+<h3>Wenn du tiefer willst</h3>
+<ul>
+<li>Strudel-Quellcode auf GitHub: github.com/tidalcycles/strudel   Das @strudel/core-Package hat den Pattern-Kern. ~1000 Zeilen.</li>
+</ul>
+<pre><code>- TidalCycles-Original-Paper: Alex McLean (2014).
+  &quot;Making programming languages to dance to: Live Coding
+  with Tidal&quot;.
+</code></pre>
+<ul>
+<li>Functional Reactive Programming (FRP) — Strudel ist eine   musikalische Variante davon.</li>
+</ul>
+<h3>Mini-Zusammenfassung Kapitel 17</h3>
+<p>Pattern :: TimeRange -&gt; [Hap]   Hap = {whole, part, value}</p>
+<pre><code>Haps:
+  whole = &quot;natürliche&quot; Event-Dauer
+  part  = Teil der im Query-Bereich liegt
+  value = was abgespielt wird
+</code></pre>
+<pre><code>Patterns sind:
+  - rein (kein Side-Effect)
+  - deterministisch (gleicher Input = gleicher Output)
+  - komponierbar (f(g(p)) tut was erwartet)
+</code></pre>
+<p>Zufall ist pseudo-zufällig, aber reproduzierbar. Audio-Renderer fragt das Pattern in 50ms-Häppchen.</p>
+<p>Wenn du das verstanden hast, kannst du Strudels Verhalten in Edge-Cases vorhersagen statt zu raten.</p>
+<p>Weiter zu 18_genre_kochbuch.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

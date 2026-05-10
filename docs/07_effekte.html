@@ -4,491 +4,309 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>07 — Effekte — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>07 — Effekte</h1>
-<nav class="chapter-nav"><a href="06_akkorde_und_voicings.html" title="06 — Akkorde und Voicings">← Vorheriges</a><a href="08_signale_und_modulation.html" title="08 — Signale und Modulation">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="06_akkorde_und_voicings.html" title="06 — Akkorde und Voicings">← Zurück</a><a href="08_signale_und_modulation.html" title="08 — Signale und Modulation">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 07 — Effekte
-// =====================================================
-// Filter, Hall, Delay, Distortion, Hüllkurven (ADSR).
-// Strudel hat ungefähr 30 Effekte — du nutzt 5 davon
-// ständig, der Rest ist für Spezialfälle.
-// =====================================================
-
-
-// -----------------------------------------------------
-// Lowpass-Filter — der wichtigste Effekt
-// -----------------------------------------------------
-// .lpf(N) — alles über N Hz wird abgeschnitten.
-//
-//   Frequenz-Antwort:
-//
-//   Pegel
-//    1 |____
-//      |    \___
-//      |        \____
-//      |            \____
-//      |                 \___________
-//      +----+--------+--------+----- Frequenz (Hz)
-//          50      cutoff   10k
-
-note("c4*8").s("sawtooth").lpf(200)    // dumpf
-note("c4*8").s("sawtooth").lpf(800)    // warm
-note("c4*8").s("sawtooth").lpf(2000)   // ausgewogen
-note("c4*8").s("sawtooth").lpf(8000)   // spitz / fast offen
-
-
-// -----------------------------------------------------
-// Resonanz — der Filter brüllt zurück
-// -----------------------------------------------------
-// .lpq(N) — wie stark der Filter an seiner Cutoff-Frequenz
-// "zurückbeißt". 0 = neutral, 30+ = sehr resonant.
-//
-//   lpq(0)            lpq(10)            lpq(30)
-//
-//   ____               ___                .
-//       \___          /   \__            /|
-//           \___    _/       \__       _/ |\__
-//                                          \  \____
-//
-//   ohne Beule       sanfte Beule       scharfe Spitze
-//   "klingt zu"      "wow"              "pfeift"
-
-note("c2*8").s("sawtooth").lpf(800).lpq(0)
-note("c2*8").s("sawtooth").lpf(800).lpq(15)
-note("c2*8").s("sawtooth").lpf(800).lpq(30)
-
-// Hohe Resonanz lässt den Filter pfeifen. Klassisch für Acid-Bass.
-
-
-// -----------------------------------------------------
-// Filter-Pattern — der Sweep
-// -----------------------------------------------------
-// Cutoff kann selbst ein Pattern sein:
-
-note("c2*16").s("sawtooth").lpf("200 800 2000 4000")
-
-// Der Filter wandert pro Cycle vier Stufen hoch — von dumpf
-// zu offen.
-
-
-// -----------------------------------------------------
-// Highpass-Filter — alles UNTER abschneiden
-// -----------------------------------------------------
-
-note("c4*8").s("sawtooth").hpf(800)
-
-// Nur Höhen bleiben. Klingt wie durch Telefon, oder wie ein
-// Sound, der von hinten kommt.
-
-s("bd*4").hpf(200)
-
-// Auch auf Drums. Highpass auf bd nimmt den Bauch raus —
-// nützlich wenn ein anderer Bass-Layer den tiefen Bereich
-// braucht.
-
-
-// -----------------------------------------------------
-// Bandpass — nur eine Mitte
-// -----------------------------------------------------
-
-note("c4*8").s("sawtooth").bpf(1000)
-
-// Alles über UND unter 1000 Hz wird abgeschnitten. Klingt
-// wie aus einer Blechdose.
-
-
-// -----------------------------------------------------
-// Vowel-Filter — Vokal als Klang
-// -----------------------------------------------------
-
-s("bd*4 sd").vowel("<a e i o u>")
-
-// Pro Cycle ein anderer Vokal. Klingt wie ein Mund, der
-// "Aaah Eeeh Iiih Ooh Uuuh" formt.
-
-
-// -----------------------------------------------------
-// ADSR — die Hüllkurve
-// -----------------------------------------------------
-// Jeder Sound hat eine Form über die Zeit:
-//   Attack:  wie schnell rauf
-//   Decay:   wie schnell zur Sustain-Phase
-//   Sustain: Pegel während die Note hält
-//   Release: wie schnell aus
-//
-//   Pegel
-//   1.0 |   /\
-//       |  /  \____
-//   sus |..      ‾‾‾‾‾‾‾‾\
-//       | /              .\
-//       |/               . \___
-//   0.0 +----+---+-------+---+--→ Zeit
-//          A    D     hold    R
-//                     (sustain)
-
-note("c4").s("sawtooth").attack(0.001).release(0.05)
-// Pluck:
-//   |\
-//   | \____.________
-
-note("c4").s("sawtooth").attack(0.5).release(2)
-// Pad:
-//      ___________
-//     /            \____
-//    /                  \____
-//   /                        \___
-
-note("c4").s("sawtooth").attack(0.01).decay(0.1).sustain(0.5).release(0.4)
-// Klassisch — schneller Attack, sanfter Decay, mittel halten,
-// kurzer Release.
-//   /\
-//   | \___________
-//   |             \____
-
-
-// -----------------------------------------------------
-// Filter-Envelope — der "Wow"-Effekt
-// -----------------------------------------------------
-// Cutoff bewegt sich automatisch beim Anschlag.
-//   .lpa(s) — Filter-Attack (in Sekunden)
-//   .lpd(s) — Filter-Decay
-//   .lps(0..1) — Filter-Sustain-Pegel
-//   .lpr(s) — Filter-Release
-//   .lpenv(N) — Modulationstiefe (Oktaven)
-//
-//   Cutoff
-//      |  /\
-//      | /  \___
-//   lpf|/       ‾‾‾‾‾‾‾‾‾‾‾  ← Basis-Cutoff
-//      +--+----+-------------→ Zeit
-//        lpa  lpd
-//
-//   "wow" = Filter geht beim Hit auf, fällt zurück.
-//   Klassisch für Acid-Bass.
-
-note("c2*4").s("sawtooth").lpf(200).lpenv(4).lpa(0.01).lpd(0.2)
-
-// Bei jedem Anschlag öffnet der Filter um 4 Oktaven, fällt
-// dann in 0.2 s zurück.
-
-note("c2*8").s("sawtooth").lpf(150).lpenv(6).lpa(0).lpd(0.15).lpq(15)
-
-// Acid-Bass-Preset. Tiefer Cutoff, hoher Envelope-Hub, hohe
-// Resonanz. Klingt nach TB-303.
-
-
-// -----------------------------------------------------
-// Reverb — Hall
-// -----------------------------------------------------
-//
-//   Original           +Reverb (room 0.5)
-//
-//   |                  |
-//   X____              X___________________
-//                       ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾→ Hall-Schwanz
-//
-// Anders als Delay: nicht klare Echos, sondern dichte
-// Mischung von Tausenden Reflexionen — wie in einem Raum.
-
-note("c4 e4 g4").s("piano").room(0)        // trocken
-note("c4 e4 g4").s("piano").room(0.3)      // mittlerer Raum
-note("c4 e4 g4").s("piano").room(0.7)      // große Halle
-note("c4 e4 g4").s("piano").room(0.95)     // Kathedrale, fast Wash
-
-note("c4 e4 g4").s("piano").room(0.5).roomsize(8)   // sehr groß
-note("c4 e4 g4").s("piano").room(0.5).roomsize(0.5) // klein
-
-
-// 💡 PRAXIS — Reverb-Faustregeln
-//   - Hall ist KLEBSTOFF, kein Effekt. Eine Spur die für sich
-//     hallt klingt billig — eine Hall-Stimmung die ALLE Spuren
-//     teilen klingt nach Raum.
-//   - Reverb auf Pads/Vocals 4-15 s decay, auf Drums 0.3-0.8 s.
-//   - Hochpass auf den Reverb-Anteil (200-400 Hz), sonst Matsch.
-//   - "Mehr Pre-Delay" (in Strudel begrenzt machbar) = naeher,
-//     "kein Pre-Delay" = im Hall drin = weit weg.
-//   - room(0.95) klingt im Solo super, im Mix wie Wand-Wash.
-//     Realistische Werte sind 0.3-0.5.
-//   - JND-Schwelle: room < 0.05 ist faktisch unhörbar. Wenn
-//     Bypass-Test keinen klaren Unterschied zeigt — weglassen.
-
-
-// -----------------------------------------------------
-// Delay — Echo
-// -----------------------------------------------------
-//
-//   Original-Hit                  Echos (feedback=0.6, time=0.25)
-//
-//   |                              |   .   .   .   .
-//   X.............................X...X...X...X...X........
-//   ^                              ^   ^   ^   ^   ^
-//   100%                           60% 36% 22% 13% 8%
-//
-//   Echos werden bei jedem Durchlauf um 60% leiser.
-
-note("c4 e4 g4").s("piano").delay(0.5).delaytime(0.25).delayfeedback(0.6)
-
-// .delay(0.5) — wieviel vom Echo gemischt
-// .delaytime(0.25) — Echo-Zeit (Viertel-Cycle)
-// .delayfeedback(0.6) — wie oft das Echo zurückkommt
-//
-// VORSICHT: delayfeedback >= 1 → Lautstärke explodiert.
-
-note("c4").s("piano").delay(0.6).delaytime(0.125).delayfeedback(0.7)
-// Schnelles, langes Echo. Ping-Pong-artig.
-
-
-// -----------------------------------------------------
-// Pan — links/rechts
-// -----------------------------------------------------
-
-s("hh*8").pan("0 0.3 0.7 1 0.7 0.3 0 0.5")
-
-// Hihat wandert: links, mitte-links, mitte-rechts, ganz rechts, ...
-
-s("hh*16").pan(perlin.range(0.2, 0.8))
-
-// Sanfter, organischer Pan-Drift mit Perlin-Noise.
-// (Mehr zu Perlin und Signalen in Kapitel 08.)
-
-
-// -----------------------------------------------------
-// jux(rev) — der Stereo-Klassiker
-// -----------------------------------------------------
-
-note("c4 e4 g4 b4").s("piano").jux(rev)
-
-// Der LINKE Kanal spielt das Pattern normal. Der RECHTE
-// rückwärts. Klingt nach 70er-Jahre-Psychedelic, aber
-// funktioniert in jedem Genre.
-
-
-// -----------------------------------------------------
-// Distortion — Schmutz
-// -----------------------------------------------------
-// Verzerrung beschneidet die Wellenform an den Rändern.
-//
-//   Original         distort(0.3)       distort(2.0)
-//
-//      /\              /‾‾\              ____
-//     /  \            /    \            |    |
-//   _/    \_        _/      \_        _/      \_
-//      \  /            \    /            |    |
-//       \/              \__/              ‾‾‾‾
-//
-//   "rund"           "etwas        "Rechteck"
-//                    angekantet"
-
-note("c2*8").s("sawtooth").distort(0.3)
-note("c2*8").s("sawtooth").distort(1.0)
-note("c2*8").s("sawtooth").distort(3.0)
-
-// Ab 1.0 wird's knackig. 3.0 ist schon Wand-zu-Wand-Sägezahn.
-
-note("c2*8").s("sawtooth").shape(0.3)
-
-// .shape ist Waveshaping — etwas weicher als distort.
-
-
-// 💡 PRAXIS — Drive-Schwelle und Output-Kompensation
-// Saturation/Distortion macht den Sound LAUTER (mehr Energie
-// in den Obertönen). Wer's eindreht und dann denkt "klingt
-// besser" — testet meist nur lauter vs. leiser.
-//
-// Deshalb beim Drive-A/B IMMER Pegel-Match:
-note("c2*4").s("sawtooth").lpf(800).gain(0.7)
-note("c2*4").s("sawtooth").lpf(800).distort(0.5).gain(0.45)
-//                                                 ↑
-//                              gain runter um Saturations-Boost auszugleichen
-//
-// Wenn du den Unterschied jetzt noch hörst, ist es echte
-// Klangfärbung — nicht nur Pegel-Illusion.
-//
-// Drive-JND: < 0.05 (also distort(0.05) und drunter) ist
-// im Mix-Kontext kaum hörbar. Mindestens 0.1 wenn du
-// es tatsächlich willst.
-
-
-// -----------------------------------------------------
-// Bitcrusher — Lo-Fi
-// -----------------------------------------------------
-
-s("bd*4 sd").crush(4)
-s("bd*4 sd").crush(2)
-s("bd*4 sd").coarse(2)
-
-// .crush(N) — Bit-Reduktion. 1 = drastisch, 16 = fast original.
-// .coarse(N) — Sample-Rate-Reduktion. 1 = original, 4+ = roh.
-//
-// Beide zusammen ergeben den "kaputter alter Sampler"-Sound.
-
-s("bd*4 sd ~ cp ~").crush(5).coarse(2).hpf(80)
-
-
-// -----------------------------------------------------
-// Compressor — pumpen / zähmen
-// -----------------------------------------------------
-
-s("bd*4, ~ cp ~ cp, hh*16").compressor("-20:4:6:0.005:0.2")
-
-// Format: "threshold:ratio:knee:attack:release"
-// -20 dB = ab da wird komprimiert
-// 4 = 4:1 Ratio (mittel)
-// 6 dB Knee
-// 5 ms Attack, 200 ms Release
-
-
-// -----------------------------------------------------
-// Sidechain-Ducking
-// -----------------------------------------------------
-// Bass wird leise wenn Kick spielt — der Track "atmet".
-
-stack(
-  s("bd*4").orbit(1),                          // Kick im Orbit 1
-  note("c2*8").s("sawtooth").lpf(400)
+<article class="prose">
+<h1>Kapitel 07 — Effekte</h1>
+<p>Filter, Hall, Delay, Distortion, Hüllkurven (ADSR). Strudel hat ungefähr 30 Effekte — du nutzt 5 davon ständig, der Rest ist für Spezialfälle.</p>
+<h3>Lowpass-Filter — der wichtigste Effekt</h3>
+<p>.lpf(N) — alles über N Hz wird abgeschnitten.</p>
+<p>Frequenz-Antwort:</p>
+<pre><code>  Pegel
+   1 |____
+     |    \___
+     |        \____
+     |            \____
+     |                 \___________
+     +----+--------+--------+----- Frequenz (Hz)
+         50      cutoff   10k
+</code></pre>
+<div class="snippet" id="snip-000" data-code-b64="bm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikubHBmKDIwMCkgICAgLy8gZHVtcGYKbm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikubHBmKDgwMCkgICAgLy8gd2FybQpub3RlKCJjNCo4Iikucygic2F3dG9vdGgiKS5scGYoMjAwMCkgICAvLyBhdXNnZXdvZ2VuCm5vdGUoImM0KjgiKS5zKCJzYXd0b290aCIpLmxwZig4MDAwKSAgIC8vIHNwaXR6IC8gZmFzdCBvZmZlbg=="><pre class="snippet-code"><code>note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).lpf(200)    // dumpf
+note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).lpf(800)    // warm
+note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).lpf(2000)   // ausgewogen
+note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).lpf(8000)   // spitz / fast offen</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>Resonanz — der Filter brüllt zurück</h3>
+<p>.lpq(N) — wie stark der Filter an seiner Cutoff-Frequenz "zurückbeißt". 0 = neutral, 30+ = sehr resonant.</p>
+<p>lpq(0)            lpq(10)            lpq(30)</p>
+<pre><code>  ____               ___                .
+      \___          /   \__            /|
+          \___    _/       \__       _/ |\__
+                                         \  \____
+</code></pre>
+<pre><code>  ohne Beule       sanfte Beule       scharfe Spitze
+  &quot;klingt zu&quot;      &quot;wow&quot;              &quot;pfeift&quot;
+</code></pre>
+<div class="snippet" id="snip-001" data-code-b64="bm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKDgwMCkubHBxKDApCm5vdGUoImMyKjgiKS5zKCJzYXd0b290aCIpLmxwZig4MDApLmxwcSgxNSkKbm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKDgwMCkubHBxKDMwKQ=="><pre class="snippet-code"><code>note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(800).lpq(0)
+note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(800).lpq(15)
+note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(800).lpq(30)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Hohe Resonanz lässt den Filter pfeifen. Klassisch für Acid-Bass.</p>
+<h3>Filter-Pattern — der Sweep</h3>
+<p>Cutoff kann selbst ein Pattern sein:</p>
+<div class="snippet" id="snip-002" data-code-b64="bm90ZSgiYzIqMTYiKS5zKCJzYXd0b290aCIpLmxwZigiMjAwIDgwMCAyMDAwIDQwMDAiKQ=="><pre class="snippet-code"><code>note(&quot;c2*16&quot;).s(&quot;sawtooth&quot;).lpf(&quot;200 800 2000 4000&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Der Filter wandert pro Cycle vier Stufen hoch — von dumpf zu offen.</p>
+<h3>Highpass-Filter — alles UNTER abschneiden</h3>
+<div class="snippet" id="snip-003" data-code-b64="bm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikuaHBmKDgwMCk="><pre class="snippet-code"><code>note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).hpf(800)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Nur Höhen bleiben. Klingt wie durch Telefon, oder wie ein Sound, der von hinten kommt.</p>
+<div class="snippet" id="snip-004" data-code-b64="cygiYmQqNCIpLmhwZigyMDAp"><pre class="snippet-code"><code>s(&quot;bd*4&quot;).hpf(200)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Auch auf Drums. Highpass auf bd nimmt den Bauch raus — nützlich wenn ein anderer Bass-Layer den tiefen Bereich braucht.</p>
+<h3>Bandpass — nur eine Mitte</h3>
+<div class="snippet" id="snip-005" data-code-b64="bm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikuYnBmKDEwMDAp"><pre class="snippet-code"><code>note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).bpf(1000)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Alles über UND unter 1000 Hz wird abgeschnitten. Klingt wie aus einer Blechdose.</p>
+<h3>Vowel-Filter — Vokal als Klang</h3>
+<div class="snippet" id="snip-006" data-code-b64="cygiYmQqNCBzZCIpLnZvd2VsKCI8YSBlIGkgbyB1PiIp"><pre class="snippet-code"><code>s(&quot;bd*4 sd&quot;).vowel(&quot;&lt;a e i o u&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Pro Cycle ein anderer Vokal. Klingt wie ein Mund, der "Aaah Eeeh Iiih Ooh Uuuh" formt.</p>
+<h3>ADSR — die Hüllkurve</h3>
+<pre><code>Jeder Sound hat eine Form über die Zeit:
+  Attack:  wie schnell rauf
+  Decay:   wie schnell zur Sustain-Phase
+  Sustain: Pegel während die Note hält
+  Release: wie schnell aus
+</code></pre>
+<pre><code>  Pegel
+  1.0 |   /\
+      |  /  \____
+  sus |..      ‾‾‾‾‾‾‾‾\
+      | /              .\
+      |/               . \___
+  0.0 +----+---+-------+---+--→ Zeit
+         A    D     hold    R
+                    (sustain)
+</code></pre>
+<div class="snippet" id="snip-007" data-code-b64="bm90ZSgiYzQiKS5zKCJzYXd0b290aCIpLmF0dGFjaygwLjAwMSkucmVsZWFzZSgwLjA1KQ=="><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;sawtooth&quot;).attack(0.001).release(0.05)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<pre><code>Pluck:
+  |\
+  | \____.________
+</code></pre>
+<div class="snippet" id="snip-008" data-code-b64="bm90ZSgiYzQiKS5zKCJzYXd0b290aCIpLmF0dGFjaygwLjUpLnJlbGVhc2UoMik="><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;sawtooth&quot;).attack(0.5).release(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<pre><code>Pad:
+     ___________
+    /            \____
+   /                  \____
+  /                        \___
+</code></pre>
+<div class="snippet" id="snip-009" data-code-b64="bm90ZSgiYzQiKS5zKCJzYXd0b290aCIpLmF0dGFjaygwLjAxKS5kZWNheSgwLjEpLnN1c3RhaW4oMC41KS5yZWxlYXNlKDAuNCk="><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;sawtooth&quot;).attack(0.01).decay(0.1).sustain(0.5).release(0.4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<pre><code>Klassisch — schneller Attack, sanfter Decay, mittel halten,
+kurzer Release.
+  /\
+  | \___________
+  |             \____
+</code></pre>
+<h3>Filter-Envelope — der "Wow"-Effekt</h3>
+<pre><code>Cutoff bewegt sich automatisch beim Anschlag.
+  .lpa(s) — Filter-Attack (in Sekunden)
+  .lpd(s) — Filter-Decay
+  .lps(0..1) — Filter-Sustain-Pegel
+  .lpr(s) — Filter-Release
+  .lpenv(N) — Modulationstiefe (Oktaven)
+</code></pre>
+<pre><code>  Cutoff
+     |  /\
+     | /  \___
+  lpf|/       ‾‾‾‾‾‾‾‾‾‾‾  ← Basis-Cutoff
+     +--+----+-------------→ Zeit
+       lpa  lpd
+</code></pre>
+<pre><code>  &quot;wow&quot; = Filter geht beim Hit auf, fällt zurück.
+  Klassisch für Acid-Bass.
+</code></pre>
+<div class="snippet" id="snip-010" data-code-b64="bm90ZSgiYzIqNCIpLnMoInNhd3Rvb3RoIikubHBmKDIwMCkubHBlbnYoNCkubHBhKDAuMDEpLmxwZCgwLjIp"><pre class="snippet-code"><code>note(&quot;c2*4&quot;).s(&quot;sawtooth&quot;).lpf(200).lpenv(4).lpa(0.01).lpd(0.2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Bei jedem Anschlag öffnet der Filter um 4 Oktaven, fällt dann in 0.2 s zurück.</p>
+<div class="snippet" id="snip-011" data-code-b64="bm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKDE1MCkubHBlbnYoNikubHBhKDApLmxwZCgwLjE1KS5scHEoMTUp"><pre class="snippet-code"><code>note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(150).lpenv(6).lpa(0).lpd(0.15).lpq(15)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Acid-Bass-Preset. Tiefer Cutoff, hoher Envelope-Hub, hohe Resonanz. Klingt nach TB-303.</p>
+<h3>Reverb — Hall</h3>
+<p>Original           +Reverb (room 0.5)</p>
+<pre><code>  |                  |
+  X____              X___________________
+                      ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾→ Hall-Schwanz
+</code></pre>
+<p>Anders als Delay: nicht klare Echos, sondern dichte Mischung von Tausenden Reflexionen — wie in einem Raum.</p>
+<div class="snippet" id="snip-012" data-code-b64="bm90ZSgiYzQgZTQgZzQiKS5zKCJwaWFubyIpLnJvb20oMCkgICAgICAgIC8vIHRyb2NrZW4Kbm90ZSgiYzQgZTQgZzQiKS5zKCJwaWFubyIpLnJvb20oMC4zKSAgICAgIC8vIG1pdHRsZXJlciBSYXVtCm5vdGUoImM0IGU0IGc0IikucygicGlhbm8iKS5yb29tKDAuNykgICAgICAvLyBncm/Dn2UgSGFsbGUKbm90ZSgiYzQgZTQgZzQiKS5zKCJwaWFubyIpLnJvb20oMC45NSkgICAgIC8vIEthdGhlZHJhbGUsIGZhc3QgV2FzaAoKbm90ZSgiYzQgZTQgZzQiKS5zKCJwaWFubyIpLnJvb20oMC41KS5yb29tc2l6ZSg4KSAgIC8vIHNlaHIgZ3Jvw58Kbm90ZSgiYzQgZTQgZzQiKS5zKCJwaWFubyIpLnJvb20oMC41KS5yb29tc2l6ZSgwLjUpIC8vIGtsZWlu"><pre class="snippet-code"><code>note(&quot;c4 e4 g4&quot;).s(&quot;piano&quot;).room(0)        // trocken
+note(&quot;c4 e4 g4&quot;).s(&quot;piano&quot;).room(0.3)      // mittlerer Raum
+note(&quot;c4 e4 g4&quot;).s(&quot;piano&quot;).room(0.7)      // große Halle
+note(&quot;c4 e4 g4&quot;).s(&quot;piano&quot;).room(0.95)     // Kathedrale, fast Wash
+
+note(&quot;c4 e4 g4&quot;).s(&quot;piano&quot;).room(0.5).roomsize(8)   // sehr groß
+note(&quot;c4 e4 g4&quot;).s(&quot;piano&quot;).room(0.5).roomsize(0.5) // klein</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<pre><code>💡 PRAXIS — Reverb-Faustregeln
+  - Hall ist KLEBSTOFF, kein Effekt. Eine Spur die für sich
+    hallt klingt billig — eine Hall-Stimmung die ALLE Spuren
+    teilen klingt nach Raum.
+  - Reverb auf Pads/Vocals 4-15 s decay, auf Drums 0.3-0.8 s.
+  - Hochpass auf den Reverb-Anteil (200-400 Hz), sonst Matsch.
+  - &quot;Mehr Pre-Delay&quot; (in Strudel begrenzt machbar) = naeher,
+    &quot;kein Pre-Delay&quot; = im Hall drin = weit weg.
+  - room(0.95) klingt im Solo super, im Mix wie Wand-Wash.
+    Realistische Werte sind 0.3-0.5.
+  - JND-Schwelle: room &lt; 0.05 ist faktisch unhörbar. Wenn
+    Bypass-Test keinen klaren Unterschied zeigt — weglassen.
+</code></pre>
+<h3>Delay — Echo</h3>
+<p>Original-Hit                  Echos (feedback=0.6, time=0.25)</p>
+<pre><code>  |                              |   .   .   .   .
+  X.............................X...X...X...X...X........
+  ^                              ^   ^   ^   ^   ^
+  100%                           60% 36% 22% 13% 8%
+</code></pre>
+<p>Echos werden bei jedem Durchlauf um 60% leiser.</p>
+<div class="snippet" id="snip-013" data-code-b64="bm90ZSgiYzQgZTQgZzQiKS5zKCJwaWFubyIpLmRlbGF5KDAuNSkuZGVsYXl0aW1lKDAuMjUpLmRlbGF5ZmVlZGJhY2soMC42KQ=="><pre class="snippet-code"><code>note(&quot;c4 e4 g4&quot;).s(&quot;piano&quot;).delay(0.5).delaytime(0.25).delayfeedback(0.6)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.delay(0.5) — wieviel vom Echo gemischt .delaytime(0.25) — Echo-Zeit (Viertel-Cycle) .delayfeedback(0.6) — wie oft das Echo zurückkommt</p>
+<p>VORSICHT: delayfeedback &gt;= 1 → Lautstärke explodiert.</p>
+<div class="snippet" id="snip-014" data-code-b64="bm90ZSgiYzQiKS5zKCJwaWFubyIpLmRlbGF5KDAuNikuZGVsYXl0aW1lKDAuMTI1KS5kZWxheWZlZWRiYWNrKDAuNyk="><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;piano&quot;).delay(0.6).delaytime(0.125).delayfeedback(0.7)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Schnelles, langes Echo. Ping-Pong-artig.</p>
+<h3>Pan — links/rechts</h3>
+<div class="snippet" id="snip-015" data-code-b64="cygiaGgqOCIpLnBhbigiMCAwLjMgMC43IDEgMC43IDAuMyAwIDAuNSIp"><pre class="snippet-code"><code>s(&quot;hh*8&quot;).pan(&quot;0 0.3 0.7 1 0.7 0.3 0 0.5&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Hihat wandert: links, mitte-links, mitte-rechts, ganz rechts, ...</p>
+<div class="snippet" id="snip-016" data-code-b64="cygiaGgqMTYiKS5wYW4ocGVybGluLnJhbmdlKDAuMiwgMC44KSk="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).pan(perlin.range(0.2, 0.8))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Sanfter, organischer Pan-Drift mit Perlin-Noise. (Mehr zu Perlin und Signalen in Kapitel 08.)</p>
+<h3>jux(rev) — der Stereo-Klassiker</h3>
+<div class="snippet" id="snip-017" data-code-b64="bm90ZSgiYzQgZTQgZzQgYjQiKS5zKCJwaWFubyIpLmp1eChyZXYp"><pre class="snippet-code"><code>note(&quot;c4 e4 g4 b4&quot;).s(&quot;piano&quot;).jux(rev)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Der LINKE Kanal spielt das Pattern normal. Der RECHTE rückwärts. Klingt nach 70er-Jahre-Psychedelic, aber funktioniert in jedem Genre.</p>
+<h3>Distortion — Schmutz</h3>
+<p>Verzerrung beschneidet die Wellenform an den Rändern.</p>
+<p>Original         distort(0.3)       distort(2.0)</p>
+<pre><code>     /\              /‾‾\              ____
+    /  \            /    \            |    |
+  _/    \_        _/      \_        _/      \_
+     \  /            \    /            |    |
+      \/              \__/              ‾‾‾‾
+</code></pre>
+<pre><code>  &quot;rund&quot;           &quot;etwas        &quot;Rechteck&quot;
+                   angekantet&quot;
+</code></pre>
+<div class="snippet" id="snip-018" data-code-b64="bm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikuZGlzdG9ydCgwLjMpCm5vdGUoImMyKjgiKS5zKCJzYXd0b290aCIpLmRpc3RvcnQoMS4wKQpub3RlKCJjMio4Iikucygic2F3dG9vdGgiKS5kaXN0b3J0KDMuMCk="><pre class="snippet-code"><code>note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).distort(0.3)
+note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).distort(1.0)
+note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).distort(3.0)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Ab 1.0 wird's knackig. 3.0 ist schon Wand-zu-Wand-Sägezahn.</p>
+<div class="snippet" id="snip-019" data-code-b64="bm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikuc2hhcGUoMC4zKQ=="><pre class="snippet-code"><code>note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).shape(0.3)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.shape ist Waveshaping — etwas weicher als distort.</p>
+<p>💡 PRAXIS — Drive-Schwelle und Output-Kompensation Saturation/Distortion macht den Sound LAUTER (mehr Energie in den Obertönen). Wer's eindreht und dann denkt "klingt besser" — testet meist nur lauter vs. leiser.</p>
+<p>Deshalb beim Drive-A/B IMMER Pegel-Match:</p>
+<div class="snippet" id="snip-020" data-code-b64="bm90ZSgiYzIqNCIpLnMoInNhd3Rvb3RoIikubHBmKDgwMCkuZ2FpbigwLjcpCm5vdGUoImMyKjQiKS5zKCJzYXd0b290aCIpLmxwZig4MDApLmRpc3RvcnQoMC41KS5nYWluKDAuNDUp"><pre class="snippet-code"><code>note(&quot;c2*4&quot;).s(&quot;sawtooth&quot;).lpf(800).gain(0.7)
+note(&quot;c2*4&quot;).s(&quot;sawtooth&quot;).lpf(800).distort(0.5).gain(0.45)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<pre><code>                                                ↑
+                             gain runter um Saturations-Boost auszugleichen
+</code></pre>
+<p>Wenn du den Unterschied jetzt noch hörst, ist es echte Klangfärbung — nicht nur Pegel-Illusion.</p>
+<p>Drive-JND: &lt; 0.05 (also distort(0.05) und drunter) ist im Mix-Kontext kaum hörbar. Mindestens 0.1 wenn du es tatsächlich willst.</p>
+<h3>Bitcrusher — Lo-Fi</h3>
+<div class="snippet" id="snip-021" data-code-b64="cygiYmQqNCBzZCIpLmNydXNoKDQpCnMoImJkKjQgc2QiKS5jcnVzaCgyKQpzKCJiZCo0IHNkIikuY29hcnNlKDIp"><pre class="snippet-code"><code>s(&quot;bd*4 sd&quot;).crush(4)
+s(&quot;bd*4 sd&quot;).crush(2)
+s(&quot;bd*4 sd&quot;).coarse(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.crush(N) — Bit-Reduktion. 1 = drastisch, 16 = fast original. .coarse(N) — Sample-Rate-Reduktion. 1 = original, 4+ = roh.</p>
+<p>Beide zusammen ergeben den "kaputter alter Sampler"-Sound.</p>
+<div class="snippet" id="snip-022" data-code-b64="cygiYmQqNCBzZCB+IGNwIH4iKS5jcnVzaCg1KS5jb2Fyc2UoMikuaHBmKDgwKQ=="><pre class="snippet-code"><code>s(&quot;bd*4 sd ~ cp ~&quot;).crush(5).coarse(2).hpf(80)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>Compressor — pumpen / zähmen</h3>
+<div class="snippet" id="snip-023" data-code-b64="cygiYmQqNCwgfiBjcCB+IGNwLCBoaCoxNiIpLmNvbXByZXNzb3IoIi0yMDo0OjY6MC4wMDU6MC4yIik="><pre class="snippet-code"><code>s(&quot;bd*4, ~ cp ~ cp, hh*16&quot;).compressor(&quot;-20:4:6:0.005:0.2&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Format: "threshold:ratio:knee:attack:release" -20 dB = ab da wird komprimiert 4 = 4:1 Ratio (mittel) 6 dB Knee 5 ms Attack, 200 ms Release</p>
+<h3>Sidechain-Ducking</h3>
+<p>Bass wird leise wenn Kick spielt — der Track "atmet".</p>
+<div class="snippet" id="snip-024" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLm9yYml0KDEpLCAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gS2ljayBpbSBPcmJpdCAxCiAgbm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKDQwMCkKICAgIC5kdWNrb3JiaXQoMSkuZHVja2RlcHRoKDAuNykuZHVja2F0dGFjaygwLjA1KQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).orbit(1),                          // Kick im Orbit 1
+  note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(400)
     .duckorbit(1).duckdepth(0.7).duckattack(0.05)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Bass wird gegen Kick geduckt. .orbit gruppiert Patterns
-// in Effekt-Bussen.
+<p>Bass wird gegen Kick geduckt. .orbit gruppiert Patterns in Effekt-Bussen.</p>
+<h3>Phaser — schwebend</h3>
+<div class="snippet" id="snip-025" data-code-b64="bm90ZSgiYzQgZTQgZzQiKS5zKCJzYXd0b290aCIpLnBoYXNlcigyKQpub3RlKCJjNCoxNiIpLnMoInNhd3Rvb3RoIikucGhhc2VyKCI8MC41IDEgMiA0PiIpLnBoYXNlcmRlcHRoKDAuOCk="><pre class="snippet-code"><code>note(&quot;c4 e4 g4&quot;).s(&quot;sawtooth&quot;).phaser(2)
+note(&quot;c4*16&quot;).s(&quot;sawtooth&quot;).phaser(&quot;&lt;0.5 1 2 4&gt;&quot;).phaserdepth(0.8)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Pro Cycle eine andere Phaser-Geschwindigkeit. Tiefe 0.8 macht's deutlich.</p>
+<h3>Tremolo — pulsierend</h3>
+<div class="snippet" id="snip-026" data-code-b64="bm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikudHJlbW9sb3N5bmMoMikudHJlbW9sb2RlcHRoKDAuNSk="><pre class="snippet-code"><code>note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).tremolosync(2).tremolodepth(0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Phaser — schwebend
-// -----------------------------------------------------
-
-note("c4 e4 g4").s("sawtooth").phaser(2)
-note("c4*16").s("sawtooth").phaser("<0.5 1 2 4>").phaserdepth(0.8)
-
-// Pro Cycle eine andere Phaser-Geschwindigkeit. Tiefe 0.8
-// macht's deutlich.
-
-
-// -----------------------------------------------------
-// Tremolo — pulsierend
-// -----------------------------------------------------
-
-note("c4*8").s("sawtooth").tremolosync(2).tremolodepth(0.5)
-
-// Zweimal pro Cycle pulsiert die Lautstärke um 50%.
-
-
-// -----------------------------------------------------
-// Mehrere Effekte in einer Kette
-// -----------------------------------------------------
-
-note("c2*8").s("sawtooth")
+<p>Zweimal pro Cycle pulsiert die Lautstärke um 50%.</p>
+<h3>Mehrere Effekte in einer Kette</h3>
+<div class="snippet" id="snip-027" data-code-b64="bm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikKICAubHBmKDgwMCkubHBxKDEwKS5scGVudig4KS5scGEoMCkubHBkKDAuMTUpCiAgLmRpc3RvcnQoMC4yKQogIC5kZWxheSgwLjMpLmRlbGF5dGltZSgwLjEyNSkuZGVsYXlmZWVkYmFjaygwLjUpCiAgLnJvb20oMC40KQ=="><pre class="snippet-code"><code>note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;)
   .lpf(800).lpq(10).lpenv(8).lpa(0).lpd(0.15)
   .distort(0.2)
   .delay(0.3).delaytime(0.125).delayfeedback(0.5)
-  .room(0.4)
+  .room(0.4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Acid-Bass mit Distortion, Delay und Reverb.
-// Reihenfolge spielt keine Rolle in Strudel — die einzelnen
-// .lpf, .delay, .room werden intern in fester Engine-Reihenfolge
-// angewendet.
+<p>Acid-Bass mit Distortion, Delay und Reverb. Reihenfolge spielt keine Rolle in Strudel — die einzelnen .lpf, .delay, .room werden intern in fester Engine-Reihenfolge angewendet.</p>
+<h3>Wo-anders-rum: Effekt-Pattern</h3>
+<p>Effekte können selbst Patterns sein — pro Step ein anderer Wert.</p>
+<div class="snippet" id="snip-028" data-code-b64="cygiaGgqMTYiKS5nYWluKCIwLjMgMC41IDAuNyAwLjQiKQpzKCJiZCo0Iikucm9vbSgiPDAgMC4zIDAuNiAwLjk+IikKbm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikubHBmKCIyMDAgNDAwMCA4MDAgMTUwMCIp"><pre class="snippet-code"><code>s(&quot;hh*16&quot;).gain(&quot;0.3 0.5 0.7 0.4&quot;)
+s(&quot;bd*4&quot;).room(&quot;&lt;0 0.3 0.6 0.9&gt;&quot;)
+note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).lpf(&quot;200 4000 800 1500&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Wo-anders-rum: Effekt-Pattern
-// -----------------------------------------------------
-// Effekte können selbst Patterns sein — pro Step ein
-// anderer Wert.
-
-s("hh*16").gain("0.3 0.5 0.7 0.4")
-s("bd*4").room("<0 0.3 0.6 0.9>")
-note("c4*8").s("sawtooth").lpf("200 4000 800 1500")
-
-// Das ist ein häufig übersehener Trick. Effekte sind nicht
-// statisch — alles ist Pattern-fähig.
-
-
-// -----------------------------------------------------
-// FINALE — voller Track mit allen Effekten
-// -----------------------------------------------------
-
-stack(
-  s("bd*4").gain(0.9),
-  s("~ cp ~ cp").room(0.3),
-  s("hh*16").gain("0.3 0.4 0.5 0.4").pan(perlin.range(0.3, 0.7)),
-  note("c2 c2 eb2 g2")
-    .s("sawtooth")
+<p>Das ist ein häufig übersehener Trick. Effekte sind nicht statisch — alles ist Pattern-fähig.</p>
+<h3>FINALE — voller Track mit allen Effekten</h3>
+<div class="snippet" id="snip-029" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLmdhaW4oMC45KSwKICBzKCJ+IGNwIH4gY3AiKS5yb29tKDAuMyksCiAgcygiaGgqMTYiKS5nYWluKCIwLjMgMC40IDAuNSAwLjQiKS5wYW4ocGVybGluLnJhbmdlKDAuMywgMC43KSksCiAgbm90ZSgiYzIgYzIgZWIyIGcyIikKICAgIC5zKCJzYXd0b290aCIpCiAgICAubHBmKDgwMCkubHBlbnYoNikubHBhKDApLmxwZCgwLjE1KS5scHEoOCkKICAgIC5kaXN0b3J0KDAuMSkKICAgIC5nYWluKDAuNyksCiAgbm90ZSgiPGViNCBnNCBjNSBiYjQ+IikKICAgIC5zKCJ0cmlhbmdsZSIpCiAgICAuYXR0YWNrKDAuMDUpLnJlbGVhc2UoMC41KQogICAgLmxwZigyMDAwKQogICAgLmRlbGF5KDAuNCkuZGVsYXl0aW1lKDAuMzc1KS5kZWxheWZlZWRiYWNrKDAuNikKICAgIC5yb29tKDAuNSkKICAgIC5nYWluKDAuNCkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).gain(0.9),
+  s(&quot;~ cp ~ cp&quot;).room(0.3),
+  s(&quot;hh*16&quot;).gain(&quot;0.3 0.4 0.5 0.4&quot;).pan(perlin.range(0.3, 0.7)),
+  note(&quot;c2 c2 eb2 g2&quot;)
+    .s(&quot;sawtooth&quot;)
     .lpf(800).lpenv(6).lpa(0).lpd(0.15).lpq(8)
     .distort(0.1)
     .gain(0.7),
-  note("<eb4 g4 c5 bb4>")
-    .s("triangle")
+  note(&quot;&lt;eb4 g4 c5 bb4&gt;&quot;)
+    .s(&quot;triangle&quot;)
     .attack(0.05).release(0.5)
     .lpf(2000)
     .delay(0.4).delaytime(0.375).delayfeedback(0.6)
     .room(0.5)
     .gain(0.4)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Drums knochentrocken vorne, Snare mit Hall, Hihats wandern
-// stereo, Acid-Bass mit Filter-Envelope und Distortion,
-// Lead mit Echo und Reverb.
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Eigenes Setup
-// -----------------------------------------------------
-// Nimm das FINALE und ändere systematisch:
-//   - hpf(200) auf den Bass packen — was ändert sich?
-//   - Lead-Delay auf delaytime("<0.125 0.25 0.375 0.5>") — wandernder Echo
-//   - Drums mit crush(6) — Lo-Fi-Drums
-//   - Lead-Reverb auf 0.95 — Wand-Wash
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 07 — die Top 8
-// -----------------------------------------------------
-// Die acht häufigsten:
-//   .gain(0..1)           → Lautstärke
-//   .lpf(Hz)              → Lowpass-Filter
-//   .hpf(Hz)              → Highpass-Filter
-//   .room(0..1)           → Hall
-//   .delay(0..1)          → Echo
-//   .pan(0..1)            → Stereo-Position
-//   .attack(s) .release(s) → Hüllkurve
-//   .lpenv(N) .lpa() .lpd() → Filter-Envelope
-//
-// Den Rest brauchst du seltener — aber er ist da wenn nötig.
-//
-// Ein Hinweis: Effekte sind GLOBAL pro Spur. Wenn du auf ein
-// Pattern einen Reverb packst, hat ALLES in dem Pattern den
-// Reverb. Willst du nur einen Teil halligen → eigenen Layer
-// im stack().
-//
-// Weiter zu 08_signale_und_modulation.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<p>Drums knochentrocken vorne, Snare mit Hall, Hihats wandern stereo, Acid-Bass mit Filter-Envelope und Distortion, Lead mit Echo und Reverb.</p>
+<h3>▶ AUFGABE: Eigenes Setup</h3>
+<pre><code>Nimm das FINALE und ändere systematisch:
+  - hpf(200) auf den Bass packen — was ändert sich?
+  - Lead-Delay auf delaytime(&quot;&lt;0.125 0.25 0.375 0.5&gt;&quot;) — wandernder Echo
+  - Drums mit crush(6) — Lo-Fi-Drums
+  - Lead-Reverb auf 0.95 — Wand-Wash
+</code></pre>
+<h3>Mini-Zusammenfassung Kapitel 07 — die Top 8</h3>
+<pre><code>Die acht häufigsten:
+  .gain(0..1)           → Lautstärke
+  .lpf(Hz)              → Lowpass-Filter
+  .hpf(Hz)              → Highpass-Filter
+  .room(0..1)           → Hall
+  .delay(0..1)          → Echo
+  .pan(0..1)            → Stereo-Position
+  .attack(s) .release(s) → Hüllkurve
+  .lpenv(N) .lpa() .lpd() → Filter-Envelope
+</code></pre>
+<p>Den Rest brauchst du seltener — aber er ist da wenn nötig.</p>
+<p>Ein Hinweis: Effekte sind GLOBAL pro Spur. Wenn du auf ein Pattern einen Reverb packst, hat ALLES in dem Pattern den Reverb. Willst du nur einen Teil halligen → eigenen Layer im stack().</p>
+<p>Weiter zu 08_signale_und_modulation.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

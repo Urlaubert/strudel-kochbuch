@@ -1,0 +1,370 @@
+# Kapitel 18 — Cheatsheet
+
+Spickzettel zum Einkleben. Alles was du regelmäßig vergisst, hier auf einen Blick. Nicht zum Lesen — zum Nachschlagen.
+
+Jeder Block ist EIN funktionierendes Beispiel. Wenn du nicht weißt wie was geht: Strg+F, Begriff suchen, Block kopieren, weiterarbeiten.
+
+## MINI-NOTATION
+
+```strudel
+s("a b c")        // drei Steps gleichmäßig
+s("a [b c]")      // a halb, b+c teilen die zweite Hälfte
+s("<a b c>")      // pro Cycle ein anderer
+s("a*4")          // 4 Mal so schnell
+s("a/2")          // 2 Mal so langsam
+s("~")            // Pause
+s("a!3")          // a a a
+s("a?")           // a mit 50% Wahrscheinlichkeit
+s("a?0.2")        // a mit 20%
+s("a@2 b")        // a doppelt so viel Platz wie b
+s("[a, b]")       // a und b gleichzeitig
+s("a(3,8)")       // 3 Pulse euklidisch über 8 Steps
+```
+
+## NOTEN
+
+```strudel
+note("c4 d4 e4")                          // Tonnamen
+note("60 62 64")                          // MIDI-Zahlen
+note("0 2 4 7").scale("C:major")          // Skalen-Indices
+note("0 2 4").scale("<C:major D:minor>")  // Skala wechselt pro Cycle
+note("c4").add(7)                         // 7 Halbtöne hoch
+note("c4").sub(12)                        // Oktave runter
+```
+
+```
+Skalen die's gibt:
+  major, minor, dorian, mixolydian, phrygian, lydian, locrian,
+  minorPentatonic, majorPentatonic, blues, chromatic,
+  harmonicMinor, melodicMinor, ...
+```
+
+## SOUNDS
+
+```strudel
+s("bd")           // Bass-Drum
+s("sd")           // Snare
+s("cp")           // Clap
+s("hh")           // Closed Hi-Hat
+s("oh")           // Open Hi-Hat
+s("rim")          // Rimshot
+s("cb")           // Cowbell
+s("crow")         // Krähe (Klassiker!)
+
+s("hh:0")         // Sample-Variante 0
+s("hh:1")         // Variante 1
+s("hh*4").n(irand(4))  // zufällige Variante 0-3
+
+s("bd").bank("RolandTR808")   // 808-Sound
+s("bd").bank("RolandTR909")   // 909
+s("bd").bank("LinnDrum")      // Linn
+```
+
+Synth-Engines:
+
+```strudel
+note("c4").s("sine")
+note("c4").s("triangle")
+note("c4").s("sawtooth")
+note("c4").s("square")
+note("c4").s("supersaw")
+note("c4").s("piano")
+note("c4").s("gm_acoustic_grand_piano")
+```
+
+## EFFEKTE — die Top 10
+
+```strudel
+x.gain(0.7)              // Lautstärke
+x.lpf(800)               // Lowpass-Filter
+x.hpf(200)               // Highpass-Filter
+x.lpq(10)                // Resonanz
+x.attack(0.1).release(0.5)  // Hüllkurve
+x.room(0.4)              // Hall
+x.delay(0.5).delaytime(0.25).delayfeedback(0.6)  // Echo
+x.pan(0.3)               // Stereo-Position (0=links, 1=rechts)
+x.distort(0.3)           // Verzerrung
+x.crush(4)               // Bitcrusher
+```
+
+Filter-Envelope (Acid-Sound):
+
+```strudel
+x.lpf(150).lpenv(8).lpa(0).lpd(0.15).lpq(15)
+```
+
+## SIGNALE & MODULATION
+
+```strudel
+sine.range(min, max)              // Sinus
+saw.range(min, max)               // Sägezahn (Riser)
+tri.range(min, max)               // Dreieck
+square.range(min, max)            // Rechteck (an/aus)
+perlin.range(min, max)            // organisches Rauschen
+rand.range(min, max)              // zufällig
+irand(N)                          // zufällige Ganzzahl 0..N-1
+
+x.slow(N)                         // Signal über N Cycles
+x.fast(N)                         // Signal N x pro Cycle
+x.segment(N)                      // kontinuierliches in N diskrete Werte
+```
+
+## TIME MODIFIER
+
+```strudel
+x.fast(2)                         // doppelt schnell
+x.slow(2)                         // halb schnell
+x.rev()                           // rückwärts
+x.every(4, fast(2))               // jeden 4. Cycle doppelt schnell
+x.every(4, rev)                   // jeden 4. Cycle rückwärts
+x.sometimes(rev)                  // 50% rückwärts
+x.rarely(fast(2))                 // ~10% doppelt schnell
+x.often(jux(rev))                 // ~75% Stereo-Trick
+x.late(0.125)                     // 1/8 später
+x.early(0.05)                     // 1/20 früher
+x.swing(4)                        // Swing-Feel
+x.compress(0.25, 0.75)            // Pattern in Mitte
+x.zoom(0, 0.5)                    // erste Hälfte stretchen
+x.struct("1 0 1 1 0 1")           // Rhythmus auf Töne
+x.mask("<0 0 1 1>")               // Cycle-weise an/aus
+```
+
+## COMPOSITION
+
+```strudel
+stack(a, b, c)                    // gleichzeitig
+cat(a, b, c)                      // nacheinander pro Cycle
+arrange([4, intro], [8, verse])   // Sektionen mit Cycle-Längen
+silence                           // leeres Pattern
+```
+
+## SAMPLES
+
+```strudel
+samples('http://localhost:5432/')           // Lokaler Server
+samples('github:user/repo')                 // GitHub-Repo
+samples({sound: 'file.wav'}, 'baseurl/')    // URL-basiert
+samples('shabda:bass:4')                    // Freesound
+
+x.begin(0.2).end(0.7)             // Sample-Ausschnitt
+x.speed(2)                        // Tempo+Pitch
+x.speed(-1)                       // rückwärts
+x.loop(1)                         // looped
+x.loopAt(2)                       // auf 2 Cycles strecken
+x.fit()                           // auf Event-Dauer strecken
+x.chop(8)                         // 8 gleiche Slices
+x.slice(8, "0 1 2 3")             // gezielte Slices
+x.cut(1)                          // Cut-Group
+```
+
+## LIVE-WERKZEUGE
+
+```strudel
+slider(0.5, 0, 1, 0.05)           // Inline-UI-Slider
+mouseX.range(0, 1)                // Maus X
+mouseY.range(0, 1)                // Maus Y
+```
+
+MIDI-Input:
+
+```strudel
+const cc = await midin('Akai MPK Mini')
+cc(0).range(0, 1)                 // CC 0 als Wert
+
+const gp = gamepad(0)
+gp.x1.range(0, 1)                 // linker Stick X
+gp.tglA                            // A-Knopf-Toggle
+```
+
+MIDI-Output:
+
+```strudel
+note("c4").midi('IAC Driver')
+```
+
+## VISUALISIERUNG
+
+```strudel
+x._punchcard()                    // Mini-Pattern-View neben Spur
+x._scope()                        // Wellenform
+x._pianoroll()                    // Klavier-Walze
+x.pianoroll()                     // gleichgroße Hintergrund-Version
+```
+
+## TEMPO
+
+```strudel
+setcps(0.5)                       // 0.5 Cycles pro Sekunde
+                                   // = 120 BPM bei 4 Steps
+x.cpm(120)                         // Cycles per minute
+x.fast(N)                          // lokal beschleunigen
+```
+
+## STEREO
+
+```strudel
+x.pan(0.3)                        // 0 = links, 1 = rechts
+x.pan("0 0.5 1 0.5")              // Pattern
+x.pan(perlin.range(0.2, 0.8))     // organisch
+x.jux(rev)                        // rechter Kanal rev
+x.juxBy(0.6, rev)                 // 60% Stereo-Breite
+```
+
+## VARIABLEN UND HELPER
+
+```strudel
+const drums = stack(s("bd*4"), s("hh*8"))
+const bass  = note("c2*4").s("sawtooth")
+
+stack(drums, bass)
+
+function acidBass(p) {
+  return p.s("sawtooth").lpf(150).lpenv(8).lpa(0).lpd(0.15).lpq(15)
+}
+
+acidBass(note("c2*8 g1*4 eb2*4 c2*8"))
+```
+
+## HOTKEYS
+
+Strg+Enter   Pattern aktualisieren / starten Strg+.       Stop Strg+/       Auskommentieren Strg+S       Cloud-Save (mit Account)
+
+Mac: ersetze Strg durch Cmd.
+
+## DEBUG-TIPPS
+
+```
+1. Stille nach Strg+Enter:
+   → Sample wird geladen, zweiten Hit machen
+   → Browser-Lautstärke prüfen
+```
+
+```
+2. Roter Editor:
+   → Klammern zählen ([{}])
+   → Anführungszeichen prüfen ("...")
+   → Komma fehlt zwischen stack-Argumenten?
+```
+
+```
+3. Pattern spielt nicht obwohl kein Fehler:
+   → ist es WIRKLICH der unterste unkommentierte Block?
+   → bei register(): Funktioniert nur in Prebake!
+```
+
+```
+4. CPU geht hoch:
+   → Reverb auf weniger Spuren
+   → orbit() für gemeinsamen FX-Bus
+   → delayfeedback unter 0.7
+   → weniger gleichzeitige Voices
+```
+
+## EUKLIDISCHE PATTERN-GALERIE
+
+(3,4)   Cumbia (3,5)   Türkischer Rumba (3,7)   Bulgarischer Tanz (3,8)   Tresillo (Cuba) — der wichtigste (4,7)   Westafrika (5,8)   Cinquillo (Cuba) (5,9)   Aksak (5,12)  Westafrikanische Glocke (5,16)  Bossa Nova (7,8)   Bulgarisch (7,12)  Westafrika (7,16)  Samba (9,16)  Aksak (südosteuropäisch) (11,16) "fast straight" — guter Hihat-Pattern (11,24) Aka Pygmäen
+
+## GENRE-DEFAULTS (Spickzettel zu Kapitel 18)
+
+```
+  Genre        cps    Charakter
+  ─────────────────────────────────────────────
+  Berlin Techno  0.55  dunkel, sparse, slow Filter-Sweep
+  Detroit Techno 0.53  Soul, Pads, dorian/mixolydian
+  House          0.53  Stabs, Plate-Reverb, Swing
+  Drum & Bass    0.725 Halftime-Drums, Reese-Bass
+  Dubstep        0.583 Half-time, Wobble, Sub
+  Trap           0.583 808 + Hi-Hat-Rolls + Pitch-Slide
+  Synthwave      0.5   LinnDrum, Detune-Pad, Slap-Delay
+  Lo-Fi Hip-Hop  0.4   Boom-Bap, Vinyl-Crackle, Maj7
+  Ambient        0.25  Pads, viel Hall, kein Beat
+  Drone          0.15  ein Ton, ewig
+  Cinematic      0.45  Sub-Bass, Hybrid-Pads
+```
+
+## VALENZ-AROUSAL-MAPPING (zu Kapitel 19)
+
+Vier Quadranten:
+
+```
+                 hohes Arousal
+                      │
+         wütend ──────┼────── ekstatisch
+                      │
+  negative V ◀────────┼────────▶ positive V
+                      │
+         traurig ─────┼────── friedlich
+                      │
+                niedriges Arousal
+```
+
+Arousal-Treiber:  Tempo, Dichte, Brightness Valenz-Treiber:   Modalität (Dur/Moll), Konsonanz, Attack
+
+```
+Code-Pattern (siehe 19_valenz_und_arousal.strudel):
+  const A = sq(slider(0.5))
+  const V = sq(slider(0.5))
+  stack(arousalShift(pat, A), arousalLayer(A),
+        valenzShift(pat, V))
+```
+
+## PSYCHOAKUSTIK — JND-Schwellen
+
+```
+Werte UNTER der Schwelle sind faktisch unhörbar.
+  Detune (Mittellage):     <3 ct unhörbar, 8-15 ct "lebendig"
+  LFO-Tiefe Filter:        <3 dB unhörbar, 6-12 dB "Atem"
+  Tremolo-Tiefe (AM):      <3% unhörbar, 15-30% "Tremolo"
+  Velocity-Spread:         <4 dB langweilig, 12-20 dB normal
+  Humanize-Timing:         <2 ms = Phasing, 5-12 ms = lebendig
+  EQ-Shelf:                <1.5 dB nur am Analyzer
+  Reverb-Wet:              <0.05 unhörbar, 0.15-0.4 normal
+  Sidechain-Ducking:       <2 dB Augenwischerei, 4-8 dB normal
+```
+
+Faustregel: Default = 2-3x JND.
+
+## SOUND-DESIGN-FAUSTREGELN
+
+```
+  "Wenn du es nicht hörst, ist es nicht da."
+  "Subtractive before additive."  (EQ-Cut vor Boost)
+  "Reverb is glue, not effect."   (Send-Bus)
+  "Solo is a lie."                (Im Mix entscheiden)
+  "Defaults are for demos."       (Plugin-Defaults misstrauen)
+  "More layers, less sound."      (Layer-Disziplin)
+  "Tweak in context, listen in mono."
+```
+
+```
+  2-5 Layer pro Patch. 3 ist Sweet Spot (Body+Charakter+Air).
+  Jeder Layer braucht Aufgabe in 3 Worten.
+```
+
+## EIN VOLLSTÄNDIGER MINI-TRACK
+
+(Zum Anschauen, Kopieren, Modifizieren)
+
+```strudel
+setcps(0.55)
+
+stack(
+  s("bd*4").gain(0.9),
+  s("~ cp ~ cp"),
+  s("hh*16").gain(sine.range(0.3, 0.5).slow(2)).pan(perlin.range(0.3, 0.7)),
+  s("[~ ~ ~ oh]/2").gain(0.4).cut(1),
+  note("c2 c2 eb2 g2").s("sawtooth").lpf(sine.range(400, 1500).slow(8)).gain(0.7),
+  note("[0,2,4]").scale("<C:minor F:minor Bb:major Ab:major>")
+    .s("sawtooth").attack(1).release(2).lpf(2000).gain(0.35)
+)
+```
+
+## Ende
+
+```
+Mögliche nächste Schritte:
+  - Eigene Tracks bauen
+  - Eigene Helper-Bibliothek im Prebake aufbauen
+  - Strudel-Discord oder TOPLAP-Community
+  - TidalCycles, falls du Haskell kannst
+```

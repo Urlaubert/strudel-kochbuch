@@ -4,388 +4,260 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>13 — Synthese tief — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>13 — Synthese tief</h1>
-<nav class="chapter-nav"><a href="12_mini_track_in_50_zeilen.html" title="12 — Mini-Track">← Vorheriges</a><a href="14_midi_und_io.html" title="14 — MIDI und IO">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="12_mini_track_in_50_zeilen.html" title="12 — Mini-Track">← Zurück</a><a href="14_midi_und_io.html" title="14 — MIDI und IO">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 13 — Synthese, tiefer
-// =====================================================
-// Strudels eingebaute Synths sind einfach — sine, sawtooth,
-// square, triangle, supersaw. Mit ADSR und Filter-Envelopes
-// kannst du daraus aber sehr viel rausholen.
-//
-// Hier: wie du aus den Bordmitteln Bass, Lead, Pad, Stab,
-// Pluck, Acid, Sub baust. Plus FM (siehe DX-Helper).
-//
-// Wichtig: Strudel ist NICHT für Custom-SynthDefs gemacht.
-// Wenn du komplexe Patches willst — vorher in Vital/Reaper
-// rendern und als WAV laden (siehe Kapitel 10).
-// =====================================================
+<article class="prose">
+<h1>Kapitel 13 — Synthese, tiefer</h1>
+<p>Strudels eingebaute Synths sind einfach — sine, sawtooth, square, triangle, supersaw. Mit ADSR und Filter-Envelopes kannst du daraus aber sehr viel rausholen.</p>
+<p>Hier: wie du aus den Bordmitteln Bass, Lead, Pad, Stab, Pluck, Acid, Sub baust. Plus FM (siehe DX-Helper).</p>
+<p>Wichtig: Strudel ist NICHT für Custom-SynthDefs gemacht. Wenn du komplexe Patches willst — vorher in Vital/Reaper rendern und als WAV laden (siehe Kapitel 10).</p>
+<h3>Die fünf Grund-Wellenformen</h3>
+<pre><code>  sine       /‾‾\        nur Grundton, keine Obertöne
+            /    \       → Sub-Bass, weich
+          _/      \_
+</code></pre>
+<pre><code>  triangle  /\          ungerade Obertöne, schwächer
+           /  \         → sanfte Leads
+         _/    \_
+</code></pre>
+<pre><code>  sawtooth   /|         alle Obertöne, harmonisch reich
+           _/ |         → Bass, Lead-Synth, Strings
+          /   |____
+</code></pre>
+<pre><code>  square    ‾‾‾‾|____   nur ungerade Obertöne, hohl
+                        → Hammond-artig, Bass
+</code></pre>
+<pre><code>  pulse     ‾‾|________  veränderbare Breite
+                        → Vintage-Pads (mit pwm)
+</code></pre>
+<div class="snippet" id="snip-000" data-code-b64="bm90ZSgiYzMiKS5zKCJzaW5lIikgICAgICAgICAvLyByZWluLCB3ZWljaCwga2VpbiBCb2Rlbgpub3RlKCJjMyIpLnMoInRyaWFuZ2xlIikgICAgIC8vIHNhbmZ0LCBtaXQgT2JlcnTDtm5lbgpub3RlKCJjMyIpLnMoInNhd3Rvb3RoIikgICAgIC8vIGFsbGUgT2JlcnTDtm5lLCBicmFzc2lnCm5vdGUoImMzIikucygic3F1YXJlIikgICAgICAgLy8gdW5nZXJhZGUgT2JlcnTDtm5lLCBob2hsCm5vdGUoImMzIikucygicHVsc2UiKS5wd20oMC4zKSAgLy8gU3F1YXJlIG1pdCB2ZXLDpG5kZXJsaWNoZXIgUHVsc2JyZWl0ZQ=="><pre class="snippet-code"><code>note(&quot;c3&quot;).s(&quot;sine&quot;)         // rein, weich, kein Boden
+note(&quot;c3&quot;).s(&quot;triangle&quot;)     // sanft, mit Obertönen
+note(&quot;c3&quot;).s(&quot;sawtooth&quot;)     // alle Obertöne, brassig
+note(&quot;c3&quot;).s(&quot;square&quot;)       // ungerade Obertöne, hohl
+note(&quot;c3&quot;).s(&quot;pulse&quot;).pwm(0.3)  // Square mit veränderlicher Pulsbreite</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<h3>Bass-Sound 1 — Sub-Bass</h3>
+<div class="snippet" id="snip-001" data-code-b64="bm90ZSgiYzIqNCIpLnMoInNpbmUiKS5hdHRhY2soMC4wMSkucmVsZWFzZSgwLjMpLmdhaW4oMC45KQ=="><pre class="snippet-code"><code>note(&quot;c2*4&quot;).s(&quot;sine&quot;).attack(0.01).release(0.3).gain(0.9)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Die fünf Grund-Wellenformen
-// -----------------------------------------------------
-//
-//   sine       /‾‾\        nur Grundton, keine Obertöne
-//             /    \       → Sub-Bass, weich
-//           _/      \_
-//
-//   triangle  /\          ungerade Obertöne, schwächer
-//            /  \         → sanfte Leads
-//          _/    \_
-//
-//   sawtooth   /|         alle Obertöne, harmonisch reich
-//            _/ |         → Bass, Lead-Synth, Strings
-//           /   |____
-//
-//   square    ‾‾‾‾|____   nur ungerade Obertöne, hohl
-//                         → Hammond-artig, Bass
-//
-//   pulse     ‾‾|________  veränderbare Breite
-//                         → Vintage-Pads (mit pwm)
-
-note("c3").s("sine")         // rein, weich, kein Boden
-note("c3").s("triangle")     // sanft, mit Obertönen
-note("c3").s("sawtooth")     // alle Obertöne, brassig
-note("c3").s("square")       // ungerade Obertöne, hohl
-note("c3").s("pulse").pwm(0.3)  // Square mit veränderlicher Pulsbreite
-
-
-// -----------------------------------------------------
-// Bass-Sound 1 — Sub-Bass
-// -----------------------------------------------------
-
-note("c2*4").s("sine").attack(0.01).release(0.3).gain(0.9)
-// Sinus tief, kurze Hüllkurve. Klingt wie Sub-Bass im Auto-
-// Subwoofer. Geht in den Bauch, nicht in die Ohren.
-
-
-// -----------------------------------------------------
-// Bass-Sound 2 — Sägezahn-Bass mit Filter
-// -----------------------------------------------------
-
-note("c2 c2 eb2 g2").s("sawtooth")
+<p>Sinus tief, kurze Hüllkurve. Klingt wie Sub-Bass im Auto- Subwoofer. Geht in den Bauch, nicht in die Ohren.</p>
+<h3>Bass-Sound 2 — Sägezahn-Bass mit Filter</h3>
+<div class="snippet" id="snip-002" data-code-b64="bm90ZSgiYzIgYzIgZWIyIGcyIikucygic2F3dG9vdGgiKQogIC5scGYoNjAwKQogIC5hdHRhY2soMC4wMSkucmVsZWFzZSgwLjIpCiAgLmdhaW4oMC43KQ=="><pre class="snippet-code"><code>note(&quot;c2 c2 eb2 g2&quot;).s(&quot;sawtooth&quot;)
   .lpf(600)
   .attack(0.01).release(0.2)
-  .gain(0.7)
-// Klassiker. Filter zähmt die Schärfe.
+  .gain(0.7)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Bass-Sound 3 — Acid-Bass (TB-303-Style)
-// -----------------------------------------------------
-
-note("c2*8").s("sawtooth")
+<p>Klassiker. Filter zähmt die Schärfe.</p>
+<h3>Bass-Sound 3 — Acid-Bass (TB-303-Style)</h3>
+<div class="snippet" id="snip-003" data-code-b64="bm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikKICAubHBmKDE1MCkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyB0aWVmZXIgQ3V0b2ZmCiAgLmxwZW52KDgpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gRW52ZWxvcGUgw7ZmZm5ldCA4IE9rdGF2ZW4KICAubHBhKDApLmxwZCgwLjE1KSAgICAgICAgICAgICAgICAgICAgICAvLyBzY2huZWxsZXIgQXR0YWNrLCBtaXR0bGVyZXIgRGVjYXkKICAubHBxKDE1KSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBob2hlIFJlc29uYW56IOKAlCBwZmVpZnQKICAuZGlzdG9ydCgwLjIpCiAgLnJlbGVhc2UoMC4xKQogIC5nYWluKDAuNyk="><pre class="snippet-code"><code>note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;)
   .lpf(150)                              // tiefer Cutoff
   .lpenv(8)                              // Envelope öffnet 8 Oktaven
   .lpa(0).lpd(0.15)                      // schneller Attack, mittlerer Decay
   .lpq(15)                               // hohe Resonanz — pfeift
   .distort(0.2)
   .release(0.1)
-  .gain(0.7)
-// Das ist der Roland-TB-303-Sound. Fast jeder elektronische
-// Bass mit Wow-Charakter ist das hier oder Variation.
+  .gain(0.7)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Bass-Sound 4 — FM-Bass
-// -----------------------------------------------------
-
-note("c2*4").s("triangle")
+<p>Das ist der Roland-TB-303-Sound. Fast jeder elektronische Bass mit Wow-Charakter ist das hier oder Variation.</p>
+<h3>Bass-Sound 4 — FM-Bass</h3>
+<div class="snippet" id="snip-004" data-code-b64="bm90ZSgiYzIqNCIpLnMoInRyaWFuZ2xlIikKICAuZm1oKDIpICAgICAgICAgLy8gRk0tQ2Fycmllci16dS1Nb2R1bGF0b3ItUmF0aW8KICAuZm1pKDMpICAgICAgICAgLy8gRk0tSW5kZXggKHdpZSB0aWVmIG1vZHVsaWVydCkKICAubHBmKDgwMCkKICAuYXR0YWNrKDAuMDEpLnJlbGVhc2UoMC4zKQogIC5nYWluKDAuNyk="><pre class="snippet-code"><code>note(&quot;c2*4&quot;).s(&quot;triangle&quot;)
   .fmh(2)         // FM-Carrier-zu-Modulator-Ratio
   .fmi(3)         // FM-Index (wie tief moduliert)
   .lpf(800)
   .attack(0.01).release(0.3)
-  .gain(0.7)
+  .gain(0.7)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// fmh / fmi sind für die FM-Synthese (siehe weiter unten).
-// Mit tieferem fmh und höherem fmi wird der Bass kratziger.
-
-
-// -----------------------------------------------------
-// Lead-Sound 1 — Pluck
-// -----------------------------------------------------
-
-note("c4 e4 g4 b4").s("triangle")
+<p>fmh / fmi sind für die FM-Synthese (siehe weiter unten). Mit tieferem fmh und höherem fmi wird der Bass kratziger.</p>
+<h3>Lead-Sound 1 — Pluck</h3>
+<div class="snippet" id="snip-005" data-code-b64="bm90ZSgiYzQgZTQgZzQgYjQiKS5zKCJ0cmlhbmdsZSIpCiAgLmF0dGFjaygwLjAwMSkuZGVjYXkoMC4xNSkuc3VzdGFpbigwKS5yZWxlYXNlKDAuMikKICAubHBmKDI1MDApCiAgLmdhaW4oMC41KQ=="><pre class="snippet-code"><code>note(&quot;c4 e4 g4 b4&quot;).s(&quot;triangle&quot;)
   .attack(0.001).decay(0.15).sustain(0).release(0.2)
   .lpf(2500)
-  .gain(0.5)
-// Sehr kurzer Decay, kein Sustain — wie gezupft.
+  .gain(0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Lead-Sound 2 — Stab (kurz und knallig)
-// -----------------------------------------------------
-
-note("c4 ~ ~ g4").s("sawtooth")
+<p>Sehr kurzer Decay, kein Sustain — wie gezupft.</p>
+<h3>Lead-Sound 2 — Stab (kurz und knallig)</h3>
+<div class="snippet" id="snip-006" data-code-b64="bm90ZSgiYzQgfiB+IGc0Iikucygic2F3dG9vdGgiKQogIC5hdHRhY2soMC4wMDEpLnJlbGVhc2UoMC4xKQogIC5scGVudigxMikubHBhKDApLmxwZCgwLjEpCiAgLmxwZig0MDApCiAgLmRpc3RvcnQoMC4zKQogIC5wb3N0Z2FpbigwLjYpCiAgLmdhaW4oMC43KQ=="><pre class="snippet-code"><code>note(&quot;c4 ~ ~ g4&quot;).s(&quot;sawtooth&quot;)
   .attack(0.001).release(0.1)
   .lpenv(12).lpa(0).lpd(0.1)
   .lpf(400)
   .distort(0.3)
   .postgain(0.6)
-  .gain(0.7)
-// Synth-Stab. Filter-Envelope öffnet beim Anschlag, Distortion
-// macht's wuchtig, postgain zieht's auf normale Lautstärke
-// zurück.
+  .gain(0.7)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Lead-Sound 3 — Singende Lead
-// -----------------------------------------------------
-
-note("c5 eb5 g5 c6 g5 eb5").s("supersaw")
+<p>Synth-Stab. Filter-Envelope öffnet beim Anschlag, Distortion macht's wuchtig, postgain zieht's auf normale Lautstärke zurück.</p>
+<h3>Lead-Sound 3 — Singende Lead</h3>
+<div class="snippet" id="snip-007" data-code-b64="bm90ZSgiYzUgZWI1IGc1IGM2IGc1IGViNSIpLnMoInN1cGVyc2F3IikKICAuYXR0YWNrKDAuMDUpLnJlbGVhc2UoMC41KQogIC5scGYoMjUwMCkubHBxKDIpCiAgLmRlbGF5KDAuNCkuZGVsYXl0aW1lKDAuMzc1KS5kZWxheWZlZWRiYWNrKDAuNCkKICAucm9vbSgwLjQpCiAgLmdhaW4oMC41KQ=="><pre class="snippet-code"><code>note(&quot;c5 eb5 g5 c6 g5 eb5&quot;).s(&quot;supersaw&quot;)
   .attack(0.05).release(0.5)
   .lpf(2500).lpq(2)
   .delay(0.4).delaytime(0.375).delayfeedback(0.4)
   .room(0.4)
-  .gain(0.5)
-// Supersaw mit Delay und Hall — der "Trance-Lead".
+  .gain(0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Pad-Sound 1 — String-Pad
-// -----------------------------------------------------
-
-note("[c4, e4, g4, b4]").s("sawtooth")
+<p>Supersaw mit Delay und Hall — der "Trance-Lead".</p>
+<h3>Pad-Sound 1 — String-Pad</h3>
+<div class="snippet" id="snip-008" data-code-b64="bm90ZSgiW2M0LCBlNCwgZzQsIGI0XSIpLnMoInNhd3Rvb3RoIikKICAuYXR0YWNrKDEpLnJlbGVhc2UoMykKICAubHBmKDE1MDApCiAgLmdhaW4oMC40KQogIC5yb29tKDAuNik="><pre class="snippet-code"><code>note(&quot;[c4, e4, g4, b4]&quot;).s(&quot;sawtooth&quot;)
   .attack(1).release(3)
   .lpf(1500)
   .gain(0.4)
-  .room(0.6)
-// Maj7-Pad. Lange Hüllkurve macht aus dem Sägezahn ein Streich-
-// Pad.
+  .room(0.6)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Pad-Sound 2 — Atmosphäre mit Modulation
-// -----------------------------------------------------
-
-note("[c4, eb4, g4, c5]").s("sawtooth")
+<p>Maj7-Pad. Lange Hüllkurve macht aus dem Sägezahn ein Streich- Pad.</p>
+<h3>Pad-Sound 2 — Atmosphäre mit Modulation</h3>
+<div class="snippet" id="snip-009" data-code-b64="bm90ZSgiW2M0LCBlYjQsIGc0LCBjNV0iKS5zKCJzYXd0b290aCIpCiAgLmF0dGFjaygyKS5yZWxlYXNlKDQpCiAgLmxwZihzaW5lLnJhbmdlKDgwMCwgMjAwMCkuc2xvdyg0KSkgICAgIC8vIEZpbHRlciBhdG1ldAogIC5wYW4ocGVybGluLnJhbmdlKDAuMywgMC43KS5zbG93KDgpKSAgICAvLyBwYW50IHN0ZXJlbwogIC5yb29tKDAuNykKICAuZ2FpbigwLjM1KQ=="><pre class="snippet-code"><code>note(&quot;[c4, eb4, g4, c5]&quot;).s(&quot;sawtooth&quot;)
   .attack(2).release(4)
   .lpf(sine.range(800, 2000).slow(4))     // Filter atmet
   .pan(perlin.range(0.3, 0.7).slow(8))    // pant stereo
   .room(0.7)
-  .gain(0.35)
+  .gain(0.35)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Pad-Sound 3 — Hauchig durch Vowel-Filter
-// -----------------------------------------------------
-
-note("[c4, eb4, g4]").s("sawtooth")
+<h3>Pad-Sound 3 — Hauchig durch Vowel-Filter</h3>
+<div class="snippet" id="snip-010" data-code-b64="bm90ZSgiW2M0LCBlYjQsIGc0XSIpLnMoInNhd3Rvb3RoIikKICAuYXR0YWNrKDEpLnJlbGVhc2UoMikKICAudm93ZWwoIjxhIG8gdT4iKSAgICAgICAgICAvLyBWb2thbCB3ZWNoc2VsdAogIC5scGYoMjAwMCkKICAuZ2FpbigwLjQp"><pre class="snippet-code"><code>note(&quot;[c4, eb4, g4]&quot;).s(&quot;sawtooth&quot;)
   .attack(1).release(2)
-  .vowel("<a o u>")          // Vokal wechselt
+  .vowel(&quot;&lt;a o u&gt;&quot;)          // Vokal wechselt
   .lpf(2000)
-  .gain(0.4)
-// Klingt wie ein Chor der "aaa-ooo-uuu" macht.
+  .gain(0.4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Klingt wie ein Chor der "aaa-ooo-uuu" macht.</p>
+<h3>FM-Synthese — kurz und schmutzig</h3>
+<pre><code>Strudel hat eine eingebaute FM-Engine. Du brauchst:
+  .s(&quot;triangle&quot;) oder .s(&quot;sine&quot;)  — Carrier
+  .fmh(N)                          — Frequenz-Verhältnis Modulator/Carrier
+  .fmi(N)                          — FM-Index (Tiefe)
+</code></pre>
+<div class="snippet" id="snip-011" data-code-b64="bm90ZSgiYzQqNCIpLnMoInNpbmUiKS5mbWgoMSkuZm1pKDApICAgIC8vIGtlaW4gRk0Kbm90ZSgiYzQqNCIpLnMoInNpbmUiKS5mbWgoMSkuZm1pKDIpICAgIC8vIGxlaWNodGVzIEZNCm5vdGUoImM0KjQiKS5zKCJzaW5lIikuZm1oKDIpLmZtaSg1KSAgICAvLyBnbG9ja2lnIChEWDctc3R5bGUpCm5vdGUoImM0KjQiKS5zKCJzaW5lIikuZm1oKDMuNSkuZm1pKDgpICAvLyBtZXRhbGxpc2NoCm5vdGUoImM0KjQiKS5zKCJzaW5lIikuZm1oKDExKS5mbWkoMykgICAvLyBiZWxsLWFydGln"><pre class="snippet-code"><code>note(&quot;c4*4&quot;).s(&quot;sine&quot;).fmh(1).fmi(0)    // kein FM
+note(&quot;c4*4&quot;).s(&quot;sine&quot;).fmh(1).fmi(2)    // leichtes FM
+note(&quot;c4*4&quot;).s(&quot;sine&quot;).fmh(2).fmi(5)    // glockig (DX7-style)
+note(&quot;c4*4&quot;).s(&quot;sine&quot;).fmh(3.5).fmi(8)  // metallisch
+note(&quot;c4*4&quot;).s(&quot;sine&quot;).fmh(11).fmi(3)   // bell-artig</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// FM-Synthese — kurz und schmutzig
-// -----------------------------------------------------
-// Strudel hat eine eingebaute FM-Engine. Du brauchst:
-//   .s("triangle") oder .s("sine")  — Carrier
-//   .fmh(N)                          — Frequenz-Verhältnis Modulator/Carrier
-//   .fmi(N)                          — FM-Index (Tiefe)
+<pre><code>FM-Faustregeln:
+  fmh = ganzzahlig → harmonisch (Bell, E-Piano)
+  fmh = nicht ganzzahlig → metallisch
+  fmi hoch → mehr Obertöne / mehr Verzerrung
+</code></pre>
+<p>Mit Envelope auf fmi (geht direkt):</p>
+<div class="snippet" id="snip-012" data-code-b64="bm90ZSgiYzQqNCIpLnMoInNpbmUiKS5mbWgoMikuZm1pKDUpLmZtYXR0YWNrKDAuMDEpLmZtZGVjYXkoMC4zKQ=="><pre class="snippet-code"><code>note(&quot;c4*4&quot;).s(&quot;sine&quot;).fmh(2).fmi(5).fmattack(0.01).fmdecay(0.3)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-note("c4*4").s("sine").fmh(1).fmi(0)    // kein FM
-note("c4*4").s("sine").fmh(1).fmi(2)    // leichtes FM
-note("c4*4").s("sine").fmh(2).fmi(5)    // glockig (DX7-style)
-note("c4*4").s("sine").fmh(3.5).fmi(8)  // metallisch
-note("c4*4").s("sine").fmh(11).fmi(3)   // bell-artig
+<h3>Pulsbreiten-Modulation (PWM)</h3>
+<div class="snippet" id="snip-013" data-code-b64="bm90ZSgiYzQqOCIpLnMoInB1bHNlIikucHdtKDAuNSkgICAgICAgIC8vIGdsZWljaCBTcXVhcmUKbm90ZSgiYzQqOCIpLnMoInB1bHNlIikucHdtKDAuMSkgICAgICAgIC8vIHNlaHIgc2NobWFsCm5vdGUoImM0KjgiKS5zKCJwdWxzZSIpLnB3bShzaW5lLnJhbmdlKDAuMiwgMC44KS5zbG93KDIpKQ=="><pre class="snippet-code"><code>note(&quot;c4*8&quot;).s(&quot;pulse&quot;).pwm(0.5)        // gleich Square
+note(&quot;c4*8&quot;).s(&quot;pulse&quot;).pwm(0.1)        // sehr schmal
+note(&quot;c4*8&quot;).s(&quot;pulse&quot;).pwm(sine.range(0.2, 0.8).slow(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// FM-Faustregeln:
-//   fmh = ganzzahlig → harmonisch (Bell, E-Piano)
-//   fmh = nicht ganzzahlig → metallisch
-//   fmi hoch → mehr Obertöne / mehr Verzerrung
+<p>PWM moduliert mit Sinus — klassischer Vintage-Synth-Pad-Sound.</p>
+<h3>Detune und Voicing</h3>
+<div class="snippet" id="snip-014" data-code-b64="bm90ZSgiYzQqNCIpLnMoInNhd3Rvb3RoIikuZGV0dW5lKDAuMSkgICAvLyBsZWljaHRlciBQaXRjaC1WZXJzYXR6Cm5vdGUoImM0KjQiKS5zKCJzYXd0b290aCIpLmRldHVuZSgwLjUpICAgLy8gbWVociDigJQgZmFzdCBDaG9ydXMtYXJ0aWcKbm90ZSgiYzQqNCIpLnMoInN1cGVyc2F3IikuZGV0dW5lKDAuMykgICAvLyBzdXBlcnNhdyBpc3Qgdm9uIE5hdHVyIGF1cyBkZXR1bmVk"><pre class="snippet-code"><code>note(&quot;c4*4&quot;).s(&quot;sawtooth&quot;).detune(0.1)   // leichter Pitch-Versatz
+note(&quot;c4*4&quot;).s(&quot;sawtooth&quot;).detune(0.5)   // mehr — fast Chorus-artig
+note(&quot;c4*4&quot;).s(&quot;supersaw&quot;).detune(0.3)   // supersaw ist von Natur aus detuned</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Mit Envelope auf fmi (geht direkt):
-note("c4*4").s("sine").fmh(2).fmi(5).fmattack(0.01).fmdecay(0.3)
+<p>Mehrere Stimmen aufaddieren:</p>
+<div class="snippet" id="snip-015" data-code-b64="c3RhY2soCiAgbm90ZSgiYzQqNCIpLnMoInNhd3Rvb3RoIikuZGV0dW5lKC0wLjEpLAogIG5vdGUoImM0KjQiKS5zKCJzYXd0b290aCIpLmRldHVuZSgwLjEpLAogIG5vdGUoImM0KjQiKS5zKCJzYXd0b290aCIpLmRldHVuZSgwKQop"><pre class="snippet-code"><code>stack(
+  note(&quot;c4*4&quot;).s(&quot;sawtooth&quot;).detune(-0.1),
+  note(&quot;c4*4&quot;).s(&quot;sawtooth&quot;).detune(0.1),
+  note(&quot;c4*4&quot;).s(&quot;sawtooth&quot;).detune(0)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Pulsbreiten-Modulation (PWM)
-// -----------------------------------------------------
-
-note("c4*8").s("pulse").pwm(0.5)        // gleich Square
-note("c4*8").s("pulse").pwm(0.1)        // sehr schmal
-note("c4*8").s("pulse").pwm(sine.range(0.2, 0.8).slow(2))
-// PWM moduliert mit Sinus — klassischer Vintage-Synth-Pad-Sound.
-
-
-// -----------------------------------------------------
-// Detune und Voicing
-// -----------------------------------------------------
-
-note("c4*4").s("sawtooth").detune(0.1)   // leichter Pitch-Versatz
-note("c4*4").s("sawtooth").detune(0.5)   // mehr — fast Chorus-artig
-note("c4*4").s("supersaw").detune(0.3)   // supersaw ist von Natur aus detuned
-
-// Mehrere Stimmen aufaddieren:
-stack(
-  note("c4*4").s("sawtooth").detune(-0.1),
-  note("c4*4").s("sawtooth").detune(0.1),
-  note("c4*4").s("sawtooth").detune(0)
-)
-// Drei Säge­zähne minimal versetzt — fettere Lead.
-
-
-// -----------------------------------------------------
-// Pitch-Envelope — der Drum-Pitch-Drop
-// -----------------------------------------------------
-
-s("bd*4")
+<p>Drei Säge­zähne minimal versetzt — fettere Lead.</p>
+<h3>Pitch-Envelope — der Drum-Pitch-Drop</h3>
+<div class="snippet" id="snip-016" data-code-b64="cygiYmQqNCIpCiAgLnBlbnYoMjQpICAgICAgICAgICAgIC8vIDI0IEhhbGJ0w7ZuZSAoendlaSBPa3RhdmVuKSBIdWIKICAucGF0dGFjaygwKS5wZGVjYXkoMC4wNSk="><pre class="snippet-code"><code>s(&quot;bd*4&quot;)
   .penv(24)             // 24 Halbtöne (zwei Oktaven) Hub
-  .pattack(0).pdecay(0.05)
-// Bd kriegt einen "Whump" — Pitch fällt schnell ab.
-// Macht Bass-Drums wuchtiger.
+  .pattack(0).pdecay(0.05)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Bd kriegt einen "Whump" — Pitch fällt schnell ab. Macht Bass-Drums wuchtiger.</p>
+<h3>Noise-Quellen</h3>
+<div class="snippet" id="snip-017" data-code-b64="cygibm9pc2UiKS5nYWluKDAuMykgICAgICAgICAgIC8vIHdlacOfZXMgUmF1c2NoZW4KcygicGluayIpLmdhaW4oMC4zKSAgICAgICAgICAgIC8vIHBpbmsgbm9pc2UgKGF1c2dld29nZW4pCnMoImJyb3duIikuZ2FpbigwLjMpICAgICAgICAgICAvLyBicm93biBub2lzZSAoYmFzc2xhc3RpZyk="><pre class="snippet-code"><code>s(&quot;noise&quot;).gain(0.3)           // weißes Rauschen
+s(&quot;pink&quot;).gain(0.3)            // pink noise (ausgewogen)
+s(&quot;brown&quot;).gain(0.3)           // brown noise (basslastig)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Noise-Quellen
-// -----------------------------------------------------
+<p>Geklautes Snare-Sound durch gefiltertes Rauschen:</p>
+<div class="snippet" id="snip-018" data-code-b64="cygibm9pc2UqNCIpLmF0dGFjaygwLjAwMSkuZGVjYXkoMC4xNSkuc3VzdGFpbigwKS5ocGYoODAwKS5nYWluKDAuNyk="><pre class="snippet-code"><code>s(&quot;noise*4&quot;).attack(0.001).decay(0.15).sustain(0).hpf(800).gain(0.7)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-s("noise").gain(0.3)           // weißes Rauschen
-s("pink").gain(0.3)            // pink noise (ausgewogen)
-s("brown").gain(0.3)           // brown noise (basslastig)
+<p>Kurzer Anschlag, hochgepasst, kein Sustain. Klingt wie Snare.</p>
+<h3>Custom-Sound durch Layering</h3>
+<p>Wenn ein Synth nicht reicht, stack mehrere übereinander. Jedes Layer hat seinen Zweck im Spektrum:</p>
+<pre><code>  Layer        Frequenz-Slot      Quelle
+  ──────────────────────────────────────────────
+  SUB          20-80 Hz           sine, niedrig
+  BODY         80-300 Hz          sawtooth + LPF
+  KLICK        300-3 kHz          noise, kurzer Decay
+  AIR          &gt;3 kHz             optional, Hihat-artig
+</code></pre>
+<div class="snippet" id="snip-019" data-code-b64="c3RhY2soCiAgbm90ZSgiYzIqNCIpLnMoInNpbmUiKS5hdHRhY2soMC4wMSkucmVsZWFzZSgwLjMpLAogIG5vdGUoImMyKjQiKS5zKCJzYXd0b290aCIpLmxwZig4MDApLmdhaW4oMC41KSwKICBub3RlKCJjMio0Iikucygibm9pc2UiKS5hdHRhY2soMC4wMDEpLmRlY2F5KDAuMDUpLmdhaW4oMC4yKQop"><pre class="snippet-code"><code>stack(
+  note(&quot;c2*4&quot;).s(&quot;sine&quot;).attack(0.01).release(0.3),
+  note(&quot;c2*4&quot;).s(&quot;sawtooth&quot;).lpf(800).gain(0.5),
+  note(&quot;c2*4&quot;).s(&quot;noise&quot;).attack(0.001).decay(0.05).gain(0.2)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Geklautes Snare-Sound durch gefiltertes Rauschen:
-s("noise*4").attack(0.001).decay(0.15).sustain(0).hpf(800).gain(0.7)
-// Kurzer Anschlag, hochgepasst, kein Sustain. Klingt wie Snare.
-
-
-// -----------------------------------------------------
-// Custom-Sound durch Layering
-// -----------------------------------------------------
-// Wenn ein Synth nicht reicht, stack mehrere übereinander.
-// Jedes Layer hat seinen Zweck im Spektrum:
-//
-//   Layer        Frequenz-Slot      Quelle
-//   ──────────────────────────────────────────────
-//   SUB          20-80 Hz           sine, niedrig
-//   BODY         80-300 Hz          sawtooth + LPF
-//   KLICK        300-3 kHz          noise, kurzer Decay
-//   AIR          >3 kHz             optional, Hihat-artig
-
-stack(
-  note("c2*4").s("sine").attack(0.01).release(0.3),
-  note("c2*4").s("sawtooth").lpf(800).gain(0.5),
-  note("c2*4").s("noise").attack(0.001).decay(0.05).gain(0.2)
-)
-// Sub-Bass + Body + Klick — alle drei zusammen ergeben einen
-// "großen" Bass-Sound.
-
-
-// 💡 PRAXIS — Layer-Faustregeln (aus Sound-Design-Tradition)
-//   - 2-5 Layer pro Patch. Drunter dünn, drüber Brei.
-//   - Sweet Spot: 3 Layer (Body + Charakter + Air)
-//   - Jeder Layer braucht eine AUFGABE in 3 Worten.
-//     Wenn du sie nicht nennen kannst — Layer raus.
-//   - Frequenz-Trennung: jeder Layer eigener Slot.
-//     Zwei Layer im selben Slot = einer fliegt oder wird
-//     EQ-mäßig zurechtgeschnitten.
-//   - Hochpass auf alle Layer AUSSER dem Sub-Layer
-//     (Default 80-120 Hz HP).
-//   - Pan-Spread asymmetrisch: Layer A 30% links, Layer B
-//     25% rechts. Symmetrie klingt steril.
-//   - Lautstärke-Hierarchie: Hauptlayer 0 dB, Würze-Layer
-//     -6 bis -12 dB. Wenn alle gleich laut sind, hast du
-//     keine Würze, sondern noch mal denselben Layer.
-
-
-// -----------------------------------------------------
-// FINALE — Synth-Showcase
-// -----------------------------------------------------
-
-setcps(0.5)
+<p>Sub-Bass + Body + Klick — alle drei zusammen ergeben einen "großen" Bass-Sound.</p>
+<pre><code>💡 PRAXIS — Layer-Faustregeln (aus Sound-Design-Tradition)
+  - 2-5 Layer pro Patch. Drunter dünn, drüber Brei.
+  - Sweet Spot: 3 Layer (Body + Charakter + Air)
+  - Jeder Layer braucht eine AUFGABE in 3 Worten.
+    Wenn du sie nicht nennen kannst — Layer raus.
+  - Frequenz-Trennung: jeder Layer eigener Slot.
+    Zwei Layer im selben Slot = einer fliegt oder wird
+    EQ-mäßig zurechtgeschnitten.
+  - Hochpass auf alle Layer AUSSER dem Sub-Layer
+    (Default 80-120 Hz HP).
+  - Pan-Spread asymmetrisch: Layer A 30% links, Layer B
+    25% rechts. Symmetrie klingt steril.
+  - Lautstärke-Hierarchie: Hauptlayer 0 dB, Würze-Layer
+    -6 bis -12 dB. Wenn alle gleich laut sind, hast du
+    keine Würze, sondern noch mal denselben Layer.
+</code></pre>
+<h3>FINALE — Synth-Showcase</h3>
+<div class="snippet" id="snip-020" data-code-b64="c2V0Y3BzKDAuNSkKCnN0YWNrKAogIHMoImJkKjQiKS5wZW52KDIwKS5wYXR0YWNrKDApLnBkZWNheSgwLjA2KS5nYWluKDAuOTUpLAogIHMoIn4gbm9pc2UgfiBub2lzZSIpLmF0dGFjaygwLjAwMSkuZGVjYXkoMC4xNSkuc3VzdGFpbigwKS5ocGYoODAwKS5nYWluKDAuNCksCiAgcygiaGgqMTYiKS5nYWluKDAuMyksCiAgLy8gQWNpZC1CYXNzCiAgbm90ZSgiYzIqOCIpLnNjYWxlKCJDOm1pbm9yIikucygic2F3dG9vdGgiKQogICAgLmxwZigxNTApLmxwZW52KDgpLmxwYSgwKS5scGQoMC4xNSkubHBxKDE1KQogICAgLmRpc3RvcnQoMC4yKS5yZWxlYXNlKDAuMSkuZ2FpbigwLjY1KSwKICAvLyBGTS1MZWFkCiAgbm90ZSgiPGViNSBnNSBjNiBnNT4iKS5zKCJzaW5lIikuZm1oKDIpLmZtaSg0KQogICAgLmF0dGFjaygwLjAxKS5yZWxlYXNlKDAuNCkKICAgIC5kZWxheSgwLjQpLmRlbGF5dGltZSgwLjM3NSkuZGVsYXlmZWVkYmFjaygwLjUpCiAgICAucm9vbSgwLjQpCiAgICAuZ2FpbigwLjQpLAogIC8vIFBhZCBtaXQgUFdNCiAgbm90ZSgiWzAsMiw0XSIpLnNjYWxlKCJDOm1pbm9yIikucygicHVsc2UiKS5wd20oc2luZS5yYW5nZSgwLjMsIDAuNykuc2xvdyg0KSkKICAgIC5hdHRhY2soMSkucmVsZWFzZSgyKS5scGYoMjAwMCkKICAgIC5nYWluKDAuMykKKQ=="><pre class="snippet-code"><code>setcps(0.5)
 
 stack(
-  s("bd*4").penv(20).pattack(0).pdecay(0.06).gain(0.95),
-  s("~ noise ~ noise").attack(0.001).decay(0.15).sustain(0).hpf(800).gain(0.4),
-  s("hh*16").gain(0.3),
+  s(&quot;bd*4&quot;).penv(20).pattack(0).pdecay(0.06).gain(0.95),
+  s(&quot;~ noise ~ noise&quot;).attack(0.001).decay(0.15).sustain(0).hpf(800).gain(0.4),
+  s(&quot;hh*16&quot;).gain(0.3),
   // Acid-Bass
-  note("c2*8").scale("C:minor").s("sawtooth")
+  note(&quot;c2*8&quot;).scale(&quot;C:minor&quot;).s(&quot;sawtooth&quot;)
     .lpf(150).lpenv(8).lpa(0).lpd(0.15).lpq(15)
     .distort(0.2).release(0.1).gain(0.65),
   // FM-Lead
-  note("<eb5 g5 c6 g5>").s("sine").fmh(2).fmi(4)
+  note(&quot;&lt;eb5 g5 c6 g5&gt;&quot;).s(&quot;sine&quot;).fmh(2).fmi(4)
     .attack(0.01).release(0.4)
     .delay(0.4).delaytime(0.375).delayfeedback(0.5)
     .room(0.4)
     .gain(0.4),
   // Pad mit PWM
-  note("[0,2,4]").scale("C:minor").s("pulse").pwm(sine.range(0.3, 0.7).slow(4))
+  note(&quot;[0,2,4]&quot;).scale(&quot;C:minor&quot;).s(&quot;pulse&quot;).pwm(sine.range(0.3, 0.7).slow(4))
     .attack(1).release(2).lpf(2000)
     .gain(0.3)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Wo Strudel an Grenzen kommt
-// -----------------------------------------------------
-// Das hier kannst du NICHT mit Strudels Bordmitteln:
-//   - Eigene Synth-Algorithmen (Granular, Physical Modeling)
-//   - Wavetables
-//   - Mehrere Operatoren in FM (DX7 hatte 6, Strudel 1)
-//   - Komplexe Modulationsmatrizen
-//   - Sample-and-Hold-LFOs auf beliebigen Parametern
-//
-// Workaround: Sound in Vital/Reaper bauen und als WAV
-// importieren. Strudel triggert das Sample dann mit
-// .speed() für Pitch.
-//
-// Das war von den Strudel-Entwicklern absichtlich begrenzt —
-// Live-Coding-Tool, nicht Synth-Lab.
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 13
-// -----------------------------------------------------
-// Engines:    sine, triangle, sawtooth, square, pulse, supersaw,
-//              noise, pink, brown
-// FM:         .fmh(N) .fmi(N) .fmattack .fmdecay
-// PWM:        .pwm(0..1)
-// Detune:     .detune(Halbtöne als Bruchzahl)
-// Pitch-Env:  .penv(N) .pattack .pdecay .pcurve
-// ADSR:       .attack .decay .sustain .release
-// Filter-Env: .lpenv .lpa .lpd .lps .lpr (auch hp/bp)
-//
-// Tipp: Wenn ein Sound nicht klingt wie du willst, prüf in
-// dieser Reihenfolge:
-//   1. ADSR (oft falsche Hüllkurve)
-//   2. Filter-Cutoff (zu dumpf oder zu offen)
-//   3. Distortion / Saturation (Druck)
-//   4. Layer (Sub-Bass + Body + Klick)
-//   5. Reverb/Delay als letztes
-//
-// Weiter zu 14_midi_und_io.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<h3>Wo Strudel an Grenzen kommt</h3>
+<pre><code>Das hier kannst du NICHT mit Strudels Bordmitteln:
+  - Eigene Synth-Algorithmen (Granular, Physical Modeling)
+  - Wavetables
+  - Mehrere Operatoren in FM (DX7 hatte 6, Strudel 1)
+  - Komplexe Modulationsmatrizen
+  - Sample-and-Hold-LFOs auf beliebigen Parametern
+</code></pre>
+<p>Workaround: Sound in Vital/Reaper bauen und als WAV importieren. Strudel triggert das Sample dann mit .speed() für Pitch.</p>
+<p>Das war von den Strudel-Entwicklern absichtlich begrenzt — Live-Coding-Tool, nicht Synth-Lab.</p>
+<h3>Mini-Zusammenfassung Kapitel 13</h3>
+<p>Engines:    sine, triangle, sawtooth, square, pulse, supersaw,              noise, pink, brown FM:         .fmh(N) .fmi(N) .fmattack .fmdecay PWM:        .pwm(0..1) Detune:     .detune(Halbtöne als Bruchzahl) Pitch-Env:  .penv(N) .pattack .pdecay .pcurve ADSR:       .attack .decay .sustain .release Filter-Env: .lpenv .lpa .lpd .lps .lpr (auch hp/bp)</p>
+<pre><code>Tipp: Wenn ein Sound nicht klingt wie du willst, prüf in
+dieser Reihenfolge:
+  1. ADSR (oft falsche Hüllkurve)
+  2. Filter-Cutoff (zu dumpf oder zu offen)
+  3. Distortion / Saturation (Druck)
+  4. Layer (Sub-Bass + Body + Klick)
+  5. Reverb/Delay als letztes
+</code></pre>
+<p>Weiter zu 14_midi_und_io.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

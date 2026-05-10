@@ -1,0 +1,305 @@
+# Kapitel 02 — Mini-Notation
+
+Strudels Kernsprache. Innerhalb von "..." schreibst du nicht einfach Strings, sondern PATTERNS — eine kleine eigene Sprache mit Klammern, Sternen und Tilden.
+
+### Mehr als ein Sound — Leerzeichen trennt
+
+"bd sd" heißt: erst bd, dann sd, in einem Cycle. Ein Cycle ist eine Wiederholungseinheit, ungefähr 2 Sekunden.
+
+```strudel
+s("bd sd")
+```
+
+"bd sd hh cp" — vier Sounds, gleichmäßig verteilt im Cycle.
+
+```strudel
+s("bd sd hh cp")
+```
+
+```
+  Cycle:  |---------------|
+          |bd | sd | hh |cp|
+```
+
+Egal wie viele du reinpackst, sie passen alle in EINEN Cycle. Acht Sounds = jeder ist halb so lang. Sechzehn = nochmal halb.
+
+```strudel
+s("bd hh sd hh bd hh sd hh")
+```
+
+▶ AUFGABE: Schreib einen eigenen 4-Schritt-Pattern. Mögliche Sounds: bd, sd, cp, hh, oh, rim, cb (Cowbell).
+
+### Das Stern-Suffix *N — N Mal so schnell
+
+"bd*4" heißt: bd vier Mal pro Cycle.
+
+```strudel
+s("bd*4")
+```
+
+"hh*8" — 8 Mal. "hh*16" — 16 Mal. Mehr ist auch ok.
+
+```strudel
+s("hh*16")
+```
+
+Der Stern wirkt nur auf den einen Sound vor ihm:
+
+```strudel
+s("bd sd*2 cp")
+```
+
+bd EINMAL, dann sd ZWEIMAL hintereinander, dann cp einmal. Insgesamt 4 Schläge im Cycle.
+
+### Slash /N — N Mal so langsam
+
+"bd/2" heißt: bd nur jeden zweiten Cycle.
+
+```strudel
+s("bd/2")
+```
+
+Du hörst bd, dann eine Pause so lang wie der nächste bd.
+
+### Tilde ~ — Pause
+
+Wo eine Tilde steht, wird nicht gespielt. Aber der Step belegt seinen Platz im Cycle.
+
+```strudel
+s("bd ~ sd ~")
+```
+
+Klassisches Boom-Tschack-Boom-Tschack — bd auf 1, sd auf 3.
+
+```strudel
+s("bd ~ ~ sd")
+```
+
+Auf 1 und 4. Ungewohnt, aber funktioniert.
+
+```strudel
+s("~ ~ bd ~")
+```
+
+Synkopiert: nur auf 3. Du hörst Stille, dann einen einsamen Hit, dann wieder Stille.
+
+### Eckige Klammern — Subdivision
+
+[a b] heißt: in den Platz, den EIN Step bekommt, packen wir zwei (oder mehr) gleichmäßig.
+
+```strudel
+s("bd [sd cp]")
+```
+
+bd nimmt erste Hälfte, sd+cp teilen sich die zweite Hälfte.
+
+```
+  |---------------|
+  |    bd   |sd|cp|
+```
+
+```
+  Ohne Subdivision wäre's:
+  |---------------|
+  |  bd  |  sd |cp|     ← drei gleiche Slots
+```
+
+```strudel
+s("bd [sd [cp hh]]")
+```
+
+bd erste Hälfte, sd ein Viertel, cp+hh teilen sich das letzte Viertel auf.
+
+```
+  |---------------|
+  |    bd   | sd|cphh|
+```
+
+Das ist mächtig. Du kannst beliebig schachteln.
+
+```strudel
+s("[bd cp] [sd [hh hh]] cp [hh sd]")
+```
+
+### ▶ AUFGABE: Fülle einen Cycle mit interessanter Subdivision
+
+Vier Steps. Jeder Step ist entweder ein Sound, eine Tilde, oder eine Klammer mit weiteren Sounds.
+
+```strudel
+s("[bd cp] sd [hh*4] [~ cp]")
+```
+
+### Spitze Klammern <a b c> — pro Cycle ein anderer
+
+Anders als eckige Klammern. <a b c> heißt: Cycle 1: a. Cycle 2: b. Cycle 3: c. Dann von vorn.
+
+```
+  Cycle 1: |bd       |
+  Cycle 2: |sd       |
+  Cycle 3: |cp       |
+  Cycle 4: |bd       |    ← Wiederholung beginnt
+```
+
+```strudel
+s("<bd sd cp>")
+```
+
+Du hörst einen Bass im ersten Cycle, eine Snare im zweiten, einen Clap im dritten — und so weiter im Kreis.
+
+Das ist die einfachste Art, Variation in einen Beat zu bringen.
+
+```strudel
+s("bd <sd cp hh oh>")
+```
+
+Erster Slot immer bd. Zweiter Slot wechselt jedes Mal.
+
+💡 PRAXIS — Off-Number-Trick (Tangerine-Dream-Klassiker) Wenn du eine spitze Klammer mit einer PRIMZAHL-Anzahl Items füllst und gegen einen 4er-Beat laufen lässt, phasenver- schiebt sich das Pattern und klingt nie zweimal gleich. Bei 5 + 7 + 11 dauert es 5*7*11 = 385 Cycles bis zum Reset. Faktisch endlos.
+
+```strudel
+stack(
+  s("bd*4"),                                       // Länge 4 (sync)
+  s("<hh ~ hh ~ hh ~ ~>").gain(0.4),               // Länge 7 (drift)
+  s("<~ ~ rim ~ ~ ~ ~ rim ~ ~ ~>").gain(0.5)       // Länge 11 (drift)
+)
+```
+
+Drei Spuren, drei Längen — aber nur die erste ist im Beat-Raster. Die anderen wandern darüber. Mehr dazu in Kapitel 12.
+
+### Klammern kombinieren
+
+Eckige und spitze sind beliebig mischbar.
+
+```strudel
+s("[bd*2] [<sd cp>] [hh*4] [<~ cp>]")
+```
+
+Bd doppelt, dann mal Snare mal Clap, dann Hihat-16tel, dann mal Pause mal Clap.
+
+### Komma in eckigen Klammern — gleichzeitig spielen
+
+[bd, hh] heißt: in EINEM Step BEIDE gleichzeitig.
+
+```strudel
+s("[bd, hh]*4")
+```
+
+Ein Bass plus eine Hihat zur gleichen Zeit, viermal.
+
+Das ist das erste Mal, dass mehr als eine Stimme zur gleichen Zeit erklingt. Mehr dazu im nächsten Kapitel mit stack().
+
+```strudel
+s("[bd, hh] [~, cp] [bd, hh] [~, cp]")
+```
+
+### Ausrufezeichen ! — Wiederholung
+
+"bd!3" heißt: bd dreimal hintereinander. Vorteil: lesbarer als "bd bd bd".
+
+```strudel
+s("bd!4")
+```
+
+Identisch zu s("bd*4") für diesen Fall — aber anders bei komplizierteren Mustern:
+
+```strudel
+s("[bd cp]!2")
+```
+
+Heißt: das Pärchen [bd cp] zweimal. Identisch zu "bd cp bd cp".
+
+### Fragezeichen ? — Wahrscheinlichkeit
+
+"bd?" — bd kommt mit 50% Wahrscheinlichkeit pro Step.
+
+```strudel
+s("bd?*4")
+```
+
+Manchmal hörst du alle vier, manchmal nur zwei, manchmal keinen. Würfeln pro Cycle.
+
+```strudel
+s("bd*4 hh?*4")
+```
+
+Bd immer, Hihats nach Würfelglück.
+
+```strudel
+s("bd*4 hh?*4 [cp?0.2]*4")
+```
+
+0.2 = 20% Wahrscheinlichkeit. Sehr selten.
+
+### Euklidisch (N,M) — kommt richtig in Kapitel 04
+
+Hier nur als Vorgeschmack:
+
+```strudel
+s("bd(3,8)")
+```
+
+3 Hits gleichmäßig über 8 Steps verteilt. Mehr in Kapitel 04.
+
+### Das @-Zeichen — Gewichtung
+
+Manche Steps sollen mehr Platz haben.
+
+```strudel
+s("bd@2 sd cp")
+```
+
+bd nimmt doppelt so viel Platz wie sd und cp. Ergibt: bd 50%, sd 25%, cp 25%.
+
+### Mini-Notation funktioniert AUCH für note()
+
+Alles was du gerade gelernt hast, gilt für note() identisch.
+
+```strudel
+note("c4 d4 e4 g4")
+
+note("c4 [e4 g4] c5 [e4 g4]")
+
+note("<c4 d4 e4 f4>")
+```
+
+### FINALE — ein Beat, alle Mittel
+
+```strudel
+s("bd*4, ~ cp ~ cp, hh*16, [~ oh]/2")
+```
+
+Komma im obersten Level stackt — heißt: alle vier Spuren gleichzeitig. Das ist die direkte Version von dem, was wir im nächsten Kapitel mit stack() lernen.
+
+bd*4         — Four-on-the-Floor ~ cp ~ cp    — Backbeat-Claps hh*16        — durchlaufende 16tel-Hihats [~ oh]/2     — Open-Hihat auf der zweiten 4 jedes zweiten Cycles
+
+### ▶ AUFGABE: Verändere den FINALE-Block
+
+```
+Probier:
+  - hh*8 statt hh*16
+  - bd(3,8) statt bd*4
+  - cp durch sd austauschen
+  - eine Spur ganz weglassen
+  - eine Spur dazu — z.B. note("c2*4").s("sawtooth").lpf(400)
+```
+
+Strg+Enter nach jeder Änderung. Hör zu.
+
+### Spickzettel Mini-Notation
+
+```
+  "a b c"      drei Steps gleichmäßig
+  "a [b c]"    a und dann b+c im halben Platz
+  "<a b c>"    a oder b oder c, pro Cycle einer
+  "a*4"        a viermal
+  "a/2"        a halb so oft
+  "~"          Pause
+  "a!3"        a dreimal in Folge
+  "a?"         a mit 50% Wahrscheinlichkeit
+  "a?0.2"      a mit 20% Wahrscheinlichkeit
+  "a@2 b"      a nimmt doppelt Platz
+  "[a, b]"     a und b gleichzeitig
+  "a(3,8)"     euklidisch — 3 von 8 Steps
+```
+
+Weiter zu 03_polyrhythmik.strudel.

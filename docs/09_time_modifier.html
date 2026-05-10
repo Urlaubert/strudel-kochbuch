@@ -4,365 +4,226 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>09 — Time Modifier — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>09 — Time Modifier</h1>
-<nav class="chapter-nav"><a href="08_signale_und_modulation.html" title="08 — Signale und Modulation">← Vorheriges</a><a href="10_samples_eigene.html" title="10 — Eigene Samples">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="08_signale_und_modulation.html" title="08 — Signale und Modulation">← Zurück</a><a href="10_samples_eigene.html" title="10 — Eigene Samples">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 09 — Time Modifier
-// =====================================================
-// Zeit ist in Strudel kein passiver Hintergrund — sie ist ein
-// Parameter wie alles andere. Du kannst sie strecken, stauchen,
-// umdrehen, segmentieren, mit Wahrscheinlichkeit verändern.
-//
-// Diese Funktionen sind das Werkzeug um aus einem Loop ein
-// LEBENDES Pattern zu machen — Variation ohne dass man jeden
-// Cycle neu schreibt.
-// =====================================================
-
-
-// -----------------------------------------------------
-// fast / slow — Tempo lokal ändern
-// -----------------------------------------------------
-
-s("bd hh sd hh")          // 4 Hits pro Cycle
-s("bd hh sd hh").fast(2)  // 8 Hits pro Cycle (gleich wie *2 in Mini)
-s("bd hh sd hh").slow(2)  // 4 Hits pro 2 Cycles
-
-// Identisch:
-s("bd*2 hh*2 sd*2 hh*2")
-s("bd hh sd hh").fast(2)
-
-
-// -----------------------------------------------------
-// rev — rückwärts spielen
-// -----------------------------------------------------
-
-note("c4 d4 e4 g4").rev()
-// g, e, d, c — die Tonfolge umgekehrt.
-
-s("bd cp sd cp").rev()
-// Auch auf Drums. Letzter Hit wird erster.
-
-
-// -----------------------------------------------------
-// every(n, fn) — alle n Cycles eine Variation
-// -----------------------------------------------------
-//
-//   Cycle:   1     2     3     4     5     6     7     8
-//   Pattern: norm  norm  norm  fast  norm  norm  norm  fast
-//                                ↑                       ↑
-//                              every(4, fast(2)) greift hier
-//
-//   Heißt: 75% der Zeit normal, alle 4 Cycles eine Variation.
-
-s("bd hh sd hh").every(4, fast(2))
-// Jeden 4. Cycle ist das Pattern doppelt so schnell.
-
-s("bd hh sd hh").every(4, rev)
-// Jeden 4. Cycle rückwärts.
-
-s("bd hh sd hh").every(8, x => x.fast(2).rev())
-// Jeden 8. Cycle: doppelt so schnell UND rückwärts.
-
-// Eine Spur die meistens gleich ist, aber regelmäßig "etwas
-// Anderes" macht. Häufiger Trick.
-
-
-// -----------------------------------------------------
-// sometimes / rarely / often — Wahrscheinlichkeit
-// -----------------------------------------------------
-
-s("bd*4").sometimes(rev)
-// Mit 50% Wahrscheinlichkeit wird der Cycle gerev't.
-
-s("hh*16").rarely(fast(2))
-// Selten (~10%) wird das Pattern doppelt so schnell.
-
-s("hh*16").often(jux(rev))
-// Oft (~75%) wird der Stereo-Trick angewendet.
-
-
-// 💡 PRAXIS — Anti-Loop: eine Voice generativ, Rest fest
-// Foren-Konsens (sequencer.de, recording.de): wenn ein Loop
-// langweilt, mach NICHT alles variabel. EINE Spur generativ,
-// alles andere bleibt fest. Das gibt Bewegung ohne den Track
-// zu zerschießen.
-
-stack(
-  s("bd*4"),                           // FEST
-  s("~ cp ~ cp"),                      // FEST
-  s("hh*16").gain(0.4)                 // EINE Spur generativ:
-    .sometimesBy(0.3, x => x.fast(2)), //   30% Roll-Variation
-  note("c2 c2 eb2 g2")                 // FEST
-    .s("sawtooth").lpf(500)
-)
-
-// 30% ist ein guter Default — selten genug dass es überrascht,
-// häufig genug dass jeder 4-Cycle-Loop anders klingt.
-
-
-// -----------------------------------------------------
-// Klassischer Build-Up
-// -----------------------------------------------------
-
-s("bd*4, ~ cp ~ cp, hh*16").every(8, x => x.fast(2))
-
-// Sieben Cycles normal, jeden 8. Cycle einen Roll. Klassischer
-// "Drum-Fill am Ende der Phrase".
-
-
-// -----------------------------------------------------
-// late / early — Timing-Versatz
-// -----------------------------------------------------
-
-stack(
-  s("bd*4"),
-  s("hh*8").late(0.125)
-)
-// Hihat ist um 1/8 Cycle versetzt. Klingt nach Off-Beat.
-
-stack(
-  s("bd*4"),
-  s("hh*8").early(0.05)
-)
-// Hihat kommt 0.05 Cycle FRÜHER. Wirkt aggressiver, "vorne".
-
-
-// -----------------------------------------------------
-// swing — Groove-Versatz
-// -----------------------------------------------------
-
-s("hh*8")           // strikt gleichmäßig
-s("hh*8").swing(4)  // Swing-Feel auf 4tel-Grid
-s("hh*8").swingBy(0.6, 4)  // weniger Swing
-s("hh*8").swingBy(1, 4)    // sehr starker Swing (Triolen)
-
-
-// -----------------------------------------------------
-// compress / zoom — nur ein Teil des Cycles
-// -----------------------------------------------------
-
-s("bd hh sd hh").compress(0.25, 0.75)
-// Pattern wird in Mitte zusammengedrückt — Stille davor und danach.
-
-s("bd hh sd hh").zoom(0, 0.5)
-// Nur erste Hälfte des Patterns, gestreckt auf vollen Cycle.
-
-s("bd hh sd hh").zoom(0.5, 1)
-// Nur zweite Hälfte.
-
-
-// -----------------------------------------------------
-// linger — wiederholen
-// -----------------------------------------------------
-
-note("c4 e4 g4 b4").linger(0.5)
-// Spielt nur die ERSTE HÄLFTE des Patterns, aber zweimal pro
-// Cycle. Ergibt: "c4 e4 c4 e4" pro Cycle.
-
-note("c4 e4 g4 b4").linger(0.25)
-// Erste 25%, viermal — also "c4 c4 c4 c4".
-
-
-// -----------------------------------------------------
-// ply — jedes Event vervielfältigen
-// -----------------------------------------------------
-
-s("bd cp sd").ply(2)
-// "bd bd cp cp sd sd" — jeder Hit verdoppelt.
-
-s("bd cp sd").ply("<1 2 3 4>")
-// Pro Cycle anderer Vervielfacher: 1, 2, 3, 4, dann von vorn.
-
-
-// -----------------------------------------------------
-// off — versetztes Echo im Pattern
-// -----------------------------------------------------
-
-note("c d e g").off(1/8, x => x.add(7))
-// Original-Pattern + dasselbe Pattern 1/8 Cycle später,
-// 7 Halbtöne (Quinte) höher. Ergibt einen Quint-Versatz-Effekt.
-
-
-// -----------------------------------------------------
-// iter — Pattern jeden Cycle weiter rotieren
-// -----------------------------------------------------
-
-note("0 1 2 3 4 5 6 7").scale("C:major").iter(4)
-// Jeder Cycle startet das Pattern an einer anderen Stelle.
-// Pattern wandert durch sich selbst.
-
-
-// -----------------------------------------------------
-// palindrome
-// -----------------------------------------------------
-
-s("bd cp sd hh").palindrome()
-// Ein Cycle vorwärts, einer rückwärts, abwechselnd.
-
-
-// -----------------------------------------------------
-// struct — Rhythmus auf Tonfolge anwenden
-// -----------------------------------------------------
-
-note("c d e g").struct("1 0 1 1 0 1")
-// Tonfolge wird über die struct-Maske gesteuert: 1 = spielen,
-// 0 = Pause. Die Töne kommen reihum auf die 1en.
-//
-//   Position:  1  2  3  4  5  6
-//   Struct:    1  0  1  1  0  1
-//   Note:      c  -  d  e  -  g
-//              ↑     ↑  ↑     ↑
-//             c      d  e     g  ← jede 1 schluckt eine Note
-
-note("c d e g").struct("1 0 1 1 0 1 0 1")
-// 8 Steps mit 5 Hits — ergibt einen ungleichmäßigen Rhythmus.
-
-
-// -----------------------------------------------------
-// mask — ganze Cycles ein/aus
-// -----------------------------------------------------
-//
-//   mask("<1 1 0 1>")
-//
-//   Cycle:    1   2   3   4   5   6   7   8
-//   Mask:     1   1   0   1   1   1   0   1
-//   Output:  XXX XXX  -  XXX XXX XXX  -  XXX
-//                     ↑               ↑
-//                   stumm           stumm
-
-s("bd*4").mask("<1 1 0 1>")
-// Erste 2 Cycles spielt bd, 3. Cycle aus, 4. wieder an.
-// Wichtig für Build-Ups: ein Layer kommt zu bestimmten
-// Cycles dazu/fällt weg.
-
-stack(
-  s("bd*4"),
-  s("~ cp ~ cp").mask("<0 1 1 1>"),
-  s("hh*16").gain(0.4).mask("<0 0 1 1>")
-)
-// Cycle 1: nur Kick.
-// Cycle 2: + Snare.
-// Cycle 3: + Snare + Hihats.
-// Cycle 4: alles.
-// Klassischer Aufbau einer Phrase.
-
-
-// -----------------------------------------------------
-// chunk — N Cycles, jedes Mal auf einem anderen Step
-// -----------------------------------------------------
-
-s("bd hh sd hh").chunk(4, fast(2))
-// 4 Cycles. Jeden Cycle wird ein anderer Step "doppelt schnell".
-// Ergibt eine wandernde Akzent-Welle.
-
-
-// -----------------------------------------------------
-// fastChunk
-// -----------------------------------------------------
-
-s("bd cp sd hh").fastChunk(4, fast(2))
-// Wie chunk, aber alles in einem Cycle gestaucht.
-
-
-// -----------------------------------------------------
-// FINALE — Loop mit eingebauter Variation
-// -----------------------------------------------------
-
-stack(
-  s("bd*4")
+<article class="prose">
+<h1>Kapitel 09 — Time Modifier</h1>
+<p>Zeit ist in Strudel kein passiver Hintergrund — sie ist ein Parameter wie alles andere. Du kannst sie strecken, stauchen, umdrehen, segmentieren, mit Wahrscheinlichkeit verändern.</p>
+<p>Diese Funktionen sind das Werkzeug um aus einem Loop ein LEBENDES Pattern zu machen — Variation ohne dass man jeden Cycle neu schreibt.</p>
+<h3>fast / slow — Tempo lokal ändern</h3>
+<div class="snippet" id="snip-000" data-code-b64="cygiYmQgaGggc2QgaGgiKSAgICAgICAgICAvLyA0IEhpdHMgcHJvIEN5Y2xlCnMoImJkIGhoIHNkIGhoIikuZmFzdCgyKSAgLy8gOCBIaXRzIHBybyBDeWNsZSAoZ2xlaWNoIHdpZSAqMiBpbiBNaW5pKQpzKCJiZCBoaCBzZCBoaCIpLnNsb3coMikgIC8vIDQgSGl0cyBwcm8gMiBDeWNsZXM="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;)          // 4 Hits pro Cycle
+s(&quot;bd hh sd hh&quot;).fast(2)  // 8 Hits pro Cycle (gleich wie *2 in Mini)
+s(&quot;bd hh sd hh&quot;).slow(2)  // 4 Hits pro 2 Cycles</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Identisch:</p>
+<div class="snippet" id="snip-001" data-code-b64="cygiYmQqMiBoaCoyIHNkKjIgaGgqMiIpCnMoImJkIGhoIHNkIGhoIikuZmFzdCgyKQ=="><pre class="snippet-code"><code>s(&quot;bd*2 hh*2 sd*2 hh*2&quot;)
+s(&quot;bd hh sd hh&quot;).fast(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>rev — rückwärts spielen</h3>
+<div class="snippet" id="snip-002" data-code-b64="bm90ZSgiYzQgZDQgZTQgZzQiKS5yZXYoKQ=="><pre class="snippet-code"><code>note(&quot;c4 d4 e4 g4&quot;).rev()</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>g, e, d, c — die Tonfolge umgekehrt.</p>
+<div class="snippet" id="snip-003" data-code-b64="cygiYmQgY3Agc2QgY3AiKS5yZXYoKQ=="><pre class="snippet-code"><code>s(&quot;bd cp sd cp&quot;).rev()</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Auch auf Drums. Letzter Hit wird erster.</p>
+<h3>every(n, fn) — alle n Cycles eine Variation</h3>
+<pre><code>  Cycle:   1     2     3     4     5     6     7     8
+  Pattern: norm  norm  norm  fast  norm  norm  norm  fast
+                               ↑                       ↑
+                             every(4, fast(2)) greift hier
+</code></pre>
+<p>Heißt: 75% der Zeit normal, alle 4 Cycles eine Variation.</p>
+<div class="snippet" id="snip-004" data-code-b64="cygiYmQgaGggc2QgaGgiKS5ldmVyeSg0LCBmYXN0KDIpKQ=="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).every(4, fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Jeden 4. Cycle ist das Pattern doppelt so schnell.</p>
+<div class="snippet" id="snip-005" data-code-b64="cygiYmQgaGggc2QgaGgiKS5ldmVyeSg0LCByZXYp"><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).every(4, rev)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Jeden 4. Cycle rückwärts.</p>
+<div class="snippet" id="snip-006" data-code-b64="cygiYmQgaGggc2QgaGgiKS5ldmVyeSg4LCB4ID0+IHguZmFzdCgyKS5yZXYoKSk="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).every(8, x =&gt; x.fast(2).rev())</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Jeden 8. Cycle: doppelt so schnell UND rückwärts.</p>
+<p>Eine Spur die meistens gleich ist, aber regelmäßig "etwas Anderes" macht. Häufiger Trick.</p>
+<h3>sometimes / rarely / often — Wahrscheinlichkeit</h3>
+<div class="snippet" id="snip-007" data-code-b64="cygiYmQqNCIpLnNvbWV0aW1lcyhyZXYp"><pre class="snippet-code"><code>s(&quot;bd*4&quot;).sometimes(rev)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Mit 50% Wahrscheinlichkeit wird der Cycle gerev't.</p>
+<div class="snippet" id="snip-008" data-code-b64="cygiaGgqMTYiKS5yYXJlbHkoZmFzdCgyKSk="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).rarely(fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Selten (~10%) wird das Pattern doppelt so schnell.</p>
+<div class="snippet" id="snip-009" data-code-b64="cygiaGgqMTYiKS5vZnRlbihqdXgocmV2KSk="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).often(jux(rev))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Oft (~75%) wird der Stereo-Trick angewendet.</p>
+<p>💡 PRAXIS — Anti-Loop: eine Voice generativ, Rest fest Foren-Konsens (sequencer.de, recording.de): wenn ein Loop langweilt, mach NICHT alles variabel. EINE Spur generativ, alles andere bleibt fest. Das gibt Bewegung ohne den Track zu zerschießen.</p>
+<div class="snippet" id="snip-010" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLCAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIEZFU1QKICBzKCJ+IGNwIH4gY3AiKSwgICAgICAgICAgICAgICAgICAgICAgLy8gRkVTVAogIHMoImhoKjE2IikuZ2FpbigwLjQpICAgICAgICAgICAgICAgICAvLyBFSU5FIFNwdXIgZ2VuZXJhdGl2OgogICAgLnNvbWV0aW1lc0J5KDAuMywgeCA9PiB4LmZhc3QoMikpLCAvLyAgIDMwJSBSb2xsLVZhcmlhdGlvbgogIG5vdGUoImMyIGMyIGViMiBnMiIpICAgICAgICAgICAgICAgICAvLyBGRVNUCiAgICAucygic2F3dG9vdGgiKS5scGYoNTAwKQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),                           // FEST
+  s(&quot;~ cp ~ cp&quot;),                      // FEST
+  s(&quot;hh*16&quot;).gain(0.4)                 // EINE Spur generativ:
+    .sometimesBy(0.3, x =&gt; x.fast(2)), //   30% Roll-Variation
+  note(&quot;c2 c2 eb2 g2&quot;)                 // FEST
+    .s(&quot;sawtooth&quot;).lpf(500)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>30% ist ein guter Default — selten genug dass es überrascht, häufig genug dass jeder 4-Cycle-Loop anders klingt.</p>
+<h3>Klassischer Build-Up</h3>
+<div class="snippet" id="snip-011" data-code-b64="cygiYmQqNCwgfiBjcCB+IGNwLCBoaCoxNiIpLmV2ZXJ5KDgsIHggPT4geC5mYXN0KDIpKQ=="><pre class="snippet-code"><code>s(&quot;bd*4, ~ cp ~ cp, hh*16&quot;).every(8, x =&gt; x.fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Sieben Cycles normal, jeden 8. Cycle einen Roll. Klassischer "Drum-Fill am Ende der Phrase".</p>
+<h3>late / early — Timing-Versatz</h3>
+<div class="snippet" id="snip-012" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjgiKS5sYXRlKDAuMTI1KQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;hh*8&quot;).late(0.125)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Hihat ist um 1/8 Cycle versetzt. Klingt nach Off-Beat.</p>
+<div class="snippet" id="snip-013" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjgiKS5lYXJseSgwLjA1KQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;hh*8&quot;).early(0.05)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Hihat kommt 0.05 Cycle FRÜHER. Wirkt aggressiver, "vorne".</p>
+<h3>swing — Groove-Versatz</h3>
+<div class="snippet" id="snip-014" data-code-b64="cygiaGgqOCIpICAgICAgICAgICAvLyBzdHJpa3QgZ2xlaWNobcOkw59pZwpzKCJoaCo4Iikuc3dpbmcoNCkgIC8vIFN3aW5nLUZlZWwgYXVmIDR0ZWwtR3JpZApzKCJoaCo4Iikuc3dpbmdCeSgwLjYsIDQpICAvLyB3ZW5pZ2VyIFN3aW5nCnMoImhoKjgiKS5zd2luZ0J5KDEsIDQpICAgIC8vIHNlaHIgc3RhcmtlciBTd2luZyAoVHJpb2xlbik="><pre class="snippet-code"><code>s(&quot;hh*8&quot;)           // strikt gleichmäßig
+s(&quot;hh*8&quot;).swing(4)  // Swing-Feel auf 4tel-Grid
+s(&quot;hh*8&quot;).swingBy(0.6, 4)  // weniger Swing
+s(&quot;hh*8&quot;).swingBy(1, 4)    // sehr starker Swing (Triolen)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>compress / zoom — nur ein Teil des Cycles</h3>
+<div class="snippet" id="snip-015" data-code-b64="cygiYmQgaGggc2QgaGgiKS5jb21wcmVzcygwLjI1LCAwLjc1KQ=="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).compress(0.25, 0.75)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Pattern wird in Mitte zusammengedrückt — Stille davor und danach.</p>
+<div class="snippet" id="snip-016" data-code-b64="cygiYmQgaGggc2QgaGgiKS56b29tKDAsIDAuNSk="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).zoom(0, 0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Nur erste Hälfte des Patterns, gestreckt auf vollen Cycle.</p>
+<div class="snippet" id="snip-017" data-code-b64="cygiYmQgaGggc2QgaGgiKS56b29tKDAuNSwgMSk="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).zoom(0.5, 1)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Nur zweite Hälfte.</p>
+<h3>linger — wiederholen</h3>
+<div class="snippet" id="snip-018" data-code-b64="bm90ZSgiYzQgZTQgZzQgYjQiKS5saW5nZXIoMC41KQ=="><pre class="snippet-code"><code>note(&quot;c4 e4 g4 b4&quot;).linger(0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Spielt nur die ERSTE HÄLFTE des Patterns, aber zweimal pro Cycle. Ergibt: "c4 e4 c4 e4" pro Cycle.</p>
+<div class="snippet" id="snip-019" data-code-b64="bm90ZSgiYzQgZTQgZzQgYjQiKS5saW5nZXIoMC4yNSk="><pre class="snippet-code"><code>note(&quot;c4 e4 g4 b4&quot;).linger(0.25)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Erste 25%, viermal — also "c4 c4 c4 c4".</p>
+<h3>ply — jedes Event vervielfältigen</h3>
+<div class="snippet" id="snip-020" data-code-b64="cygiYmQgY3Agc2QiKS5wbHkoMik="><pre class="snippet-code"><code>s(&quot;bd cp sd&quot;).ply(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>"bd bd cp cp sd sd" — jeder Hit verdoppelt.</p>
+<div class="snippet" id="snip-021" data-code-b64="cygiYmQgY3Agc2QiKS5wbHkoIjwxIDIgMyA0PiIp"><pre class="snippet-code"><code>s(&quot;bd cp sd&quot;).ply(&quot;&lt;1 2 3 4&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Pro Cycle anderer Vervielfacher: 1, 2, 3, 4, dann von vorn.</p>
+<h3>off — versetztes Echo im Pattern</h3>
+<div class="snippet" id="snip-022" data-code-b64="bm90ZSgiYyBkIGUgZyIpLm9mZigxLzgsIHggPT4geC5hZGQoNykp"><pre class="snippet-code"><code>note(&quot;c d e g&quot;).off(1/8, x =&gt; x.add(7))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Original-Pattern + dasselbe Pattern 1/8 Cycle später, 7 Halbtöne (Quinte) höher. Ergibt einen Quint-Versatz-Effekt.</p>
+<h3>iter — Pattern jeden Cycle weiter rotieren</h3>
+<div class="snippet" id="snip-023" data-code-b64="bm90ZSgiMCAxIDIgMyA0IDUgNiA3Iikuc2NhbGUoIkM6bWFqb3IiKS5pdGVyKDQp"><pre class="snippet-code"><code>note(&quot;0 1 2 3 4 5 6 7&quot;).scale(&quot;C:major&quot;).iter(4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Jeder Cycle startet das Pattern an einer anderen Stelle. Pattern wandert durch sich selbst.</p>
+<h3>palindrome</h3>
+<div class="snippet" id="snip-024" data-code-b64="cygiYmQgY3Agc2QgaGgiKS5wYWxpbmRyb21lKCk="><pre class="snippet-code"><code>s(&quot;bd cp sd hh&quot;).palindrome()</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Ein Cycle vorwärts, einer rückwärts, abwechselnd.</p>
+<h3>struct — Rhythmus auf Tonfolge anwenden</h3>
+<div class="snippet" id="snip-025" data-code-b64="bm90ZSgiYyBkIGUgZyIpLnN0cnVjdCgiMSAwIDEgMSAwIDEiKQ=="><pre class="snippet-code"><code>note(&quot;c d e g&quot;).struct(&quot;1 0 1 1 0 1&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Tonfolge wird über die struct-Maske gesteuert: 1 = spielen, 0 = Pause. Die Töne kommen reihum auf die 1en.</p>
+<pre><code>  Position:  1  2  3  4  5  6
+  Struct:    1  0  1  1  0  1
+  Note:      c  -  d  e  -  g
+             ↑     ↑  ↑     ↑
+            c      d  e     g  ← jede 1 schluckt eine Note
+</code></pre>
+<div class="snippet" id="snip-026" data-code-b64="bm90ZSgiYyBkIGUgZyIpLnN0cnVjdCgiMSAwIDEgMSAwIDEgMCAxIik="><pre class="snippet-code"><code>note(&quot;c d e g&quot;).struct(&quot;1 0 1 1 0 1 0 1&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>8 Steps mit 5 Hits — ergibt einen ungleichmäßigen Rhythmus.</p>
+<h3>mask — ganze Cycles ein/aus</h3>
+<p>mask("&lt;1 1 0 1&gt;")</p>
+<pre><code>  Cycle:    1   2   3   4   5   6   7   8
+  Mask:     1   1   0   1   1   1   0   1
+  Output:  XXX XXX  -  XXX XXX XXX  -  XXX
+                    ↑               ↑
+                  stumm           stumm
+</code></pre>
+<div class="snippet" id="snip-027" data-code-b64="cygiYmQqNCIpLm1hc2soIjwxIDEgMCAxPiIp"><pre class="snippet-code"><code>s(&quot;bd*4&quot;).mask(&quot;&lt;1 1 0 1&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Erste 2 Cycles spielt bd, 3. Cycle aus, 4. wieder an. Wichtig für Build-Ups: ein Layer kommt zu bestimmten Cycles dazu/fällt weg.</p>
+<div class="snippet" id="snip-028" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLm1hc2soIjwwIDEgMSAxPiIpLAogIHMoImhoKjE2IikuZ2FpbigwLjQpLm1hc2soIjwwIDAgMSAxPiIpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;).mask(&quot;&lt;0 1 1 1&gt;&quot;),
+  s(&quot;hh*16&quot;).gain(0.4).mask(&quot;&lt;0 0 1 1&gt;&quot;)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Cycle 1: nur Kick. Cycle 2: + Snare. Cycle 3: + Snare + Hihats. Cycle 4: alles. Klassischer Aufbau einer Phrase.</p>
+<h3>chunk — N Cycles, jedes Mal auf einem anderen Step</h3>
+<div class="snippet" id="snip-029" data-code-b64="cygiYmQgaGggc2QgaGgiKS5jaHVuayg0LCBmYXN0KDIpKQ=="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).chunk(4, fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>4 Cycles. Jeden Cycle wird ein anderer Step "doppelt schnell". Ergibt eine wandernde Akzent-Welle.</p>
+<h3>fastChunk</h3>
+<div class="snippet" id="snip-030" data-code-b64="cygiYmQgY3Agc2QgaGgiKS5mYXN0Q2h1bmsoNCwgZmFzdCgyKSk="><pre class="snippet-code"><code>s(&quot;bd cp sd hh&quot;).fastChunk(4, fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Wie chunk, aber alles in einem Cycle gestaucht.</p>
+<h3>FINALE — Loop mit eingebauter Variation</h3>
+<div class="snippet" id="snip-031" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpCiAgICAuZXZlcnkoOCwgZmFzdCgyKSksCiAgcygifiBjcCB+IGNwIikKICAgIC5zb21ldGltZXMocmV2KSwKICBzKCJoaCoxNiIpCiAgICAuZ2FpbigwLjQpCiAgICAuZXZlcnkoNCwgeCA9PiB4LmZhc3QoMikpCiAgICAucGFuKHBlcmxpbi5yYW5nZSgwLjMsIDAuNykpLAogIG5vdGUoImMyIGMyIGViMiBnMiIpCiAgICAuc2NhbGUoIkM6bWlub3IiKQogICAgLnMoInNhd3Rvb3RoIikKICAgIC5scGYoc2luZS5yYW5nZSg0MDAsIDIwMDApLnNsb3coOCkpCiAgICAuZXZlcnkoOCwgcmV2KSwKICBub3RlKCIwIDQgNyA0IikKICAgIC5zY2FsZSgiQzptaW5vciIpCiAgICAuYWRkKDE0KQogICAgLnMoInRyaWFuZ2xlIikKICAgIC5nYWluKDAuNSkKICAgIC5yb29tKDAuNSkKICAgIC5ldmVyeSg4LCB4ID0+IHguZmFzdCgyKS5yZXYoKSkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;)
     .every(8, fast(2)),
-  s("~ cp ~ cp")
+  s(&quot;~ cp ~ cp&quot;)
     .sometimes(rev),
-  s("hh*16")
+  s(&quot;hh*16&quot;)
     .gain(0.4)
-    .every(4, x => x.fast(2))
+    .every(4, x =&gt; x.fast(2))
     .pan(perlin.range(0.3, 0.7)),
-  note("c2 c2 eb2 g2")
-    .scale("C:minor")
-    .s("sawtooth")
+  note(&quot;c2 c2 eb2 g2&quot;)
+    .scale(&quot;C:minor&quot;)
+    .s(&quot;sawtooth&quot;)
     .lpf(sine.range(400, 2000).slow(8))
     .every(8, rev),
-  note("0 4 7 4")
-    .scale("C:minor")
+  note(&quot;0 4 7 4&quot;)
+    .scale(&quot;C:minor&quot;)
     .add(14)
-    .s("triangle")
+    .s(&quot;triangle&quot;)
     .gain(0.5)
     .room(0.5)
-    .every(8, x => x.fast(2).rev())
-)
+    .every(8, x =&gt; x.fast(2).rev())
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Sechs Spuren. Jede hat ihre eigene Variations-Logik.
-// Bd: alle 8 Cycles ein Roll.
-// Cp: ab und zu rückwärts.
-// Hh: alle 4 Cycles doppelt schnell, dazu Pan-Drift.
-// Bass: alle 8 Cycles rückwärts, dazu langsamer Filter-Sweep.
-// Lead: alle 8 Cycles ein doppelt-schnell-und-rückwärts.
-//
-// Spielt für 64 Cycles ohne dass es langweilig wird, weil
-// die Variations-Zyklen unterschiedlich sind und sich überlagern.
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Variations-Schichtung
-// -----------------------------------------------------
-// Nimm einen schlichten Beat: bd*4, hh*8, ~ cp ~ cp.
-// Pack auf jede Spur eine andere Variations-Logik:
-//   - bd: every(N, ?)
-//   - hh: sometimes(?)
-//   - cp: rarely(?)
-//
-// Welche N und Variationen klingen am besten?
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 09
-// -----------------------------------------------------
-//   .fast(n) / .slow(n)      → Tempo
-//   .rev()                   → rückwärts
-//   .every(n, fn)            → alle n Cycles fn anwenden
-//   .sometimes(fn)           → 50% pro Event
-//   .rarely(fn) / .often(fn) → 10% / 75%
-//   .late(c) / .early(c)     → Timing-Versatz
-//   .swing(n)                → Groove
-//   .compress(s, e)          → Pattern in Mitte
-//   .zoom(s, e)              → Ausschnitt strecken
-//   .struct("1 0 1")         → Rhythmus-Maske auf Töne
-//   .mask("<1 0 1 1>")       → Cycle-weise an/aus
-//   .ply(n)                  → jedes Event n-fach
-//   .off(t, fn)              → versetzte Kopie
-//
-// Die wichtigsten zwei sind every() und mask(). Mit denen
-// allein machst du Variation ohne Code-Schreiben.
-//
-// Weiter zu 10_samples_eigene.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<p>Sechs Spuren. Jede hat ihre eigene Variations-Logik. Bd: alle 8 Cycles ein Roll. Cp: ab und zu rückwärts. Hh: alle 4 Cycles doppelt schnell, dazu Pan-Drift. Bass: alle 8 Cycles rückwärts, dazu langsamer Filter-Sweep. Lead: alle 8 Cycles ein doppelt-schnell-und-rückwärts.</p>
+<p>Spielt für 64 Cycles ohne dass es langweilig wird, weil die Variations-Zyklen unterschiedlich sind und sich überlagern.</p>
+<h3>▶ AUFGABE: Variations-Schichtung</h3>
+<pre><code>Nimm einen schlichten Beat: bd*4, hh*8, ~ cp ~ cp.
+Pack auf jede Spur eine andere Variations-Logik:
+  - bd: every(N, ?)
+  - hh: sometimes(?)
+  - cp: rarely(?)
+</code></pre>
+<p>Welche N und Variationen klingen am besten?</p>
+<h3>Mini-Zusammenfassung Kapitel 09</h3>
+<pre><code>  .fast(n) / .slow(n)      → Tempo
+  .rev()                   → rückwärts
+  .every(n, fn)            → alle n Cycles fn anwenden
+  .sometimes(fn)           → 50% pro Event
+  .rarely(fn) / .often(fn) → 10% / 75%
+  .late(c) / .early(c)     → Timing-Versatz
+  .swing(n)                → Groove
+  .compress(s, e)          → Pattern in Mitte
+  .zoom(s, e)              → Ausschnitt strecken
+  .struct(&quot;1 0 1&quot;)         → Rhythmus-Maske auf Töne
+  .mask(&quot;&lt;1 0 1 1&gt;&quot;)       → Cycle-weise an/aus
+  .ply(n)                  → jedes Event n-fach
+  .off(t, fn)              → versetzte Kopie
+</code></pre>
+<p>Die wichtigsten zwei sind every() und mask(). Mit denen allein machst du Variation ohne Code-Schreiben.</p>
+<p>Weiter zu 10_samples_eigene.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

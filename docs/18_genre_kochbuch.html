@@ -4,418 +4,328 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>18 — Genre-Kochbuch — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>18 — Genre-Kochbuch</h1>
-<nav class="chapter-nav"><a href="17_hap_internals.html" title="17 — Hap-Internals">← Vorheriges</a><a href="19_valenz_und_arousal.html" title="19 — Valenz und Arousal">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="17_hap_internals.html" title="17 — Hap-Internals">← Zurück</a><a href="19_valenz_und_arousal.html" title="19 — Valenz und Arousal">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 18 — Genre-Kochbuch
-// =====================================================
-// Pro Genre eine kurze Strudel-Vorlage mit den typischen
-// Defaults: Tempo, Drum-Bank, Bass-Charakter, Effekt-Reihen-
-// folge. Zum Anhören und als Startpunkt.
-//
-// Jedes Genre hat seine Konventionen — wer dazwischen
-// springt sollte die Defaults kennen, dann kann man sie
-// bewusst brechen.
-// =====================================================
-
-
-// -----------------------------------------------------
-// Berlin Techno (130 BPM, dunkel, repetitiv)
-// -----------------------------------------------------
-
-setcps(0.55)
+<article class="prose">
+<h1>Kapitel 18 — Genre-Kochbuch</h1>
+<p>Pro Genre eine kurze Strudel-Vorlage mit den typischen Defaults: Tempo, Drum-Bank, Bass-Charakter, Effekt-Reihen- folge. Zum Anhören und als Startpunkt.</p>
+<p>Jedes Genre hat seine Konventionen — wer dazwischen springt sollte die Defaults kennen, dann kann man sie bewusst brechen.</p>
+<h3>Berlin Techno (130 BPM, dunkel, repetitiv)</h3>
+<div class="snippet" id="snip-000" data-code-b64="c2V0Y3BzKDAuNTUpCgpzdGFjaygKICBzKCJiZCo0IikuZ2FpbigwLjk1KSwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gdGlnaHRlciBLaWNrCiAgcygifiB+IHJpbSB+IikuZ2FpbigwLjQpLCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIHNwYXJzZSBQZXJjCiAgcygiaGgqMTYiKS5nYWluKDAuMyksCiAgbm90ZSgiYzIqOCIpLnNjYWxlKCJDOnBocnlnaWFuIikgICAgICAgICAgICAgICAgICAgICAgIC8vIGR1bmtsZXIgTW9vZAogICAgLnMoInNhd3Rvb3RoIikKICAgIC5scGYoc2luZS5yYW5nZSgyMDAsIDgwMCkuc2xvdygxNikpICAgICAgICAgICAgICAgICAgLy8gU0xPV0VSIEZpbHRlci1Td2VlcAogICAgLmxwcSg4KQogICAgLmdhaW4oMC43KQop"><pre class="snippet-code"><code>setcps(0.55)
 
 stack(
-  s("bd*4").gain(0.95),                                  // tighter Kick
-  s("~ ~ rim ~").gain(0.4),                              // sparse Perc
-  s("hh*16").gain(0.3),
-  note("c2*8").scale("C:phrygian")                       // dunkler Mood
-    .s("sawtooth")
+  s(&quot;bd*4&quot;).gain(0.95),                                  // tighter Kick
+  s(&quot;~ ~ rim ~&quot;).gain(0.4),                              // sparse Perc
+  s(&quot;hh*16&quot;).gain(0.3),
+  note(&quot;c2*8&quot;).scale(&quot;C:phrygian&quot;)                       // dunkler Mood
+    .s(&quot;sawtooth&quot;)
     .lpf(sine.range(200, 800).slow(16))                  // SLOWER Filter-Sweep
     .lpq(8)
     .gain(0.7)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - 909-Kick, dunkel, kein Sub-Boom (.lpf darüber wenn nötig)
-//   - Filter-Sweeps SEHR langsam (slow(16) = 32 s bei cps=0.5)
-//   - Skala: phrygian / aeolian — dunkle Modi
-//   - Reverb sparsam, kurzer Plate auf Snare/Clap
-//   - Layout: 4-on-floor + Acid-Bass + sparse Perc
-
-
-// -----------------------------------------------------
-// Detroit Techno (124-128 BPM, mehr Soul, melodischer)
-// -----------------------------------------------------
-
-setcps(0.53)
+<pre><code>Notes:
+  - 909-Kick, dunkel, kein Sub-Boom (.lpf darüber wenn nötig)
+  - Filter-Sweeps SEHR langsam (slow(16) = 32 s bei cps=0.5)
+  - Skala: phrygian / aeolian — dunkle Modi
+  - Reverb sparsam, kurzer Plate auf Snare/Clap
+  - Layout: 4-on-floor + Acid-Bass + sparse Perc
+</code></pre>
+<h3>Detroit Techno (124-128 BPM, mehr Soul, melodischer)</h3>
+<div class="snippet" id="snip-001" data-code-b64="c2V0Y3BzKDAuNTMpCgpzdGFjaygKICBzKCJiZCo0IiksCiAgcygifiBjcCB+IGNwIiksCiAgcygiaGgqMTYiKS5nYWluKDAuNCkucGFuKHBlcmxpbi5yYW5nZSgwLjMsIDAuNykpLCAgICAgIC8vIGxlYmVuZGlnZSBIaWhhdAogIG5vdGUoImMzIGViMyBnMyBjNCIpLnNjYWxlKCJDOmRvcmlhbiIpICAgICAgICAgICAgICAgICAvLyBoZWxsZXJlciBNb29kCiAgICAucygic2F3dG9vdGgiKS5scGYoMTUwMCkKICAgIC5hdHRhY2soMC4wNSkucmVsZWFzZSgwLjQpLAogIG5vdGUoImMyIH4gYzIgfiIpLnMoInNpbmUiKS5nYWluKDAuNykgICAgICAgICAgICAgICAgICAvLyBTdWItQmFzcwop"><pre class="snippet-code"><code>setcps(0.53)
 
 stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*16").gain(0.4).pan(perlin.range(0.3, 0.7)),      // lebendige Hihat
-  note("c3 eb3 g3 c4").scale("C:dorian")                 // hellerer Mood
-    .s("sawtooth").lpf(1500)
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*16&quot;).gain(0.4).pan(perlin.range(0.3, 0.7)),      // lebendige Hihat
+  note(&quot;c3 eb3 g3 c4&quot;).scale(&quot;C:dorian&quot;)                 // hellerer Mood
+    .s(&quot;sawtooth&quot;).lpf(1500)
     .attack(0.05).release(0.4),
-  note("c2 ~ c2 ~").s("sine").gain(0.7)                  // Sub-Bass
-)
+  note(&quot;c2 ~ c2 ~&quot;).s(&quot;sine&quot;).gain(0.7)                  // Sub-Bass
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - 909er-Drums mit Swing
-//   - Skala: dorian / mixolydian — heller, soulful
-//   - Pads + Strings gehören dazu
-//   - Mittlere Halls auf melodische Layer
-
-
-// -----------------------------------------------------
-// House (124-128 BPM, sample-basiert, groovy)
-// -----------------------------------------------------
-
-setcps(0.53)
+<pre><code>Notes:
+  - 909er-Drums mit Swing
+  - Skala: dorian / mixolydian — heller, soulful
+  - Pads + Strings gehören dazu
+  - Mittlere Halls auf melodische Layer
+</code></pre>
+<h3>House (124-128 BPM, sample-basiert, groovy)</h3>
+<div class="snippet" id="snip-002" data-code-b64="c2V0Y3BzKDAuNTMpCgpzdGFjaygKICBzKCJiZCo0IiksCiAgcygifiBjcCB+IGNwIikucm9vbSgwLjMpLAogIHMoImhoKjE2IikuZ2FpbigwLjQpLAogIHMoIlt+IH4gfiBvaF0vMiIpLmdhaW4oMC41KS5jdXQoMSksICAgICAgICAgICAgICAgICAgICAvLyBrbGFzc2lzY2hlcyBPSC1QYXR0ZXJuCiAgbm90ZSgiYzIgYzIgZzEgYzIiKS5zY2FsZSgiQzptaW5vciIpCiAgICAucygic2F3dG9vdGgiKS5scGYoODAwKS5nYWluKDAuNyksCiAgbm90ZSgiW2M0LCBlYjQsIGc0XSIpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIFN0YWItQWtrb3JkZQogICAgLnMoInNhd3Rvb3RoIikuYXR0YWNrKDAuMDAxKS5yZWxlYXNlKDAuMTUpCiAgICAubHBlbnYoOCkubHBhKDApLmxwZCgwLjEpCiAgICAuZ2FpbigwLjUpCik="><pre class="snippet-code"><code>setcps(0.53)
 
 stack(
-  s("bd*4"),
-  s("~ cp ~ cp").room(0.3),
-  s("hh*16").gain(0.4),
-  s("[~ ~ ~ oh]/2").gain(0.5).cut(1),                    // klassisches OH-Pattern
-  note("c2 c2 g1 c2").scale("C:minor")
-    .s("sawtooth").lpf(800).gain(0.7),
-  note("[c4, eb4, g4]")                                  // Stab-Akkorde
-    .s("sawtooth").attack(0.001).release(0.15)
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;).room(0.3),
+  s(&quot;hh*16&quot;).gain(0.4),
+  s(&quot;[~ ~ ~ oh]/2&quot;).gain(0.5).cut(1),                    // klassisches OH-Pattern
+  note(&quot;c2 c2 g1 c2&quot;).scale(&quot;C:minor&quot;)
+    .s(&quot;sawtooth&quot;).lpf(800).gain(0.7),
+  note(&quot;[c4, eb4, g4]&quot;)                                  // Stab-Akkorde
+    .s(&quot;sawtooth&quot;).attack(0.001).release(0.15)
     .lpenv(8).lpa(0).lpd(0.1)
     .gain(0.5)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - 909-Kick + Clap auf 2 und 4
-//   - Stab-Chords (kurzer Attack, Filter-Pluck)
-//   - Shaker mit Swing
-//   - Plate-Reverb auf Vocals/Stabs
-
-
-// -----------------------------------------------------
-// Drum & Bass (174 BPM, Amen-Break-Stil, Reese-Bass)
-// -----------------------------------------------------
-
-setcps(0.725)   // ~174 BPM bei 4 Steps/Cycle
+<pre><code>Notes:
+  - 909-Kick + Clap auf 2 und 4
+  - Stab-Chords (kurzer Attack, Filter-Pluck)
+  - Shaker mit Swing
+  - Plate-Reverb auf Vocals/Stabs
+</code></pre>
+<h3>Drum &amp; Bass (174 BPM, Amen-Break-Stil, Reese-Bass)</h3>
+<div class="snippet" id="snip-003" data-code-b64="c2V0Y3BzKDAuNzI1KSAgIC8vIH4xNzQgQlBNIGJlaSA0IFN0ZXBzL0N5Y2xlCgpzdGFjaygKICAvLyBIYWxmdGltZS1EcnVtcyAoa2xpbmd0IHdpZSA4NyBCUE0pCiAgcygiYmQgfiB+IH4gfiB+IHNkIH4gfiB+IGJkIH4gc2QgfiB+IH4iKSwKICBzKCJoaCoxNiIpLmdhaW4oMC40KSwKICAvLyBSZWVzZS1CYXNzICh6d2VpIGRldHVuZXRlIFNhd3MpCiAgbm90ZSgiYzIqNCIpLnNjYWxlKCJDOm1pbm9yIikKICAgIC5zKCJzYXd0b290aCIpLmRldHVuZSgwLjE1KQogICAgLmxwZihzaW5lLnJhbmdlKDMwMCwgMTAwMCkuc2xvdygyKSkKICAgIC5scHEoNSkKICAgIC5nYWluKDAuNyksCiAgLy8gU3RhYnMKICBub3RlKCI8ZWI1IGc1IGM1IGJiND4iKS5zKCJzaW5lIikKICAgIC5hdHRhY2soMC4wMDEpLnJlbGVhc2UoMC4zKQogICAgLmdhaW4oMC40KQop"><pre class="snippet-code"><code>setcps(0.725)   // ~174 BPM bei 4 Steps/Cycle
 
 stack(
   // Halftime-Drums (klingt wie 87 BPM)
-  s("bd ~ ~ ~ ~ ~ sd ~ ~ ~ bd ~ sd ~ ~ ~"),
-  s("hh*16").gain(0.4),
+  s(&quot;bd ~ ~ ~ ~ ~ sd ~ ~ ~ bd ~ sd ~ ~ ~&quot;),
+  s(&quot;hh*16&quot;).gain(0.4),
   // Reese-Bass (zwei detunete Saws)
-  note("c2*4").scale("C:minor")
-    .s("sawtooth").detune(0.15)
+  note(&quot;c2*4&quot;).scale(&quot;C:minor&quot;)
+    .s(&quot;sawtooth&quot;).detune(0.15)
     .lpf(sine.range(300, 1000).slow(2))
     .lpq(5)
     .gain(0.7),
   // Stabs
-  note("<eb5 g5 c5 bb4>").s("sine")
+  note(&quot;&lt;eb5 g5 c5 bb4&gt;&quot;).s(&quot;sine&quot;)
     .attack(0.001).release(0.3)
     .gain(0.4)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - Tempo: 174 BPM (cps ~0.725 bei 4er-Cycle)
-//   - Kick und Snare auf 1 und Step 7 (im 16tel-Raster)
-//   - Reese: zwei Sägezähne ca. 15 cents detunet, breiter Filter
-//   - Plate-Reverb auf Snare, sehr sparsam
-//   - Multiband-Compression auf den Bass (in Strudel begrenzt
-//     simulierbar)
-
-
-// -----------------------------------------------------
-// Dubstep (140 BPM half-time, Wobble-Bass)
-// -----------------------------------------------------
-
-setcps(0.583)   // ~140 BPM, aber half-time klingt wie 70
+<pre><code>Notes:
+  - Tempo: 174 BPM (cps ~0.725 bei 4er-Cycle)
+  - Kick und Snare auf 1 und Step 7 (im 16tel-Raster)
+  - Reese: zwei Sägezähne ca. 15 cents detunet, breiter Filter
+  - Plate-Reverb auf Snare, sehr sparsam
+  - Multiband-Compression auf den Bass (in Strudel begrenzt
+    simulierbar)
+</code></pre>
+<h3>Dubstep (140 BPM half-time, Wobble-Bass)</h3>
+<div class="snippet" id="snip-004" data-code-b64="c2V0Y3BzKDAuNTgzKSAgIC8vIH4xNDAgQlBNLCBhYmVyIGhhbGYtdGltZSBrbGluZ3Qgd2llIDcwCgpzdGFjaygKICBzKCJiZCB+IH4gfiB+IH4gfiB+IH4gfiBzZCB+IH4gfiB+IH4iKSwgICAgICAgICAgICAgICAgLy8gaGFsZi10aW1lOiBudXIgMSB1bmQgMTEKICBzKCJoaCoxNiIpLmdhaW4oMC4zKSwKICBub3RlKCJjMSoxNiIpLnNjYWxlKCJDOm1pbm9yIikgICAgICAgICAgICAgICAgICAgICAgICAgLy8gdGllZmVyIFN1YgogICAgLnMoInNhd3Rvb3RoIikKICAgIC5scGYoc3F1YXJlLnJhbmdlKDIwMCwgMTUwMCkuZmFzdCgyKSkgICAgICAgICAgICAgICAgLy8gV09CQkxFIHBlciBzcXVhcmUtTEZPCiAgICAubHBxKDEwKQogICAgLmRpc3RvcnQoMC4yKQogICAgLmdhaW4oMC43KSwKICBzKCJjcmFzaCIpLmdhaW4oMC4zKS5zbG93KDgpICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gQ3Jhc2ggYXVmIDEKKQ=="><pre class="snippet-code"><code>setcps(0.583)   // ~140 BPM, aber half-time klingt wie 70
 
 stack(
-  s("bd ~ ~ ~ ~ ~ ~ ~ ~ ~ sd ~ ~ ~ ~ ~"),                // half-time: nur 1 und 11
-  s("hh*16").gain(0.3),
-  note("c1*16").scale("C:minor")                         // tiefer Sub
-    .s("sawtooth")
+  s(&quot;bd ~ ~ ~ ~ ~ ~ ~ ~ ~ sd ~ ~ ~ ~ ~&quot;),                // half-time: nur 1 und 11
+  s(&quot;hh*16&quot;).gain(0.3),
+  note(&quot;c1*16&quot;).scale(&quot;C:minor&quot;)                         // tiefer Sub
+    .s(&quot;sawtooth&quot;)
     .lpf(square.range(200, 1500).fast(2))                // WOBBLE per square-LFO
     .lpq(10)
     .distort(0.2)
     .gain(0.7),
-  s("crash").gain(0.3).slow(8)                           // Crash auf 1
-)
+  s(&quot;crash&quot;).gain(0.3).slow(8)                           // Crash auf 1
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - Tempo: 140 BPM, aber Drums spielen half-time (klingt 70)
-//   - Wobble = LFO auf Filter, Square für aggressives Pumpen
-//   - Tief, sub-fokussiert
-//   - Snare oft mit Gate-Reverb
-
-
-// -----------------------------------------------------
-// Trap (140 BPM, 808-Bass, schnelle Hihat-Rolls)
-// -----------------------------------------------------
-
-setcps(0.583)
+<pre><code>Notes:
+  - Tempo: 140 BPM, aber Drums spielen half-time (klingt 70)
+  - Wobble = LFO auf Filter, Square für aggressives Pumpen
+  - Tief, sub-fokussiert
+  - Snare oft mit Gate-Reverb
+</code></pre>
+<h3>Trap (140 BPM, 808-Bass, schnelle Hihat-Rolls)</h3>
+<div class="snippet" id="snip-005" data-code-b64="c2V0Y3BzKDAuNTgzKQoKc3RhY2soCiAgLy8gVGlnaHRlciBLaWNrIGF1ZiAxLCBzbmFwcHkgU25hcmUgYXVmIDMKICBzKCJiZCB+IH4gfiBzZCB+IH4gfiB+IH4gYmQgfiBzZCB+IH4gfiIpLAogIC8vIDgwOC1CYXNzIChzdWIgbWl0IFBpdGNoLVNsaWRlKQogIG5vdGUoImMxIH4gfiB+IGViMSB+IH4gfiBnMSB+IH4gfiBjMSB+IH4gfiIpCiAgICAucygic2luZSIpCiAgICAuYXR0YWNrKDAuMDEpLnJlbGVhc2UoMC41KQogICAgLnBlbnYoNikucGF0dGFjaygwKS5wZGVjYXkoMC4wNSkgICAgICAgICAgICAgICAgICAgICAvLyBQaXRjaC1TbGlkZSBhbSBBbmZhbmcKICAgIC5kaXN0b3J0KDAuMDUpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gbGVpY2h0ZSBTYXR1cmF0aW9uCiAgICAuZ2FpbigwLjg1KSwKICAvLyBIaWhhdC1Sb2xscyAoZmFzdCgyKSBhdWYgYmVzdGltbXRlbiBDeWNsZXMpCiAgcygiaGgqMTYiKS5nYWluKDAuNCkKICAgIC5ldmVyeSg0LCB4ID0+IHguZmFzdCgyKSkgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gYWxsZSA0IEN5Y2xlcyBSb2xsCik="><pre class="snippet-code"><code>setcps(0.583)
 
 stack(
   // Tighter Kick auf 1, snappy Snare auf 3
-  s("bd ~ ~ ~ sd ~ ~ ~ ~ ~ bd ~ sd ~ ~ ~"),
+  s(&quot;bd ~ ~ ~ sd ~ ~ ~ ~ ~ bd ~ sd ~ ~ ~&quot;),
   // 808-Bass (sub mit Pitch-Slide)
-  note("c1 ~ ~ ~ eb1 ~ ~ ~ g1 ~ ~ ~ c1 ~ ~ ~")
-    .s("sine")
+  note(&quot;c1 ~ ~ ~ eb1 ~ ~ ~ g1 ~ ~ ~ c1 ~ ~ ~&quot;)
+    .s(&quot;sine&quot;)
     .attack(0.01).release(0.5)
     .penv(6).pattack(0).pdecay(0.05)                     // Pitch-Slide am Anfang
     .distort(0.05)                                       // leichte Saturation
     .gain(0.85),
   // Hihat-Rolls (fast(2) auf bestimmten Cycles)
-  s("hh*16").gain(0.4)
-    .every(4, x => x.fast(2))                            // alle 4 Cycles Roll
-)
+  s(&quot;hh*16&quot;).gain(0.4)
+    .every(4, x =&gt; x.fast(2))                            // alle 4 Cycles Roll
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - 808 = Sub mit langem Tail + leichte Tube-Saturation
-//   - Snare-Crack bei 5 kHz
-//   - Hi-Hat Rolls (1/16 bis 1/64) sind Genre-Signature
-//   - Reverb sparsam, kurzer Hall auf Vocals
-
-
-// -----------------------------------------------------
-// Synthwave (110-120 BPM, Vintage-Charakter)
-// -----------------------------------------------------
-
-setcps(0.5)
+<pre><code>Notes:
+  - 808 = Sub mit langem Tail + leichte Tube-Saturation
+  - Snare-Crack bei 5 kHz
+  - Hi-Hat Rolls (1/16 bis 1/64) sind Genre-Signature
+  - Reverb sparsam, kurzer Hall auf Vocals
+</code></pre>
+<h3>Synthwave (110-120 BPM, Vintage-Charakter)</h3>
+<div class="snippet" id="snip-006" data-code-b64="c2V0Y3BzKDAuNSkKCnN0YWNrKAogIHMoImJkKjQiKS5iYW5rKCJMaW5uRHJ1bSIpLCAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBMaW5uLVN0eWxlCiAgcygifiBzZCB+IHNkIikuYmFuaygiTGlubkRydW0iKQogICAgLnJvb20oMC42KS5yb29tc2l6ZSgzKSwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBHYXRlZC1SZXZlcmItU25hcmUtSW1pdGF0aW9uCiAgcygiaGgqMTYiKS5nYWluKDAuNCksCiAgLy8gQmlnIEJyYXNzIC8gRk0tTGVhZAogIG5vdGUoImMzIH4gZWIzIGczIikucygic2F3dG9vdGgiKQogICAgLmF0dGFjaygwLjAxKS5yZWxlYXNlKDAuMykKICAgIC5scGYoMjAwMCkubHBxKDIpCiAgICAuZGVsYXkoMC40KS5kZWxheXRpbWUoMC4zNzUpLmRlbGF5ZmVlZGJhY2soMC40KSAgICAgIC8vIFNsYXAtYmFjay1EZWxheQogICAgLmdhaW4oMC41KSwKICAvLyBEZXR1bmUtUGFkCiAgbm90ZSgiW2MzLCBlYjMsIGczLCBjNF0iKS5zKCJzYXd0b290aCIpLmRldHVuZSgwLjEpCiAgICAuYXR0YWNrKDEpLnJlbGVhc2UoMikKICAgIC5scGYoc2luZS5yYW5nZSg4MDAsIDIwMDApLnNsb3coNCkpICAgICAgICAgICAgICAgICAgLy8gbGFuZ3NhbWVyIExGTwogICAgLmdhaW4oMC4zNSkKKQ=="><pre class="snippet-code"><code>setcps(0.5)
 
 stack(
-  s("bd*4").bank("LinnDrum"),                            // Linn-Style
-  s("~ sd ~ sd").bank("LinnDrum")
+  s(&quot;bd*4&quot;).bank(&quot;LinnDrum&quot;),                            // Linn-Style
+  s(&quot;~ sd ~ sd&quot;).bank(&quot;LinnDrum&quot;)
     .room(0.6).roomsize(3),                              // Gated-Reverb-Snare-Imitation
-  s("hh*16").gain(0.4),
+  s(&quot;hh*16&quot;).gain(0.4),
   // Big Brass / FM-Lead
-  note("c3 ~ eb3 g3").s("sawtooth")
+  note(&quot;c3 ~ eb3 g3&quot;).s(&quot;sawtooth&quot;)
     .attack(0.01).release(0.3)
     .lpf(2000).lpq(2)
     .delay(0.4).delaytime(0.375).delayfeedback(0.4)      // Slap-back-Delay
     .gain(0.5),
   // Detune-Pad
-  note("[c3, eb3, g3, c4]").s("sawtooth").detune(0.1)
+  note(&quot;[c3, eb3, g3, c4]&quot;).s(&quot;sawtooth&quot;).detune(0.1)
     .attack(1).release(2)
     .lpf(sine.range(800, 2000).slow(4))                  // langsamer LFO
     .gain(0.35)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - LinnDrum oder Roland-CR-78
-//   - Gated Reverb auf Snare (in Strudel begrenzt — room+Cut)
-//   - Saw-Bass mono, oft mit FM für DX7-Charakter
-//   - Slow LFO auf Pad-Filter (0.1-0.3 Hz)
-
-
-// -----------------------------------------------------
-// Lo-Fi Hip-Hop (70-90 BPM, Vinyl-Crackle, Jazz-Chords)
-// -----------------------------------------------------
-
-setcps(0.4)
+<pre><code>Notes:
+  - LinnDrum oder Roland-CR-78
+  - Gated Reverb auf Snare (in Strudel begrenzt — room+Cut)
+  - Saw-Bass mono, oft mit FM für DX7-Charakter
+  - Slow LFO auf Pad-Filter (0.1-0.3 Hz)
+</code></pre>
+<h3>Lo-Fi Hip-Hop (70-90 BPM, Vinyl-Crackle, Jazz-Chords)</h3>
+<div class="snippet" id="snip-007" data-code-b64="c2V0Y3BzKDAuNCkKCnN0YWNrKAogIC8vIEJvb20tQmFwLURydW1zCiAgcygiYmQgfiB+IH4gfiB+IHNkIH4gfiB+IGJkIH4gc2QgfiB+IH4iKS5nYWluKDAuODUpCiAgICAuY3J1c2goNiksICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIExvLUZpLUNydXNoZXIKICBzKCJoaCo4IikuZ2FpbigwLjMpLAogIC8vIEphenotQ2hvcmQgKE1hajcpCiAgbm90ZSgiW2M0LCBlNCwgZzQsIGI0XSIpLnMoInBpYW5vIikKICAgIC5hdHRhY2soMC4wMDEpLnJlbGVhc2UoMSkKICAgIC5scGYoMjUwMCkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIGR1bXBmZXIKICAgIC5nYWluKDAuNSkKICAgIC5yb29tKDAuMyksCiAgLy8gU2FtcGxlLUJhc3MgYXVzIFZpbnlsCiAgbm90ZSgiYzIgfiB+IGExIH4gfiBmMSB+Iikucygic2luZSIpCiAgICAuYXR0YWNrKDAuMDEpLnJlbGVhc2UoMC4zKQogICAgLmdhaW4oMC43KSwKICAvLyBWaW55bC1DcmFja2xlIHNpbXVsaWVyZW4KICBzKCJub2lzZSoxNiIpLmdhaW4oMC4wNSkuaHBmKDMwMDApICAgICAgICAgICAgICAgICAgICAgLy8gc2VociBsZWlzZXMgQ3JhY2tlbG4KKQ=="><pre class="snippet-code"><code>setcps(0.4)
 
 stack(
   // Boom-Bap-Drums
-  s("bd ~ ~ ~ ~ ~ sd ~ ~ ~ bd ~ sd ~ ~ ~").gain(0.85)
+  s(&quot;bd ~ ~ ~ ~ ~ sd ~ ~ ~ bd ~ sd ~ ~ ~&quot;).gain(0.85)
     .crush(6),                                           // Lo-Fi-Crusher
-  s("hh*8").gain(0.3),
+  s(&quot;hh*8&quot;).gain(0.3),
   // Jazz-Chord (Maj7)
-  note("[c4, e4, g4, b4]").s("piano")
+  note(&quot;[c4, e4, g4, b4]&quot;).s(&quot;piano&quot;)
     .attack(0.001).release(1)
     .lpf(2500)                                            // dumpfer
     .gain(0.5)
     .room(0.3),
   // Sample-Bass aus Vinyl
-  note("c2 ~ ~ a1 ~ ~ f1 ~").s("sine")
+  note(&quot;c2 ~ ~ a1 ~ ~ f1 ~&quot;).s(&quot;sine&quot;)
     .attack(0.01).release(0.3)
     .gain(0.7),
   // Vinyl-Crackle simulieren
-  s("noise*16").gain(0.05).hpf(3000)                     // sehr leises Crackeln
-)
+  s(&quot;noise*16&quot;).gain(0.05).hpf(3000)                     // sehr leises Crackeln
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - Tempo: 70-90 BPM, oft 85
-//   - crush(4-6) und coarse(2-3) für Lo-Fi-Charakter
-//   - Jazz-Akkorde: Maj7, m7, m9
-//   - Vinyl-Crackle als Layer (gefiltertes Noise)
-//   - Sample-Bass aus Vinyl-Loops (oder hier als sine simuliert)
-
-
-// -----------------------------------------------------
-// Ambient (variable BPM, oft kein Beat)
-// -----------------------------------------------------
-
-setcps(0.25)   // sehr langsam
+<pre><code>Notes:
+  - Tempo: 70-90 BPM, oft 85
+  - crush(4-6) und coarse(2-3) für Lo-Fi-Charakter
+  - Jazz-Akkorde: Maj7, m7, m9
+  - Vinyl-Crackle als Layer (gefiltertes Noise)
+  - Sample-Bass aus Vinyl-Loops (oder hier als sine simuliert)
+</code></pre>
+<h3>Ambient (variable BPM, oft kein Beat)</h3>
+<div class="snippet" id="snip-008" data-code-b64="c2V0Y3BzKDAuMjUpICAgLy8gc2VociBsYW5nc2FtCgpzdGFjaygKICAvLyBMb25nIFBhZCAoTWFqNy1Wb2ljaW5nKQogIG5vdGUoIltjMywgZTMsIGczLCBiM10iKS5zKCJzYXd0b290aCIpLmRldHVuZSgwLjEpCiAgICAuYXR0YWNrKDQpLnJlbGVhc2UoOCkKICAgIC5scGYoc2luZS5yYW5nZSg4MDAsIDIwMDApLnNsb3coMTYpKSAgICAgICAgICAgICAgICAgLy8gU0VIUiBsYW5nc2FtZSBCZXdlZ3VuZwogICAgLmdhaW4oMC4zNSkKICAgIC5yb29tKDAuNyksCiAgLy8gRHJvbmUtTGF5ZXIKICBub3RlKCJjMiIpLnMoInNpbmUiKS5nYWluKDAuNSkKICAgIC52aWJyYXRvKDUpLnZpYnJhdG9kZXB0aCgwLjA1KSwKICAvLyBTcGFyc2UgIkdsb2NrZW4iCiAgbm90ZSgiPGc0IH4gfiBjNSB+IH4gfiBlYjU+Iikucygic2luZSIpCiAgICAuYXR0YWNrKDAuMDAxKS5yZWxlYXNlKDIpCiAgICAuZ2FpbigwLjMpCiAgICAuZGVsYXkoMC41KS5kZWxheXRpbWUoMC41KS5kZWxheWZlZWRiYWNrKDAuNykKICAgIC5yb29tKDAuOCkKICAgIC5zbG93KDIpCik="><pre class="snippet-code"><code>setcps(0.25)   // sehr langsam
 
 stack(
   // Long Pad (Maj7-Voicing)
-  note("[c3, e3, g3, b3]").s("sawtooth").detune(0.1)
+  note(&quot;[c3, e3, g3, b3]&quot;).s(&quot;sawtooth&quot;).detune(0.1)
     .attack(4).release(8)
     .lpf(sine.range(800, 2000).slow(16))                 // SEHR langsame Bewegung
     .gain(0.35)
     .room(0.7),
   // Drone-Layer
-  note("c2").s("sine").gain(0.5)
+  note(&quot;c2&quot;).s(&quot;sine&quot;).gain(0.5)
     .vibrato(5).vibratodepth(0.05),
-  // Sparse "Glocken"
-  note("<g4 ~ ~ c5 ~ ~ ~ eb5>").s("sine")
+  // Sparse &quot;Glocken&quot;
+  note(&quot;&lt;g4 ~ ~ c5 ~ ~ ~ eb5&gt;&quot;).s(&quot;sine&quot;)
     .attack(0.001).release(2)
     .gain(0.3)
     .delay(0.5).delaytime(0.5).delayfeedback(0.7)
     .room(0.8)
     .slow(2)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - Sub-Fokus oder gar kein tiefer Anker
-//   - Lange Pads (4-15 s decay)
-//   - Sehr viel Hall, oft Convolution oder Shimmer
-//   - Sehr langsame, organische Modulation
-//   - Field-Recordings als zusätzlicher Layer (siehe Kap 10)
-
-
-// -----------------------------------------------------
-// Drone (extrem langsam, kein Beat, Texturen)
-// -----------------------------------------------------
-
-setcps(0.15)
+<pre><code>Notes:
+  - Sub-Fokus oder gar kein tiefer Anker
+  - Lange Pads (4-15 s decay)
+  - Sehr viel Hall, oft Convolution oder Shimmer
+  - Sehr langsame, organische Modulation
+  - Field-Recordings als zusätzlicher Layer (siehe Kap 10)
+</code></pre>
+<h3>Drone (extrem langsam, kein Beat, Texturen)</h3>
+<div class="snippet" id="snip-009" data-code-b64="c2V0Y3BzKDAuMTUpCgpzdGFjaygKICAvLyBTdWItRHJvbmUKICBub3RlKCJjMiIpLnMoInNhd3Rvb3RoIikuZGV0dW5lKDAuMDUpCiAgICAuYXR0YWNrKDgpLnJlbGVhc2UoMjApCiAgICAubHBmKDQwMCkKICAgIC5nYWluKDAuNiksCiAgLy8gTWl0dGVsLURyb25lCiAgbm90ZSgiZzMiKS5zKCJzYXd0b290aCIpLmRldHVuZSgwLjA4KQogICAgLmF0dGFjayg2KS5yZWxlYXNlKDE1KQogICAgLmxwZihzaW5lLnJhbmdlKDgwMCwgMTUwMCkuc2xvdygzMikpCiAgICAuZ2FpbigwLjQpLAogIC8vIEdld2ViZSBvYmVuCiAgbm90ZSgiYzUiKS5zKCJzaW5lIikKICAgIC5hdHRhY2soNCkucmVsZWFzZSgxMCkKICAgIC5kZWxheSgwLjQpLmRlbGF5dGltZSgwLjc1KS5kZWxheWZlZWRiYWNrKDAuNikKICAgIC5yb29tKDAuODUpCiAgICAuZ2FpbigwLjMpCik="><pre class="snippet-code"><code>setcps(0.15)
 
 stack(
   // Sub-Drone
-  note("c2").s("sawtooth").detune(0.05)
+  note(&quot;c2&quot;).s(&quot;sawtooth&quot;).detune(0.05)
     .attack(8).release(20)
     .lpf(400)
     .gain(0.6),
   // Mittel-Drone
-  note("g3").s("sawtooth").detune(0.08)
+  note(&quot;g3&quot;).s(&quot;sawtooth&quot;).detune(0.08)
     .attack(6).release(15)
     .lpf(sine.range(800, 1500).slow(32))
     .gain(0.4),
   // Gewebe oben
-  note("c5").s("sine")
+  note(&quot;c5&quot;).s(&quot;sine&quot;)
     .attack(4).release(10)
     .delay(0.4).delaytime(0.75).delayfeedback(0.6)
     .room(0.85)
     .gain(0.3)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - Tempo egal — Drones haben keinen Puls
-//   - Eine Tonart/Stimmung, sehr lange ausgehalten
-//   - Mehrere Schichten in verschiedenen Registern
-//   - Modulation muss SUB-langsam sein (slow(32) und mehr)
-
-
-// -----------------------------------------------------
-// Cinematic / Filmscore (variable, hybride Klänge)
-// -----------------------------------------------------
-
-setcps(0.45)
+<pre><code>Notes:
+  - Tempo egal — Drones haben keinen Puls
+  - Eine Tonart/Stimmung, sehr lange ausgehalten
+  - Mehrere Schichten in verschiedenen Registern
+  - Modulation muss SUB-langsam sein (slow(32) und mehr)
+</code></pre>
+<h3>Cinematic / Filmscore (variable, hybride Klänge)</h3>
+<div class="snippet" id="snip-010" data-code-b64="c2V0Y3BzKDAuNDUpCgpzdGFjaygKICAvLyBTdWItQmFzcyAoZW1vdGlvbmFsZSBNaXR0ZSkKICBub3RlKCI8YzEgYzEgYWIwIGMxPiIpLnMoInNpbmUiKQogICAgLmF0dGFjaygwLjUpLnJlbGVhc2UoMikKICAgIC5nYWluKDAuNyksCiAgLy8gUGFkLVN0YWNrCiAgbm90ZSgiW2MzLCBlYjMsIGczXSIpLnNjYWxlKCI8QzptaW5vciBDOm1pbm9yIEFiOm1ham9yIEM6bWlub3I+IikKICAgIC5zKCJzYXd0b290aCIpLmRldHVuZSgwLjE1KQogICAgLmF0dGFjaygxKS5yZWxlYXNlKDMpCiAgICAubHBmKDIwMDApCiAgICAuZ2FpbigwLjQpCiAgICAucm9vbSgwLjcpLAogIC8vIFB1bHNpZXJlbmRlciBSaHl0aG11cyAob2Z0IFRhaWtvcyBpbiBDaW5lbWF0aWMpCiAgcygiYmQgfiBiZCB+IGJkIGJkIH4gYmQiKS5nYWluKDAuNykKICAgIC5scGYoNDAwKSwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIHRpZWZlcmVzIERydW0tU291bmQKICAvLyAiV2hvb3NoIiBhbHMgUmlzZXIKICBzKCJub2lzZSIpLmdhaW4oc2F3LnJhbmdlKDAsIDAuNCkuc2xvdyg4KSkKICAgIC5scGYoc2F3LnJhbmdlKDUwMCwgODAwMCkuc2xvdyg4KSkKICAgIC5yb29tKDAuNikKKQ=="><pre class="snippet-code"><code>setcps(0.45)
 
 stack(
   // Sub-Bass (emotionale Mitte)
-  note("<c1 c1 ab0 c1>").s("sine")
+  note(&quot;&lt;c1 c1 ab0 c1&gt;&quot;).s(&quot;sine&quot;)
     .attack(0.5).release(2)
     .gain(0.7),
   // Pad-Stack
-  note("[c3, eb3, g3]").scale("<C:minor C:minor Ab:major C:minor>")
-    .s("sawtooth").detune(0.15)
+  note(&quot;[c3, eb3, g3]&quot;).scale(&quot;&lt;C:minor C:minor Ab:major C:minor&gt;&quot;)
+    .s(&quot;sawtooth&quot;).detune(0.15)
     .attack(1).release(3)
     .lpf(2000)
     .gain(0.4)
     .room(0.7),
   // Pulsierender Rhythmus (oft Taikos in Cinematic)
-  s("bd ~ bd ~ bd bd ~ bd").gain(0.7)
+  s(&quot;bd ~ bd ~ bd bd ~ bd&quot;).gain(0.7)
     .lpf(400),                                            // tieferes Drum-Sound
-  // "Whoosh" als Riser
-  s("noise").gain(saw.range(0, 0.4).slow(8))
+  // &quot;Whoosh&quot; als Riser
+  s(&quot;noise&quot;).gain(saw.range(0, 0.4).slow(8))
     .lpf(saw.range(500, 8000).slow(8))
     .room(0.6)
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Notes:
-//   - Sub-Bass als emotionaler Anker (Hans Zimmer)
-//   - Pad-Stacks aus 3-5 Stimmen, leicht detuned
-//   - Halbtaktige Taiko-artige Drums
-//   - Riser/Whoosh als Übergänge
-//   - Convolution-Reverb (in Strudel: room hoch)
-
-
-// -----------------------------------------------------
-// Wie das Kochbuch zu lesen ist
-// -----------------------------------------------------
-// Kein Genre ist exklusiv. Du kannst Tempo aus Trap mit
-// Akkorden aus Lo-Fi und Wobble-Bass aus Dubstep mischen
-// — das gibt's eine Wirkung, die jenseits der einzelnen
-// Genres ist.
-//
-// Pragmatischer Tipp: ein Genre als Skelett wählen, ein
-// Element bewusst aus einem anderen Genre brechen rein.
-// Aphex Twin macht das ständig — Drums aus Dance, Akkorde
-// aus Klassik, Sound-Design aus Frühstücks-Cereals.
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Cross-over
-// -----------------------------------------------------
-// Nimm zwei Vorlagen oben. Misch je zwei Layer aus jeder.
-// Was klingt überraschend gut?
-//
-// Beispiele:
-//   - Trap-808 + Lo-Fi-Akkorde → Cloud-Rap
-//   - Synthwave-Pad + Techno-Drums → Industrial-Synthwave
-//   - Drum&Bass-Reese + Ambient-Pad → "liquid DnB"
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 18
-// -----------------------------------------------------
-// Genre-Defaults sind Konventionen, keine Gesetze. Bewusst
-// im Genre starten gibt dir Kontrast wenn du brichst.
-//
-//   Genre        BPM    Charakteristisch
-//   ────────────────────────────────────────────────
-//   Berlin Techno  130   dunkel, sparse, Filter-Sweep
-//   Detroit Techno 126   Soul, Pads, mixolydian
-//   House          126   Stabs, Plate-Reverb, Swing
-//   D&B            174   Halftime-Drums, Reese-Bass
-//   Dubstep        140   Half-time, Wobble, Sub
-//   Trap           140   808 + Hi-Hat-Rolls + Pitch-Slide
-//   Synthwave      115   LinnDrum, Detune-Pad, Slap-Delay
-//   Lo-Fi Hip-Hop  85    Boom-Bap, Vinyl-Crackle, Maj7
-//   Ambient        var.  Pads, viel Hall, kein Beat
-//   Drone          0     ein Ton, ewig
-//   Cinematic      var.  Sub-Bass, Hybrid-Pads
-//
-// Weiter zu 19_valenz_und_arousal.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<pre><code>Notes:
+  - Sub-Bass als emotionaler Anker (Hans Zimmer)
+  - Pad-Stacks aus 3-5 Stimmen, leicht detuned
+  - Halbtaktige Taiko-artige Drums
+  - Riser/Whoosh als Übergänge
+  - Convolution-Reverb (in Strudel: room hoch)
+</code></pre>
+<h3>Wie das Kochbuch zu lesen ist</h3>
+<p>Kein Genre ist exklusiv. Du kannst Tempo aus Trap mit Akkorden aus Lo-Fi und Wobble-Bass aus Dubstep mischen — das gibt's eine Wirkung, die jenseits der einzelnen Genres ist.</p>
+<p>Pragmatischer Tipp: ein Genre als Skelett wählen, ein Element bewusst aus einem anderen Genre brechen rein. Aphex Twin macht das ständig — Drums aus Dance, Akkorde aus Klassik, Sound-Design aus Frühstücks-Cereals.</p>
+<h3>▶ AUFGABE: Cross-over</h3>
+<p>Nimm zwei Vorlagen oben. Misch je zwei Layer aus jeder. Was klingt überraschend gut?</p>
+<pre><code>Beispiele:
+  - Trap-808 + Lo-Fi-Akkorde → Cloud-Rap
+  - Synthwave-Pad + Techno-Drums → Industrial-Synthwave
+  - Drum&amp;Bass-Reese + Ambient-Pad → &quot;liquid DnB&quot;
+</code></pre>
+<h3>Mini-Zusammenfassung Kapitel 18</h3>
+<p>Genre-Defaults sind Konventionen, keine Gesetze. Bewusst im Genre starten gibt dir Kontrast wenn du brichst.</p>
+<pre><code>  Genre        BPM    Charakteristisch
+  ────────────────────────────────────────────────
+  Berlin Techno  130   dunkel, sparse, Filter-Sweep
+  Detroit Techno 126   Soul, Pads, mixolydian
+  House          126   Stabs, Plate-Reverb, Swing
+  D&amp;B            174   Halftime-Drums, Reese-Bass
+  Dubstep        140   Half-time, Wobble, Sub
+  Trap           140   808 + Hi-Hat-Rolls + Pitch-Slide
+  Synthwave      115   LinnDrum, Detune-Pad, Slap-Delay
+  Lo-Fi Hip-Hop  85    Boom-Bap, Vinyl-Crackle, Maj7
+  Ambient        var.  Pads, viel Hall, kein Beat
+  Drone          0     ein Ton, ewig
+  Cinematic      var.  Sub-Bass, Hybrid-Pads
+</code></pre>
+<p>Weiter zu 19_valenz_und_arousal.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

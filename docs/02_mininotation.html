@@ -4,337 +4,189 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>02 — Mini-Notation — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>02 — Mini-Notation</h1>
-<nav class="chapter-nav"><a href="01_hello_sound.html" title="01 — Hello Sound">← Vorheriges</a><a href="03_polyrhythmik.html" title="03 — Polyrhythmik">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="01_hello_sound.html" title="01 — Hello Sound">← Zurück</a><a href="03_polyrhythmik.html" title="03 — Polyrhythmik">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
+<article class="prose">
+<h1>Kapitel 02 — Mini-Notation</h1>
+<p>Strudels Kernsprache. Innerhalb von "..." schreibst du nicht einfach Strings, sondern PATTERNS — eine kleine eigene Sprache mit Klammern, Sternen und Tilden.</p>
+<h3>Mehr als ein Sound — Leerzeichen trennt</h3>
+<p>"bd sd" heißt: erst bd, dann sd, in einem Cycle. Ein Cycle ist eine Wiederholungseinheit, ungefähr 2 Sekunden.</p>
+<div class="snippet" id="snip-000" data-code-b64="cygiYmQgc2QiKQ=="><pre class="snippet-code"><code>s(&quot;bd sd&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>"bd sd hh cp" — vier Sounds, gleichmäßig verteilt im Cycle.</p>
+<div class="snippet" id="snip-001" data-code-b64="cygiYmQgc2QgaGggY3AiKQ=="><pre class="snippet-code"><code>s(&quot;bd sd hh cp&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<pre><code>  Cycle:  |---------------|
+          |bd | sd | hh |cp|
+</code></pre>
+<p>Egal wie viele du reinpackst, sie passen alle in EINEN Cycle. Acht Sounds = jeder ist halb so lang. Sechzehn = nochmal halb.</p>
+<div class="snippet" id="snip-002" data-code-b64="cygiYmQgaGggc2QgaGggYmQgaGggc2QgaGgiKQ=="><pre class="snippet-code"><code>s(&quot;bd hh sd hh bd hh sd hh&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>▶ AUFGABE: Schreib einen eigenen 4-Schritt-Pattern. Mögliche Sounds: bd, sd, cp, hh, oh, rim, cb (Cowbell).</p>
+<h3>Das Stern-Suffix *N — N Mal so schnell</h3>
+<p>"bd*4" heißt: bd vier Mal pro Cycle.</p>
+<div class="snippet" id="snip-003" data-code-b64="cygiYmQqNCIp"><pre class="snippet-code"><code>s(&quot;bd*4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>"hh<em>8" — 8 Mal. "hh</em>16" — 16 Mal. Mehr ist auch ok.</p>
+<div class="snippet" id="snip-004" data-code-b64="cygiaGgqMTYiKQ=="><pre class="snippet-code"><code>s(&quot;hh*16&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Der Stern wirkt nur auf den einen Sound vor ihm:</p>
+<div class="snippet" id="snip-005" data-code-b64="cygiYmQgc2QqMiBjcCIp"><pre class="snippet-code"><code>s(&quot;bd sd*2 cp&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>bd EINMAL, dann sd ZWEIMAL hintereinander, dann cp einmal. Insgesamt 4 Schläge im Cycle.</p>
+<h3>Slash /N — N Mal so langsam</h3>
+<p>"bd/2" heißt: bd nur jeden zweiten Cycle.</p>
+<div class="snippet" id="snip-006" data-code-b64="cygiYmQvMiIp"><pre class="snippet-code"><code>s(&quot;bd/2&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Du hörst bd, dann eine Pause so lang wie der nächste bd.</p>
+<h3>Tilde ~ — Pause</h3>
+<p>Wo eine Tilde steht, wird nicht gespielt. Aber der Step belegt seinen Platz im Cycle.</p>
+<div class="snippet" id="snip-007" data-code-b64="cygiYmQgfiBzZCB+Iik="><pre class="snippet-code"><code>s(&quot;bd ~ sd ~&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Klassisches Boom-Tschack-Boom-Tschack — bd auf 1, sd auf 3.</p>
+<div class="snippet" id="snip-008" data-code-b64="cygiYmQgfiB+IHNkIik="><pre class="snippet-code"><code>s(&quot;bd ~ ~ sd&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Auf 1 und 4. Ungewohnt, aber funktioniert.</p>
+<div class="snippet" id="snip-009" data-code-b64="cygifiB+IGJkIH4iKQ=="><pre class="snippet-code"><code>s(&quot;~ ~ bd ~&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Synkopiert: nur auf 3. Du hörst Stille, dann einen einsamen Hit, dann wieder Stille.</p>
+<h3>Eckige Klammern — Subdivision</h3>
+<p>[a b] heißt: in den Platz, den EIN Step bekommt, packen wir zwei (oder mehr) gleichmäßig.</p>
+<div class="snippet" id="snip-010" data-code-b64="cygiYmQgW3NkIGNwXSIp"><pre class="snippet-code"><code>s(&quot;bd [sd cp]&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>bd nimmt erste Hälfte, sd+cp teilen sich die zweite Hälfte.</p>
+<pre><code>  |---------------|
+  |    bd   |sd|cp|
+</code></pre>
+<pre><code>  Ohne Subdivision wäre's:
+  |---------------|
+  |  bd  |  sd |cp|     ← drei gleiche Slots
+</code></pre>
+<div class="snippet" id="snip-011" data-code-b64="cygiYmQgW3NkIFtjcCBoaF1dIik="><pre class="snippet-code"><code>s(&quot;bd [sd [cp hh]]&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>bd erste Hälfte, sd ein Viertel, cp+hh teilen sich das letzte Viertel auf.</p>
+<pre><code>  |---------------|
+  |    bd   | sd|cphh|
+</code></pre>
+<p>Das ist mächtig. Du kannst beliebig schachteln.</p>
+<div class="snippet" id="snip-012" data-code-b64="cygiW2JkIGNwXSBbc2QgW2hoIGhoXV0gY3AgW2hoIHNkXSIp"><pre class="snippet-code"><code>s(&quot;[bd cp] [sd [hh hh]] cp [hh sd]&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>▶ AUFGABE: Fülle einen Cycle mit interessanter Subdivision</h3>
+<p>Vier Steps. Jeder Step ist entweder ein Sound, eine Tilde, oder eine Klammer mit weiteren Sounds.</p>
+<div class="snippet" id="snip-013" data-code-b64="cygiW2JkIGNwXSBzZCBbaGgqNF0gW34gY3BdIik="><pre class="snippet-code"><code>s(&quot;[bd cp] sd [hh*4] [~ cp]&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>Spitze Klammern <a b c> — pro Cycle ein anderer</h3>
+<p>Anders als eckige Klammern. <a b c> heißt: Cycle 1: a. Cycle 2: b. Cycle 3: c. Dann von vorn.</p>
+<pre><code>  Cycle 1: |bd       |
+  Cycle 2: |sd       |
+  Cycle 3: |cp       |
+  Cycle 4: |bd       |    ← Wiederholung beginnt
+</code></pre>
+<div class="snippet" id="snip-014" data-code-b64="cygiPGJkIHNkIGNwPiIp"><pre class="snippet-code"><code>s(&quot;&lt;bd sd cp&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Du hörst einen Bass im ersten Cycle, eine Snare im zweiten, einen Clap im dritten — und so weiter im Kreis.</p>
+<p>Das ist die einfachste Art, Variation in einen Beat zu bringen.</p>
+<div class="snippet" id="snip-015" data-code-b64="cygiYmQgPHNkIGNwIGhoIG9oPiIp"><pre class="snippet-code"><code>s(&quot;bd &lt;sd cp hh oh&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Erster Slot immer bd. Zweiter Slot wechselt jedes Mal.</p>
+<p>💡 PRAXIS — Off-Number-Trick (Tangerine-Dream-Klassiker) Wenn du eine spitze Klammer mit einer PRIMZAHL-Anzahl Items füllst und gegen einen 4er-Beat laufen lässt, phasenver- schiebt sich das Pattern und klingt nie zweimal gleich. Bei 5 + 7 + 11 dauert es 5<em>7</em>11 = 385 Cycles bis zum Reset. Faktisch endlos.</p>
+<div class="snippet" id="snip-016" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIEzDpG5nZSA0IChzeW5jKQogIHMoIjxoaCB+IGhoIH4gaGggfiB+PiIpLmdhaW4oMC40KSwgICAgICAgICAgICAgICAvLyBMw6RuZ2UgNyAoZHJpZnQpCiAgcygiPH4gfiByaW0gfiB+IH4gfiByaW0gfiB+IH4+IikuZ2FpbigwLjUpICAgICAgIC8vIEzDpG5nZSAxMSAoZHJpZnQpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),                                       // Länge 4 (sync)
+  s(&quot;&lt;hh ~ hh ~ hh ~ ~&gt;&quot;).gain(0.4),               // Länge 7 (drift)
+  s(&quot;&lt;~ ~ rim ~ ~ ~ ~ rim ~ ~ ~&gt;&quot;).gain(0.5)       // Länge 11 (drift)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Drei Spuren, drei Längen — aber nur die erste ist im Beat-Raster. Die anderen wandern darüber. Mehr dazu in Kapitel 12.</p>
+<h3>Klammern kombinieren</h3>
+<p>Eckige und spitze sind beliebig mischbar.</p>
+<div class="snippet" id="snip-017" data-code-b64="cygiW2JkKjJdIFs8c2QgY3A+XSBbaGgqNF0gWzx+IGNwPl0iKQ=="><pre class="snippet-code"><code>s(&quot;[bd*2] [&lt;sd cp&gt;] [hh*4] [&lt;~ cp&gt;]&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Bd doppelt, dann mal Snare mal Clap, dann Hihat-16tel, dann mal Pause mal Clap.</p>
+<h3>Komma in eckigen Klammern — gleichzeitig spielen</h3>
+<p>[bd, hh] heißt: in EINEM Step BEIDE gleichzeitig.</p>
+<div class="snippet" id="snip-018" data-code-b64="cygiW2JkLCBoaF0qNCIp"><pre class="snippet-code"><code>s(&quot;[bd, hh]*4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Ein Bass plus eine Hihat zur gleichen Zeit, viermal.</p>
+<p>Das ist das erste Mal, dass mehr als eine Stimme zur gleichen Zeit erklingt. Mehr dazu im nächsten Kapitel mit stack().</p>
+<div class="snippet" id="snip-019" data-code-b64="cygiW2JkLCBoaF0gW34sIGNwXSBbYmQsIGhoXSBbfiwgY3BdIik="><pre class="snippet-code"><code>s(&quot;[bd, hh] [~, cp] [bd, hh] [~, cp]&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>Ausrufezeichen ! — Wiederholung</h3>
+<p>"bd!3" heißt: bd dreimal hintereinander. Vorteil: lesbarer als "bd bd bd".</p>
+<div class="snippet" id="snip-020" data-code-b64="cygiYmQhNCIp"><pre class="snippet-code"><code>s(&quot;bd!4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Identisch zu s("bd*4") für diesen Fall — aber anders bei komplizierteren Mustern:</p>
+<div class="snippet" id="snip-021" data-code-b64="cygiW2JkIGNwXSEyIik="><pre class="snippet-code"><code>s(&quot;[bd cp]!2&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Heißt: das Pärchen [bd cp] zweimal. Identisch zu "bd cp bd cp".</p>
+<h3>Fragezeichen ? — Wahrscheinlichkeit</h3>
+<p>"bd?" — bd kommt mit 50% Wahrscheinlichkeit pro Step.</p>
+<div class="snippet" id="snip-022" data-code-b64="cygiYmQ/KjQiKQ=="><pre class="snippet-code"><code>s(&quot;bd?*4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Manchmal hörst du alle vier, manchmal nur zwei, manchmal keinen. Würfeln pro Cycle.</p>
+<div class="snippet" id="snip-023" data-code-b64="cygiYmQqNCBoaD8qNCIp"><pre class="snippet-code"><code>s(&quot;bd*4 hh?*4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Bd immer, Hihats nach Würfelglück.</p>
+<div class="snippet" id="snip-024" data-code-b64="cygiYmQqNCBoaD8qNCBbY3A/MC4yXSo0Iik="><pre class="snippet-code"><code>s(&quot;bd*4 hh?*4 [cp?0.2]*4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>0.2 = 20% Wahrscheinlichkeit. Sehr selten.</p>
+<h3>Euklidisch (N,M) — kommt richtig in Kapitel 04</h3>
+<p>Hier nur als Vorgeschmack:</p>
+<div class="snippet" id="snip-025" data-code-b64="cygiYmQoMyw4KSIp"><pre class="snippet-code"><code>s(&quot;bd(3,8)&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>3 Hits gleichmäßig über 8 Steps verteilt. Mehr in Kapitel 04.</p>
+<h3>Das @-Zeichen — Gewichtung</h3>
+<p>Manche Steps sollen mehr Platz haben.</p>
+<div class="snippet" id="snip-026" data-code-b64="cygiYmRAMiBzZCBjcCIp"><pre class="snippet-code"><code>s(&quot;bd@2 sd cp&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>bd nimmt doppelt so viel Platz wie sd und cp. Ergibt: bd 50%, sd 25%, cp 25%.</p>
+<h3>Mini-Notation funktioniert AUCH für note()</h3>
+<p>Alles was du gerade gelernt hast, gilt für note() identisch.</p>
+<div class="snippet" id="snip-027" data-code-b64="bm90ZSgiYzQgZDQgZTQgZzQiKQoKbm90ZSgiYzQgW2U0IGc0XSBjNSBbZTQgZzRdIikKCm5vdGUoIjxjNCBkNCBlNCBmND4iKQ=="><pre class="snippet-code"><code>note(&quot;c4 d4 e4 g4&quot;)
+
+note(&quot;c4 [e4 g4] c5 [e4 g4]&quot;)
+
+note(&quot;&lt;c4 d4 e4 f4&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>FINALE — ein Beat, alle Mittel</h3>
+<div class="snippet" id="snip-028" data-code-b64="cygiYmQqNCwgfiBjcCB+IGNwLCBoaCoxNiwgW34gb2hdLzIiKQ=="><pre class="snippet-code"><code>s(&quot;bd*4, ~ cp ~ cp, hh*16, [~ oh]/2&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Komma im obersten Level stackt — heißt: alle vier Spuren gleichzeitig. Das ist die direkte Version von dem, was wir im nächsten Kapitel mit stack() lernen.</p>
+<p>bd<em>4         — Four-on-the-Floor ~ cp ~ cp    — Backbeat-Claps hh</em>16        — durchlaufende 16tel-Hihats [~ oh]/2     — Open-Hihat auf der zweiten 4 jedes zweiten Cycles</p>
+<h3>▶ AUFGABE: Verändere den FINALE-Block</h3>
+<pre><code>Probier:
+  - hh*8 statt hh*16
+  - bd(3,8) statt bd*4
+  - cp durch sd austauschen
+  - eine Spur ganz weglassen
+  - eine Spur dazu — z.B. note(&quot;c2*4&quot;).s(&quot;sawtooth&quot;).lpf(400)
+</code></pre>
+<p>Strg+Enter nach jeder Änderung. Hör zu.</p>
+<h3>Spickzettel Mini-Notation</h3>
+<pre><code>  &quot;a b c&quot;      drei Steps gleichmäßig
+  &quot;a [b c]&quot;    a und dann b+c im halben Platz
+  &quot;&lt;a b c&gt;&quot;    a oder b oder c, pro Cycle einer
+  &quot;a*4&quot;        a viermal
+  &quot;a/2&quot;        a halb so oft
+  &quot;~&quot;          Pause
+  &quot;a!3&quot;        a dreimal in Folge
+  &quot;a?&quot;         a mit 50% Wahrscheinlichkeit
+  &quot;a?0.2&quot;      a mit 20% Wahrscheinlichkeit
+  &quot;a@2 b&quot;      a nimmt doppelt Platz
+  &quot;[a, b]&quot;     a und b gleichzeitig
+  &quot;a(3,8)&quot;     euklidisch — 3 von 8 Steps
+</code></pre>
+<p>Weiter zu 03_polyrhythmik.strudel.</p>
+</article>
 </main>
 <footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
 </footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 02 — Mini-Notation
-// =====================================================
-// Strudels Kernsprache. Innerhalb von "..." schreibst du
-// nicht einfach Strings, sondern PATTERNS — eine kleine
-// eigene Sprache mit Klammern, Sternen und Tilden.
-// =====================================================
-
-
-// -----------------------------------------------------
-// Mehr als ein Sound — Leerzeichen trennt
-// -----------------------------------------------------
-// "bd sd" heißt: erst bd, dann sd, in einem Cycle.
-// Ein Cycle ist eine Wiederholungseinheit, ungefähr 2 Sekunden.
-
-s("bd sd")
-
-// "bd sd hh cp" — vier Sounds, gleichmäßig verteilt im Cycle.
-
-s("bd sd hh cp")
-
-//   Cycle:  |---------------|
-//           |bd | sd | hh |cp|
-//
-// Egal wie viele du reinpackst, sie passen alle in EINEN Cycle.
-// Acht Sounds = jeder ist halb so lang. Sechzehn = nochmal halb.
-
-s("bd hh sd hh bd hh sd hh")
-
-// ▶ AUFGABE: Schreib einen eigenen 4-Schritt-Pattern.
-// Mögliche Sounds: bd, sd, cp, hh, oh, rim, cb (Cowbell).
-
-
-// -----------------------------------------------------
-// Das Stern-Suffix *N — N Mal so schnell
-// -----------------------------------------------------
-// "bd*4" heißt: bd vier Mal pro Cycle.
-
-s("bd*4")
-
-// "hh*8" — 8 Mal. "hh*16" — 16 Mal. Mehr ist auch ok.
-
-s("hh*16")
-
-// Der Stern wirkt nur auf den einen Sound vor ihm:
-
-s("bd sd*2 cp")
-
-// bd EINMAL, dann sd ZWEIMAL hintereinander, dann cp einmal.
-// Insgesamt 4 Schläge im Cycle.
-
-
-// -----------------------------------------------------
-// Slash /N — N Mal so langsam
-// -----------------------------------------------------
-// "bd/2" heißt: bd nur jeden zweiten Cycle.
-
-s("bd/2")
-
-// Du hörst bd, dann eine Pause so lang wie der nächste bd.
-
-
-// -----------------------------------------------------
-// Tilde ~ — Pause
-// -----------------------------------------------------
-// Wo eine Tilde steht, wird nicht gespielt. Aber der Step
-// belegt seinen Platz im Cycle.
-
-s("bd ~ sd ~")
-
-// Klassisches Boom-Tschack-Boom-Tschack — bd auf 1, sd auf 3.
-
-s("bd ~ ~ sd")
-
-// Auf 1 und 4. Ungewohnt, aber funktioniert.
-
-s("~ ~ bd ~")
-
-// Synkopiert: nur auf 3. Du hörst Stille, dann einen einsamen
-// Hit, dann wieder Stille.
-
-
-// -----------------------------------------------------
-// Eckige Klammern — Subdivision
-// -----------------------------------------------------
-// [a b] heißt: in den Platz, den EIN Step bekommt, packen wir
-// zwei (oder mehr) gleichmäßig.
-
-s("bd [sd cp]")
-
-// bd nimmt erste Hälfte, sd+cp teilen sich die zweite Hälfte.
-//
-//   |---------------|
-//   |    bd   |sd|cp|
-//
-//   Ohne Subdivision wäre's:
-//   |---------------|
-//   |  bd  |  sd |cp|     ← drei gleiche Slots
-
-s("bd [sd [cp hh]]")
-
-// bd erste Hälfte, sd ein Viertel, cp+hh teilen sich das letzte
-// Viertel auf.
-//
-//   |---------------|
-//   |    bd   | sd|cphh|
-//
-// Das ist mächtig. Du kannst beliebig schachteln.
-
-s("[bd cp] [sd [hh hh]] cp [hh sd]")
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Fülle einen Cycle mit interessanter Subdivision
-// -----------------------------------------------------
-// Vier Steps. Jeder Step ist entweder ein Sound, eine Tilde, oder
-// eine Klammer mit weiteren Sounds.
-
-s("[bd cp] sd [hh*4] [~ cp]")
-
-
-// -----------------------------------------------------
-// Spitze Klammern <a b c> — pro Cycle ein anderer
-// -----------------------------------------------------
-// Anders als eckige Klammern. <a b c> heißt:
-// Cycle 1: a. Cycle 2: b. Cycle 3: c. Dann von vorn.
-//
-//   Cycle 1: |bd       |
-//   Cycle 2: |sd       |
-//   Cycle 3: |cp       |
-//   Cycle 4: |bd       |    ← Wiederholung beginnt
-
-s("<bd sd cp>")
-
-// Du hörst einen Bass im ersten Cycle, eine Snare im zweiten,
-// einen Clap im dritten — und so weiter im Kreis.
-//
-// Das ist die einfachste Art, Variation in einen Beat zu bringen.
-
-s("bd <sd cp hh oh>")
-
-// Erster Slot immer bd. Zweiter Slot wechselt jedes Mal.
-
-
-// 💡 PRAXIS — Off-Number-Trick (Tangerine-Dream-Klassiker)
-// Wenn du eine spitze Klammer mit einer PRIMZAHL-Anzahl Items
-// füllst und gegen einen 4er-Beat laufen lässt, phasenver-
-// schiebt sich das Pattern und klingt nie zweimal gleich.
-// Bei 5 + 7 + 11 dauert es 5*7*11 = 385 Cycles bis zum Reset.
-// Faktisch endlos.
-
-stack(
-  s("bd*4"),                                       // Länge 4 (sync)
-  s("<hh ~ hh ~ hh ~ ~>").gain(0.4),               // Länge 7 (drift)
-  s("<~ ~ rim ~ ~ ~ ~ rim ~ ~ ~>").gain(0.5)       // Länge 11 (drift)
-)
-
-// Drei Spuren, drei Längen — aber nur die erste ist im Beat-Raster.
-// Die anderen wandern darüber. Mehr dazu in Kapitel 12.
-
-
-// -----------------------------------------------------
-// Klammern kombinieren
-// -----------------------------------------------------
-// Eckige und spitze sind beliebig mischbar.
-
-s("[bd*2] [<sd cp>] [hh*4] [<~ cp>]")
-
-// Bd doppelt, dann mal Snare mal Clap, dann Hihat-16tel,
-// dann mal Pause mal Clap.
-
-
-// -----------------------------------------------------
-// Komma in eckigen Klammern — gleichzeitig spielen
-// -----------------------------------------------------
-// [bd, hh] heißt: in EINEM Step BEIDE gleichzeitig.
-
-s("[bd, hh]*4")
-
-// Ein Bass plus eine Hihat zur gleichen Zeit, viermal.
-//
-// Das ist das erste Mal, dass mehr als eine Stimme zur gleichen
-// Zeit erklingt. Mehr dazu im nächsten Kapitel mit stack().
-
-s("[bd, hh] [~, cp] [bd, hh] [~, cp]")
-
-
-// -----------------------------------------------------
-// Ausrufezeichen ! — Wiederholung
-// -----------------------------------------------------
-// "bd!3" heißt: bd dreimal hintereinander.
-// Vorteil: lesbarer als "bd bd bd".
-
-s("bd!4")
-
-// Identisch zu s("bd*4") für diesen Fall — aber anders bei
-// komplizierteren Mustern:
-
-s("[bd cp]!2")
-
-// Heißt: das Pärchen [bd cp] zweimal. Identisch zu "bd cp bd cp".
-
-
-// -----------------------------------------------------
-// Fragezeichen ? — Wahrscheinlichkeit
-// -----------------------------------------------------
-// "bd?" — bd kommt mit 50% Wahrscheinlichkeit pro Step.
-
-s("bd?*4")
-
-// Manchmal hörst du alle vier, manchmal nur zwei, manchmal keinen.
-// Würfeln pro Cycle.
-
-s("bd*4 hh?*4")
-
-// Bd immer, Hihats nach Würfelglück.
-
-s("bd*4 hh?*4 [cp?0.2]*4")
-
-// 0.2 = 20% Wahrscheinlichkeit. Sehr selten.
-
-
-// -----------------------------------------------------
-// Euklidisch (N,M) — kommt richtig in Kapitel 04
-// -----------------------------------------------------
-// Hier nur als Vorgeschmack:
-
-s("bd(3,8)")
-
-// 3 Hits gleichmäßig über 8 Steps verteilt. Mehr in Kapitel 04.
-
-
-// -----------------------------------------------------
-// Das @-Zeichen — Gewichtung
-// -----------------------------------------------------
-// Manche Steps sollen mehr Platz haben.
-
-s("bd@2 sd cp")
-
-// bd nimmt doppelt so viel Platz wie sd und cp.
-// Ergibt: bd 50%, sd 25%, cp 25%.
-
-
-// -----------------------------------------------------
-// Mini-Notation funktioniert AUCH für note()
-// -----------------------------------------------------
-// Alles was du gerade gelernt hast, gilt für note() identisch.
-
-note("c4 d4 e4 g4")
-
-note("c4 [e4 g4] c5 [e4 g4]")
-
-note("<c4 d4 e4 f4>")
-
-
-// -----------------------------------------------------
-// FINALE — ein Beat, alle Mittel
-// -----------------------------------------------------
-
-s("bd*4, ~ cp ~ cp, hh*16, [~ oh]/2")
-
-// Komma im obersten Level stackt — heißt: alle vier Spuren
-// gleichzeitig. Das ist die direkte Version von dem, was wir
-// im nächsten Kapitel mit stack() lernen.
-//
-// bd*4         — Four-on-the-Floor
-// ~ cp ~ cp    — Backbeat-Claps
-// hh*16        — durchlaufende 16tel-Hihats
-// [~ oh]/2     — Open-Hihat auf der zweiten 4 jedes zweiten Cycles
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Verändere den FINALE-Block
-// -----------------------------------------------------
-// Probier:
-//   - hh*8 statt hh*16
-//   - bd(3,8) statt bd*4
-//   - cp durch sd austauschen
-//   - eine Spur ganz weglassen
-//   - eine Spur dazu — z.B. note("c2*4").s("sawtooth").lpf(400)
-//
-// Strg+Enter nach jeder Änderung. Hör zu.
-
-
-// -----------------------------------------------------
-// Spickzettel Mini-Notation
-// -----------------------------------------------------
-//   "a b c"      drei Steps gleichmäßig
-//   "a [b c]"    a und dann b+c im halben Platz
-//   "<a b c>"    a oder b oder c, pro Cycle einer
-//   "a*4"        a viermal
-//   "a/2"        a halb so oft
-//   "~"          Pause
-//   "a!3"        a dreimal in Folge
-//   "a?"         a mit 50% Wahrscheinlichkeit
-//   "a?0.2"      a mit 20% Wahrscheinlichkeit
-//   "a@2 b"      a nimmt doppelt Platz
-//   "[a, b]"     a und b gleichzeitig
-//   "a(3,8)"     euklidisch — 3 von 8 Steps
-//
-// Weiter zu 03_polyrhythmik.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

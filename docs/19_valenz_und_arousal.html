@@ -4,119 +4,74 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>19 — Valenz und Arousal — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>19 — Valenz und Arousal</h1>
-<nav class="chapter-nav"><a href="18_genre_kochbuch.html" title="18 — Genre-Kochbuch">← Vorheriges</a><a href="20_cheatsheet.html" title="20 — Cheatsheet">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="18_genre_kochbuch.html" title="18 — Genre-Kochbuch">← Zurück</a><a href="20_cheatsheet.html" title="20 — Cheatsheet">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 19 — Valenz und Arousal
-// =====================================================
-// Zwei Slider, vier Stimmungs-Quadranten. Russells
-// Circumplex-Modell (1980) sagt: jede musikalische
-// Stimmung lässt sich als Punkt in einem 2D-Raum
-// beschreiben. Die zwei Achsen sind unabhängig.
-//
-// Hier wird das in Strudel spielbar — du kannst durch
-// den Stimmungs-Raum live wandern. Verbindet Kapitel 16
-// (Helper) mit konkreter Anwendung.
-// =====================================================
+<article class="prose">
+<h1>Kapitel 19 — Valenz und Arousal</h1>
+<p>Zwei Slider, vier Stimmungs-Quadranten. Russells Circumplex-Modell (1980) sagt: jede musikalische Stimmung lässt sich als Punkt in einem 2D-Raum beschreiben. Die zwei Achsen sind unabhängig.</p>
+<p>Hier wird das in Strudel spielbar — du kannst durch den Stimmungs-Raum live wandern. Verbindet Kapitel 16 (Helper) mit konkreter Anwendung.</p>
+<h3>Das Modell — was sind die zwei Achsen?</h3>
+<pre><code>                    hohes Arousal
+                         ▲
+             wütend ─────┼──── ekstatisch
+                         │
+  negative Valenz ◀──────┼──────▶ positive Valenz
+                         │
+             traurig ────┼──── friedlich
+                         ▼
+                   niedriges Arousal
+</code></pre>
+<p>Arousal = Energie, Aktivierung. "Wieviel passiert?" Valenz  = Wohlgefühl. "Klingt es freundlich?"</p>
+<p>Beide unabhängig. Du kannst hohe Arousal + niedrige Valenz haben (wütend) — oder niedrige Arousal + hohe Valenz (friedlich). Eine Achse allein reicht nicht für "Stimmung".</p>
+<h3>Die empirisch belegten Audio-Treiber</h3>
+<pre><code>Arousal-Treiber (sortiert nach Stärke):
+  1. Tempo            — schneller = mehr Arousal
+  2. Event-Dichte     — mehr Onsets/s = mehr Arousal
+  3. Spectral Flux    — schnelle Spektrums-Änderung
+  4. Spectral Energy  — laut/leise
+  5. Brightness       — heller = mehr Arousal
+</code></pre>
+<pre><code>Valenz-Treiber (sortiert nach Stärke):
+  1. Modalität        — Dur positiv, Moll negativ
+  2. Konsonanz        — Quinten/Terzen positiv,
+                         Tritonus/Sekunden negativ
+  3. Spectral Slope   — heller = positiver
+  4. Attack-Schärfe   — scharf positiv, slow attack
+                         melancholisch
+  5. Detune           — leicht detunet positiv-organisch,
+                         stark detunet instabil-negativ
+</code></pre>
+<h3>Zwei Slider, Stimmungs-Steuerung</h3>
+<div class="snippet" id="snip-000" data-code-b64="Y29uc3QgQSA9IHNsaWRlcigwLjUsIDAsIDEsIDAuMDEpICAgLy8gQXJvdXNhbApjb25zdCBWID0gc2xpZGVyKDAuNSwgMCwgMSwgMC4wMSkgICAvLyBWYWxlbno="><pre class="snippet-code"><code>const A = slider(0.5, 0, 1, 0.01)   // Arousal
+const V = slider(0.5, 0, 1, 0.01)   // Valenz</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Helper-Funktion: Glättung mit Quadrat-Kurve</p>
+<div class="snippet" id="snip-001" data-code-b64="ZnVuY3Rpb24gc3EocCkgeyByZXR1cm4gcC5mbWFwKHYgPT4gdiAqIHYpIH0="><pre class="snippet-code"><code>function sq(p) { return p.fmap(v =&gt; v * v) }</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Das Modell — was sind die zwei Achsen?
-// -----------------------------------------------------
-//
-//                     hohes Arousal
-//                          ▲
-//              wütend ─────┼──── ekstatisch
-//                          │
-//   negative Valenz ◀──────┼──────▶ positive Valenz
-//                          │
-//              traurig ────┼──── friedlich
-//                          ▼
-//                    niedriges Arousal
-//
-// Arousal = Energie, Aktivierung. "Wieviel passiert?"
-// Valenz  = Wohlgefühl. "Klingt es freundlich?"
-//
-// Beide unabhängig. Du kannst hohe Arousal + niedrige
-// Valenz haben (wütend) — oder niedrige Arousal + hohe
-// Valenz (friedlich). Eine Achse allein reicht nicht für
-// "Stimmung".
-
-
-// -----------------------------------------------------
-// Die empirisch belegten Audio-Treiber
-// -----------------------------------------------------
-//
-// Arousal-Treiber (sortiert nach Stärke):
-//   1. Tempo            — schneller = mehr Arousal
-//   2. Event-Dichte     — mehr Onsets/s = mehr Arousal
-//   3. Spectral Flux    — schnelle Spektrums-Änderung
-//   4. Spectral Energy  — laut/leise
-//   5. Brightness       — heller = mehr Arousal
-//
-// Valenz-Treiber (sortiert nach Stärke):
-//   1. Modalität        — Dur positiv, Moll negativ
-//   2. Konsonanz        — Quinten/Terzen positiv,
-//                          Tritonus/Sekunden negativ
-//   3. Spectral Slope   — heller = positiver
-//   4. Attack-Schärfe   — scharf positiv, slow attack
-//                          melancholisch
-//   5. Detune           — leicht detunet positiv-organisch,
-//                          stark detunet instabil-negativ
-
-
-// -----------------------------------------------------
-// Zwei Slider, Stimmungs-Steuerung
-// -----------------------------------------------------
-
-const A = slider(0.5, 0, 1, 0.01)   // Arousal
-const V = slider(0.5, 0, 1, 0.01)   // Valenz
-
-// Helper-Funktion: Glättung mit Quadrat-Kurve
-function sq(p) { return p.fmap(v => v * v) }
-
-// Skala wechseln nach Valenz (kontinuierlicher Mood-Shift):
-// hohe Valenz → Dur-artige Modi (lydian, ionian, mixolydian)
-// niedrige Valenz → Moll-artige Modi (aeolian, phrygian, locrian)
-
-// Diskreter 5-Stufen-Pick (von düster zu strahlend):
-const skala_pattern = V.range(0, 5)
+<p>Skala wechseln nach Valenz (kontinuierlicher Mood-Shift): hohe Valenz → Dur-artige Modi (lydian, ionian, mixolydian) niedrige Valenz → Moll-artige Modi (aeolian, phrygian, locrian)</p>
+<p>Diskreter 5-Stufen-Pick (von düster zu strahlend):</p>
+<div class="snippet" id="snip-002" data-code-b64="Y29uc3Qgc2thbGFfcGF0dGVybiA9IFYucmFuZ2UoMCwgNSkKICAuZm1hcChNYXRoLmZsb29yKQogIC5waWNrKFsKICAgICJDOmxvY3JpYW4iLCAgICAgIC8vIFY9MC4wLTAuMjogc3RhcmsgbmVnYXRpdgogICAgIkM6cGhyeWdpYW4iLCAgICAgLy8gVj0wLjItMC40OiBkdW5rZWwtc3BhbmlzY2gKICAgICJDOm1pbm9yIiwgICAgICAgIC8vIFY9MC40LTAuNjogdHJhdXJpZwogICAgIkM6ZG9yaWFuIiwgICAgICAgLy8gVj0wLjYtMC44OiBob2ZmbnVuZ3N2b2xsCiAgICAiQzpseWRpYW4iICAgICAgICAvLyBWPTAuOC0xLjA6IHN0cmFobGVuZAogIF0p"><pre class="snippet-code"><code>const skala_pattern = V.range(0, 5)
   .fmap(Math.floor)
   .pick([
-    "C:locrian",      // V=0.0-0.2: stark negativ
-    "C:phrygian",     // V=0.2-0.4: dunkel-spanisch
-    "C:minor",        // V=0.4-0.6: traurig
-    "C:dorian",       // V=0.6-0.8: hoffnungsvoll
-    "C:lydian"        // V=0.8-1.0: strahlend
-  ])
+    &quot;C:locrian&quot;,      // V=0.0-0.2: stark negativ
+    &quot;C:phrygian&quot;,     // V=0.2-0.4: dunkel-spanisch
+    &quot;C:minor&quot;,        // V=0.4-0.6: traurig
+    &quot;C:dorian&quot;,       // V=0.6-0.8: hoffnungsvoll
+    &quot;C:lydian&quot;        // V=0.8-1.0: strahlend
+  ])</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Tempo nach Arousal:
-// niedriges Arousal → langsam, hohes → schnell
-// (setcps darf in Strudel meistens nur einmal gesetzt werden,
-// also nehmen wir hier eine fixe cps und regeln über fast/slow)
-setcps(0.5)
+<p>Tempo nach Arousal: niedriges Arousal → langsam, hohes → schnell (setcps darf in Strudel meistens nur einmal gesetzt werden, also nehmen wir hier eine fixe cps und regeln über fast/slow)</p>
+<div class="snippet" id="snip-003" data-code-b64="c2V0Y3BzKDAuNSk="><pre class="snippet-code"><code>setcps(0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Die Achsen-Helper
-// -----------------------------------------------------
-
-// Arousal-Helper: dichtere/hellere Klänge bei hohem A
-function arousalShift(pat, a) {
+<h3>Die Achsen-Helper</h3>
+<p>Arousal-Helper: dichtere/hellere Klänge bei hohem A</p>
+<div class="snippet" id="snip-004" data-code-b64="ZnVuY3Rpb24gYXJvdXNhbFNoaWZ0KHBhdCwgYSkgewogIHJldHVybiBwYXQKICAgIC5scGYoYS5yYW5nZSg0MDAsIDUwMDApKSAgICAgICAgICAgICAgICAgICAgICAvLyBoZWxsZXIgYmVpIEE9aG9jaAogICAgLmdhaW4oYS5yYW5nZSgwLjUsIDEuMCkpICAgICAgICAgICAgICAgICAgICAgIC8vIGxhdXRlcgp9CgpmdW5jdGlvbiBhcm91c2FsTGF5ZXIoYSkgewogIHJldHVybiBzdGFjaygKICAgIHMoImhoKjE2IikuZ2FpbihhLnJhbmdlKDAsIDAuNSkpLCAgICAgICAgICAgICAvLyBkaWNodGUgSGloYXRzIG51ciBiZWkgQT1ob2NoCiAgICBzKCJbfiB+IH4gb2hdLzIiKS5nYWluKGEucmFuZ2UoMCwgMC40KSkuY3V0KDEpCiAgKQp9"><pre class="snippet-code"><code>function arousalShift(pat, a) {
   return pat
     .lpf(a.range(400, 5000))                      // heller bei A=hoch
     .gain(a.range(0.5, 1.0))                      // lauter
@@ -124,36 +79,32 @@ function arousalShift(pat, a) {
 
 function arousalLayer(a) {
   return stack(
-    s("hh*16").gain(a.range(0, 0.5)),             // dichte Hihats nur bei A=hoch
-    s("[~ ~ ~ oh]/2").gain(a.range(0, 0.4)).cut(1)
+    s(&quot;hh*16&quot;).gain(a.range(0, 0.5)),             // dichte Hihats nur bei A=hoch
+    s(&quot;[~ ~ ~ oh]/2&quot;).gain(a.range(0, 0.4)).cut(1)
   )
-}
+}</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Valenz-Helper: konsonantere und hellere Klänge bei hoher V
-function valenzShift(pat, v) {
+<p>Valenz-Helper: konsonantere und hellere Klänge bei hoher V</p>
+<div class="snippet" id="snip-005" data-code-b64="ZnVuY3Rpb24gdmFsZW56U2hpZnQocGF0LCB2KSB7CiAgcmV0dXJuIHBhdAogICAgLnJvb20odi5yYW5nZSgwLjUsIDAuMikpICAgICAgICAgICAgICAgICAgICAgIC8vIG1laHIgSGFsbCBiZWkgbmllZHJpZ2VyIFYgKG1lbGFuY2hvbGlzY2gpCiAgICAuZGlzdG9ydCh2LnJhbmdlKDAuMywgMCkpICAgICAgICAgICAgICAgICAgICAgLy8gRGlzdG9ydGlvbiBiZWkgbmllZHJpZ2VyIFYgKG5lZ2F0aXZlIFZhbGVueikKICAgIC5hdHRhY2sodi5yYW5nZSgwLjUsIDAuMDEpKSAgICAgICAgICAgICAgICAgICAvLyBTbG93LUF0dGFjayBiZWkgbmllZHJpZ2VyIFYgKHNhZCkKfQ=="><pre class="snippet-code"><code>function valenzShift(pat, v) {
   return pat
     .room(v.range(0.5, 0.2))                      // mehr Hall bei niedriger V (melancholisch)
     .distort(v.range(0.3, 0))                     // Distortion bei niedriger V (negative Valenz)
     .attack(v.range(0.5, 0.01))                   // Slow-Attack bei niedriger V (sad)
-}
+}</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Der Track — durch den Stimmungsraum wandern
-// -----------------------------------------------------
-
-const drums = stack(
-  s("bd*4"),
-  s("~ cp ~ cp")
+<h3>Der Track — durch den Stimmungsraum wandern</h3>
+<div class="snippet" id="snip-006" data-code-b64="Y29uc3QgZHJ1bXMgPSBzdGFjaygKICBzKCJiZCo0IiksCiAgcygifiBjcCB+IGNwIikKKQoKY29uc3QgYmFzcyA9IG5vdGUoImMyIGMyIGcxIGMyIikuc2NhbGUoc2thbGFfcGF0dGVybikKICAucygic2F3dG9vdGgiKQogIC5scGYoNTAwKQogIC5nYWluKDAuNykKCmNvbnN0IGxlYWQgPSBub3RlKCIwIDQgNyA0Iikuc2NhbGUoc2thbGFfcGF0dGVybikuYWRkKDE0KQogIC5zKCJ0cmlhbmdsZSIpCiAgLnJlbGVhc2UoMC41KQogIC5nYWluKDAuNCkKCnN0YWNrKAogIGFyb3VzYWxTaGlmdChkcnVtcywgc3EoQSkpLAogIGFyb3VzYWxMYXllcihzcShBKSksCiAgdmFsZW56U2hpZnQoYmFzcywgc3EoVikpLAogIHZhbGVuelNoaWZ0KGxlYWQsIHNxKFYpKQop"><pre class="snippet-code"><code>const drums = stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;)
 )
 
-const bass = note("c2 c2 g1 c2").scale(skala_pattern)
-  .s("sawtooth")
+const bass = note(&quot;c2 c2 g1 c2&quot;).scale(skala_pattern)
+  .s(&quot;sawtooth&quot;)
   .lpf(500)
   .gain(0.7)
 
-const lead = note("0 4 7 4").scale(skala_pattern).add(14)
-  .s("triangle")
+const lead = note(&quot;0 4 7 4&quot;).scale(skala_pattern).add(14)
+  .s(&quot;triangle&quot;)
   .release(0.5)
   .gain(0.4)
 
@@ -162,145 +113,107 @@ stack(
   arousalLayer(sq(A)),
   valenzShift(bass, sq(V)),
   valenzShift(lead, sq(V))
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Strg+Enter, dann ZWEI Slider live drehen:
-//
-//   A=0.2, V=0.2  → wenig los, Moll, Distortion → traurig+still
-//   A=0.2, V=0.8  → wenig los, Dur, sauber       → friedlich
-//   A=0.9, V=0.2  → dichte Hihats, Moll, dirty   → wütend
-//   A=0.9, V=0.8  → dichte Hihats, Dur, hell     → ekstatisch
-//
-// Vier Quadranten, ein Track.
+<p>Strg+Enter, dann ZWEI Slider live drehen:</p>
+<pre><code>  A=0.2, V=0.2  → wenig los, Moll, Distortion → traurig+still
+  A=0.2, V=0.8  → wenig los, Dur, sauber       → friedlich
+  A=0.9, V=0.2  → dichte Hihats, Moll, dirty   → wütend
+  A=0.9, V=0.8  → dichte Hihats, Dur, hell     → ekstatisch
+</code></pre>
+<p>Vier Quadranten, ein Track.</p>
+<h3>Die vier Quadranten zum Direkt-Anhören</h3>
+<p>Setze die Slider auf bestimmte Werte, hör rein:</p>
+<p>QUADRANT 1: friedlich (A=0.2, V=0.8)   Wenig Hihats, Dur, lange Releases, leichter Hall</p>
+<div class="snippet" id="snip-007" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLmdhaW4oMC42KSwKICBub3RlKCJjMiBjMiBnMSBjMiIpLnNjYWxlKCJDOmx5ZGlhbiIpCiAgICAucygic2F3dG9vdGgiKS5scGYoODAwKS5hdHRhY2soMC4wNSkuZ2FpbigwLjYpLAogIG5vdGUoIltjNCwgZTQsIGc0XSIpLnNjYWxlKCJDOmx5ZGlhbiIpCiAgICAucygic2F3dG9vdGgiKS5hdHRhY2soMSkucmVsZWFzZSgyKS5nYWluKDAuNCkucm9vbSgwLjUpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).gain(0.6),
+  note(&quot;c2 c2 g1 c2&quot;).scale(&quot;C:lydian&quot;)
+    .s(&quot;sawtooth&quot;).lpf(800).attack(0.05).gain(0.6),
+  note(&quot;[c4, e4, g4]&quot;).scale(&quot;C:lydian&quot;)
+    .s(&quot;sawtooth&quot;).attack(1).release(2).gain(0.4).room(0.5)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>QUADRANT 2: ekstatisch (A=0.9, V=0.8)   Voll-Drums, Dur, alles offen</p>
+<div class="snippet" id="snip-008" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjE2IikuZ2FpbigwLjUpLAogIG5vdGUoImMyKjgiKS5zY2FsZSgiQzptaXhvbHlkaWFuIikKICAgIC5zKCJzYXd0b290aCIpLmxwZigyNTAwKS5nYWluKDAuNyksCiAgbm90ZSgiW2M0LCBlNCwgZzRdIikuc2NhbGUoIkM6bWl4b2x5ZGlhbiIpCiAgICAucygic2F3dG9vdGgiKS5hdHRhY2soMC4wNSkucmVsZWFzZSgwLjMpLmdhaW4oMC41KQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*16&quot;).gain(0.5),
+  note(&quot;c2*8&quot;).scale(&quot;C:mixolydian&quot;)
+    .s(&quot;sawtooth&quot;).lpf(2500).gain(0.7),
+  note(&quot;[c4, e4, g4]&quot;).scale(&quot;C:mixolydian&quot;)
+    .s(&quot;sawtooth&quot;).attack(0.05).release(0.3).gain(0.5)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Die vier Quadranten zum Direkt-Anhören
-// -----------------------------------------------------
-// Setze die Slider auf bestimmte Werte, hör rein:
+<p>QUADRANT 3: wütend (A=0.9, V=0.2)   Voll-Drums, Moll, Distortion</p>
+<div class="snippet" id="snip-009" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLmRpc3RvcnQoMC4yKSwKICBzKCJoaCoxNiIpLmdhaW4oMC41KSwKICBub3RlKCJjMio4Iikuc2NhbGUoIkM6cGhyeWdpYW4iKQogICAgLnMoInNhd3Rvb3RoIikubHBmKDEyMDApLmRpc3RvcnQoMC40KS5nYWluKDAuNyksCiAgbm90ZSgiYzQgZWI0IGM0IGc0Iikuc2NhbGUoIkM6cGhyeWdpYW4iKQogICAgLnMoInNhd3Rvb3RoIikuYXR0YWNrKDAuMDAxKS5yZWxlYXNlKDAuMTUpLmRpc3RvcnQoMC4zKS5nYWluKDAuNSkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;).distort(0.2),
+  s(&quot;hh*16&quot;).gain(0.5),
+  note(&quot;c2*8&quot;).scale(&quot;C:phrygian&quot;)
+    .s(&quot;sawtooth&quot;).lpf(1200).distort(0.4).gain(0.7),
+  note(&quot;c4 eb4 c4 g4&quot;).scale(&quot;C:phrygian&quot;)
+    .s(&quot;sawtooth&quot;).attack(0.001).release(0.15).distort(0.3).gain(0.5)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// QUADRANT 1: friedlich (A=0.2, V=0.8)
-//   Wenig Hihats, Dur, lange Releases, leichter Hall
-stack(
-  s("bd*4").gain(0.6),
-  note("c2 c2 g1 c2").scale("C:lydian")
-    .s("sawtooth").lpf(800).attack(0.05).gain(0.6),
-  note("[c4, e4, g4]").scale("C:lydian")
-    .s("sawtooth").attack(1).release(2).gain(0.4).room(0.5)
-)
+<p>QUADRANT 4: traurig (A=0.2, V=0.2)   Sparse, Moll, slow attack, viel Hall</p>
+<div class="snippet" id="snip-010" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLmdhaW4oMC41KSwKICBub3RlKCJjMiB+IH4gfiBnMSB+IH4gfiIpLnNjYWxlKCJDOmxvY3JpYW4iKQogICAgLnMoInNhd3Rvb3RoIikuYXR0YWNrKDAuNSkucmVsZWFzZSgyKS5scGYoNjAwKS5nYWluKDAuNSksCiAgbm90ZSgiW2M0LCBlYjQsIGdiNF0iKS5zY2FsZSgiQzpsb2NyaWFuIikKICAgIC5zKCJzYXd0b290aCIpLmF0dGFjaygyKS5yZWxlYXNlKDQpLmxwZigxMjAwKS5nYWluKDAuMzUpLnJvb20oMC43KQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).gain(0.5),
+  note(&quot;c2 ~ ~ ~ g1 ~ ~ ~&quot;).scale(&quot;C:locrian&quot;)
+    .s(&quot;sawtooth&quot;).attack(0.5).release(2).lpf(600).gain(0.5),
+  note(&quot;[c4, eb4, gb4]&quot;).scale(&quot;C:locrian&quot;)
+    .s(&quot;sawtooth&quot;).attack(2).release(4).lpf(1200).gain(0.35).room(0.7)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// QUADRANT 2: ekstatisch (A=0.9, V=0.8)
-//   Voll-Drums, Dur, alles offen
-stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*16").gain(0.5),
-  note("c2*8").scale("C:mixolydian")
-    .s("sawtooth").lpf(2500).gain(0.7),
-  note("[c4, e4, g4]").scale("C:mixolydian")
-    .s("sawtooth").attack(0.05).release(0.3).gain(0.5)
-)
-
-// QUADRANT 3: wütend (A=0.9, V=0.2)
-//   Voll-Drums, Moll, Distortion
-stack(
-  s("bd*4"),
-  s("~ cp ~ cp").distort(0.2),
-  s("hh*16").gain(0.5),
-  note("c2*8").scale("C:phrygian")
-    .s("sawtooth").lpf(1200).distort(0.4).gain(0.7),
-  note("c4 eb4 c4 g4").scale("C:phrygian")
-    .s("sawtooth").attack(0.001).release(0.15).distort(0.3).gain(0.5)
-)
-
-// QUADRANT 4: traurig (A=0.2, V=0.2)
-//   Sparse, Moll, slow attack, viel Hall
-stack(
-  s("bd*4").gain(0.5),
-  note("c2 ~ ~ ~ g1 ~ ~ ~").scale("C:locrian")
-    .s("sawtooth").attack(0.5).release(2).lpf(600).gain(0.5),
-  note("[c4, eb4, gb4]").scale("C:locrian")
-    .s("sawtooth").attack(2).release(4).lpf(1200).gain(0.35).room(0.7)
-)
-
-
-// -----------------------------------------------------
-// 💡 Wann Russells Modell hilft
-// -----------------------------------------------------
-// - Wenn du eine Stimmung verändern willst und nicht
-//   weißt wo anfassen: zwei Achsen prüfen, eine drehen.
-// - Wenn dein Track "irgendwie nicht stimmt": liegt es
-//   vermutlich daran, dass V und A widersprüchlich sind
-//   (laute Drums + sehr melancholische Akkorde = oft
-//   schwer zu lesen, kann aber bewusst eingesetzt werden:
-//   z.B. wütend-traurig).
-// - Wenn du Stimmungen für Live-Performance kategorisieren
-//   willst: 4 Slider-Voreinstellungen statt 20 Patches.
-
-
-// -----------------------------------------------------
-// Was das Modell NICHT abdeckt
-// -----------------------------------------------------
-// - Tension/Resolution — Spannungsbogen über Zeit (eigene
-//   Dimension)
-// - Density — speziell rhythmische Dichte (zwar in Arousal
-//   enthalten, aber nicht damit identisch)
-// - Distance/Nähe — räumliche Dimension (Pan, Reverb)
-//
-// Russell ist ein GROBRASTER, kein Vollmodell. Spezial-
-// Achsen wie "Bedrohung" oder "Affen-Präsenz" (Kapitel 16)
-// sitzen DARAUF und addieren spezifische Wirkungen.
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Eigenes Achsen-System
-// -----------------------------------------------------
-// Definiere zwei eigene Achsen mit Bedeutung. Beispiele:
-//   - "Naehe" (von weit weg → ganz nah)
-//     Mappings: room runter, gain hoch, lpf hoch
-//   - "Wildheit" (kontrolliert → chaotisch)
-//     Mappings: probability hoch, distort hoch, segment runter
-//   - "Sehnsucht" (gegenwärtig → entrückt)
-//     Mappings: delay hoch, attack lang, vowel-Filter sweep
-//
-// Bau dafür xLayer/xShift Funktionen wie in Kapitel 16.
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 19
-// -----------------------------------------------------
-//   Russells 2-Achsen-Modell:
-//     Arousal = Energie  →  Tempo, Dichte, Brightness
-//     Valenz  = Wohlfühl →  Modalität, Konsonanz, Attack
-//
-//   Vier Quadranten:
-//     hoch/hoch  ekstatisch     hoch/niedrig  wütend
-//     niedrig/hoch friedlich    niedrig/niedrig  traurig
-//
-//   Code-Pattern:
-//     const A = sq(slider(0.5))
-//     const V = sq(slider(0.5))
-//     stack(arousalShift(pat, A), arousalLayer(A),
-//           valenzShift(pat, V))
-//
-//   Spezial-Achsen (Bedrohung, Nähe, Charakter) sitzen
-//   AUF diesem Grundraster.
-//
-// Weiter zu 20_cheatsheet.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<h3>💡 Wann Russells Modell hilft</h3>
+<pre><code>- Wenn du eine Stimmung verändern willst und nicht
+  weißt wo anfassen: zwei Achsen prüfen, eine drehen.
+- Wenn dein Track &quot;irgendwie nicht stimmt&quot;: liegt es
+  vermutlich daran, dass V und A widersprüchlich sind
+  (laute Drums + sehr melancholische Akkorde = oft
+  schwer zu lesen, kann aber bewusst eingesetzt werden:
+  z.B. wütend-traurig).
+- Wenn du Stimmungen für Live-Performance kategorisieren
+  willst: 4 Slider-Voreinstellungen statt 20 Patches.
+</code></pre>
+<h3>Was das Modell NICHT abdeckt</h3>
+<ul>
+<li>Tension/Resolution — Spannungsbogen über Zeit (eigene   Dimension) - Density — speziell rhythmische Dichte (zwar in Arousal   enthalten, aber nicht damit identisch) - Distance/Nähe — räumliche Dimension (Pan, Reverb)</li>
+</ul>
+<p>Russell ist ein GROBRASTER, kein Vollmodell. Spezial- Achsen wie "Bedrohung" oder "Affen-Präsenz" (Kapitel 16) sitzen DARAUF und addieren spezifische Wirkungen.</p>
+<h3>▶ AUFGABE: Eigenes Achsen-System</h3>
+<pre><code>Definiere zwei eigene Achsen mit Bedeutung. Beispiele:
+  - &quot;Naehe&quot; (von weit weg → ganz nah)
+    Mappings: room runter, gain hoch, lpf hoch
+  - &quot;Wildheit&quot; (kontrolliert → chaotisch)
+    Mappings: probability hoch, distort hoch, segment runter
+  - &quot;Sehnsucht&quot; (gegenwärtig → entrückt)
+    Mappings: delay hoch, attack lang, vowel-Filter sweep
+</code></pre>
+<p>Bau dafür xLayer/xShift Funktionen wie in Kapitel 16.</p>
+<h3>Mini-Zusammenfassung Kapitel 19</h3>
+<pre><code>  Russells 2-Achsen-Modell:
+    Arousal = Energie  →  Tempo, Dichte, Brightness
+    Valenz  = Wohlfühl →  Modalität, Konsonanz, Attack
+</code></pre>
+<pre><code>  Vier Quadranten:
+    hoch/hoch  ekstatisch     hoch/niedrig  wütend
+    niedrig/hoch friedlich    niedrig/niedrig  traurig
+</code></pre>
+<pre><code>  Code-Pattern:
+    const A = sq(slider(0.5))
+    const V = sq(slider(0.5))
+    stack(arousalShift(pat, A), arousalLayer(A),
+          valenzShift(pat, V))
+</code></pre>
+<pre><code>  Spezial-Achsen (Bedrohung, Nähe, Charakter) sitzen
+  AUF diesem Grundraster.
+</code></pre>
+<p>Weiter zu 20_cheatsheet.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

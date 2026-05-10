@@ -4,202 +4,128 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>11 — Song-Struktur — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>11 — Song-Struktur</h1>
-<nav class="chapter-nav"><a href="10_samples_eigene.html" title="10 — Eigene Samples">← Vorheriges</a><a href="12_mini_track_in_50_zeilen.html" title="12 — Mini-Track">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="10_samples_eigene.html" title="10 — Eigene Samples">← Zurück</a><a href="12_mini_track_in_50_zeilen.html" title="12 — Mini-Track">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 11 — Song-Struktur
-// =====================================================
-// Vom Loop zum Stück. Eine 4-Cycle-Idee bleibt eine 4-Cycle-
-// Idee — interessant für 30 Sekunden. Ein Track erzählt eine
-// Geschichte über mehrere Minuten: Intro, Verse, Drop, Bridge,
-// Outro.
-//
-// Strudel hat dafür drei Werkzeuge: Variablen, mask, arrange.
-// Mit diesen drei kannst du fast alles bauen.
-// =====================================================
-
-
-// -----------------------------------------------------
-// Schritt 1 — Variablen für Sektionen
-// -----------------------------------------------------
-// Pack jede Sektion in eine Variable. Das macht den Code
-// LESBAR.
-
-const intro_drums = stack(
-  s("bd").euclid(3, 8),
-  s("hh*8").gain(0.3)
+<article class="prose">
+<h1>Kapitel 11 — Song-Struktur</h1>
+<p>Vom Loop zum Stück. Eine 4-Cycle-Idee bleibt eine 4-Cycle- Idee — interessant für 30 Sekunden. Ein Track erzählt eine Geschichte über mehrere Minuten: Intro, Verse, Drop, Bridge, Outro.</p>
+<p>Strudel hat dafür drei Werkzeuge: Variablen, mask, arrange. Mit diesen drei kannst du fast alles bauen.</p>
+<h3>Schritt 1 — Variablen für Sektionen</h3>
+<p>Pack jede Sektion in eine Variable. Das macht den Code LESBAR.</p>
+<div class="snippet" id="snip-000" data-code-b64="Y29uc3QgaW50cm9fZHJ1bXMgPSBzdGFjaygKICBzKCJiZCIpLmV1Y2xpZCgzLCA4KSwKICBzKCJoaCo4IikuZ2FpbigwLjMpCikKCmNvbnN0IHZlcnNlX2RydW1zID0gc3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjE2IikuZ2FpbigwLjQpCikKCmNvbnN0IGRyb3BfZHJ1bXMgPSBzdGFjaygKICBzKCJiZCo0IiksCiAgcygiY3AqMiIpLmxhdGUoMC41KSwKICBzKCJoaCoxNiIpLmdhaW4oMC42KSwKICBzKCJvaCB+IH4gb2ggfiB+IG9oIH4iKS5nYWluKDAuNSkKKQ=="><pre class="snippet-code"><code>const intro_drums = stack(
+  s(&quot;bd&quot;).euclid(3, 8),
+  s(&quot;hh*8&quot;).gain(0.3)
 )
 
 const verse_drums = stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*16").gain(0.4)
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*16&quot;).gain(0.4)
 )
 
 const drop_drums = stack(
-  s("bd*4"),
-  s("cp*2").late(0.5),
-  s("hh*16").gain(0.6),
-  s("oh ~ ~ oh ~ ~ oh ~").gain(0.5)
-)
+  s(&quot;bd*4&quot;),
+  s(&quot;cp*2&quot;).late(0.5),
+  s(&quot;hh*16&quot;).gain(0.6),
+  s(&quot;oh ~ ~ oh ~ ~ oh ~&quot;).gain(0.5)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Probier sie einzeln:
-intro_drums
+<p>Probier sie einzeln:</p>
+<div class="snippet" id="snip-001" data-code-b64="aW50cm9fZHJ1bXMKCnZlcnNlX2RydW1zCgpkcm9wX2RydW1z"><pre class="snippet-code"><code>intro_drums
 
 verse_drums
 
-drop_drums
+drop_drums</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<h3>Schritt 2 — manuell wechseln (Live-Coding-Stil)</h3>
+<p>Strudel spielt nur den UNTERSTEN unkommentierten Block. Im Live-Set wechselst du Sektionen, indem du andere auskommentierst.</p>
+<p>stack(intro_drums) stack(verse_drums)</p>
+<div class="snippet" id="snip-002" data-code-b64="c3RhY2soZHJvcF9kcnVtcyk="><pre class="snippet-code"><code>stack(drop_drums)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Schritt 2 — manuell wechseln (Live-Coding-Stil)
-// -----------------------------------------------------
-// Strudel spielt nur den UNTERSTEN unkommentierten Block.
-// Im Live-Set wechselst du Sektionen, indem du andere
-// auskommentierst.
-
-// stack(intro_drums)
-// stack(verse_drums)
-stack(drop_drums)
-
-// Strg+/  in der Zeile schaltet // an/aus.
-// Um zwischen Sektionen zu wechseln: aktive auskommentieren,
-// neue aktivieren, Strg+Enter.
-
-
-// -----------------------------------------------------
-// Schritt 3 — arrange für automatische Sequenz
-// -----------------------------------------------------
-// arrange([n, pattern], ...) spielt jedes Pattern für n Cycles,
-// dann das nächste.
-
-arrange(
+<p>Strg+/  in der Zeile schaltet // an/aus. Um zwischen Sektionen zu wechseln: aktive auskommentieren, neue aktivieren, Strg+Enter.</p>
+<h3>Schritt 3 — arrange für automatische Sequenz</h3>
+<p>arrange([n, pattern], ...) spielt jedes Pattern für n Cycles, dann das nächste.</p>
+<div class="snippet" id="snip-003" data-code-b64="YXJyYW5nZSgKICBbNCwgaW50cm9fZHJ1bXNdLAogIFs4LCB2ZXJzZV9kcnVtc10sCiAgWzE2LCBkcm9wX2RydW1zXSwKICBbNCwgaW50cm9fZHJ1bXNdCik="><pre class="snippet-code"><code>arrange(
   [4, intro_drums],
   [8, verse_drums],
   [16, drop_drums],
   [4, intro_drums]
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Das ist ein vollständiger 32-Cycle-Track-Verlauf, automatisch.
-//
-//   Cycle:  0    4         12                  28      32
-//           |----|---------|-------------------|-------|
-//           intro  verse        drop             intro
-
-
-// -----------------------------------------------------
-// Multi-Layer-Track-Struktur
-// -----------------------------------------------------
-
-const drums_intro = s("bd").euclid(3, 8)
-const drums_verse = stack(s("bd*4"), s("~ cp ~ cp"))
-const drums_drop = stack(s("bd*4"), s("cp*2").late(0.5), s("hh*16").gain(0.5))
+<p>Das ist ein vollständiger 32-Cycle-Track-Verlauf, automatisch.</p>
+<pre><code>  Cycle:  0    4         12                  28      32
+          |----|---------|-------------------|-------|
+          intro  verse        drop             intro
+</code></pre>
+<h3>Multi-Layer-Track-Struktur</h3>
+<div class="snippet" id="snip-004" data-code-b64="Y29uc3QgZHJ1bXNfaW50cm8gPSBzKCJiZCIpLmV1Y2xpZCgzLCA4KQpjb25zdCBkcnVtc192ZXJzZSA9IHN0YWNrKHMoImJkKjQiKSwgcygifiBjcCB+IGNwIikpCmNvbnN0IGRydW1zX2Ryb3AgPSBzdGFjayhzKCJiZCo0IiksIHMoImNwKjIiKS5sYXRlKDAuNSksIHMoImhoKjE2IikuZ2FpbigwLjUpKQoKY29uc3QgYmFzc19pbnRybyA9IHNpbGVuY2UKY29uc3QgYmFzc192ZXJzZSA9IG5vdGUoImMyIGMyIGViMiBnMiIpLnMoInNhd3Rvb3RoIikubHBmKDQwMCkKY29uc3QgYmFzc19kcm9wID0gbm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKDgwMCkubHBlbnYoOCkubHBhKDApLmxwZCgwLjEpCgpjb25zdCBsZWFkX2ludHJvID0gc2lsZW5jZQpjb25zdCBsZWFkX3ZlcnNlID0gc2lsZW5jZQpjb25zdCBsZWFkX2Ryb3AgPSBub3RlKCJjNSBlYjUgZzUgYzUiKS5zKCJ0cmlhbmdsZSIpLmdhaW4oMC41KS5yb29tKDAuNCkKCmFycmFuZ2UoCiAgWzgsIHN0YWNrKGRydW1zX2ludHJvKV0sCiAgWzgsIHN0YWNrKGRydW1zX3ZlcnNlLCBiYXNzX3ZlcnNlKV0sCiAgWzE2LCBzdGFjayhkcnVtc19kcm9wLCBiYXNzX2Ryb3AsIGxlYWRfZHJvcCldLAogIFs0LCBzdGFjayhkcnVtc19pbnRybyldCik="><pre class="snippet-code"><code>const drums_intro = s(&quot;bd&quot;).euclid(3, 8)
+const drums_verse = stack(s(&quot;bd*4&quot;), s(&quot;~ cp ~ cp&quot;))
+const drums_drop = stack(s(&quot;bd*4&quot;), s(&quot;cp*2&quot;).late(0.5), s(&quot;hh*16&quot;).gain(0.5))
 
 const bass_intro = silence
-const bass_verse = note("c2 c2 eb2 g2").s("sawtooth").lpf(400)
-const bass_drop = note("c2*8").s("sawtooth").lpf(800).lpenv(8).lpa(0).lpd(0.1)
+const bass_verse = note(&quot;c2 c2 eb2 g2&quot;).s(&quot;sawtooth&quot;).lpf(400)
+const bass_drop = note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(800).lpenv(8).lpa(0).lpd(0.1)
 
 const lead_intro = silence
 const lead_verse = silence
-const lead_drop = note("c5 eb5 g5 c5").s("triangle").gain(0.5).room(0.4)
+const lead_drop = note(&quot;c5 eb5 g5 c5&quot;).s(&quot;triangle&quot;).gain(0.5).room(0.4)
 
 arrange(
   [8, stack(drums_intro)],
   [8, stack(drums_verse, bass_verse)],
   [16, stack(drums_drop, bass_drop, lead_drop)],
   [4, stack(drums_intro)]
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// 36 Cycles vom Intro über Verse bis Drop und zurück. Jede
-// Sektion ist ein eigenes stack() mit den passenden Layern.
-// "silence" ist ein eingebautes leeres Pattern.
-
-
-// -----------------------------------------------------
-// mask — Layer cycle-weise an/aus
-// -----------------------------------------------------
-// arrange tauscht GANZE Patterns aus. mask schaltet einen
-// Layer in einem Pattern ein und aus.
-
-const drums = s("bd*4")
-const bass = note("c2*8").s("sawtooth").lpf(500)
-const lead = note("c5 eb5 g5 c5").s("triangle")
+<p>36 Cycles vom Intro über Verse bis Drop und zurück. Jede Sektion ist ein eigenes stack() mit den passenden Layern. "silence" ist ein eingebautes leeres Pattern.</p>
+<h3>mask — Layer cycle-weise an/aus</h3>
+<p>arrange tauscht GANZE Patterns aus. mask schaltet einen Layer in einem Pattern ein und aus.</p>
+<div class="snippet" id="snip-005" data-code-b64="Y29uc3QgZHJ1bXMgPSBzKCJiZCo0IikKY29uc3QgYmFzcyA9IG5vdGUoImMyKjgiKS5zKCJzYXd0b290aCIpLmxwZig1MDApCmNvbnN0IGxlYWQgPSBub3RlKCJjNSBlYjUgZzUgYzUiKS5zKCJ0cmlhbmdsZSIpCgpzdGFjaygKICBkcnVtcywKICBiYXNzLm1hc2soIjwwIDAgMSAxPiIpLCAgICAgLy8gZXJzdCBuYWNoIDIgQ3ljbGVzCiAgbGVhZC5tYXNrKCI8MCAwIDAgMT4iKSAgICAgIC8vIGVyc3QgaW0gNC4gQ3ljbGUKKQ=="><pre class="snippet-code"><code>const drums = s(&quot;bd*4&quot;)
+const bass = note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(500)
+const lead = note(&quot;c5 eb5 g5 c5&quot;).s(&quot;triangle&quot;)
 
 stack(
   drums,
-  bass.mask("<0 0 1 1>"),     // erst nach 2 Cycles
-  lead.mask("<0 0 0 1>")      // erst im 4. Cycle
-)
+  bass.mask(&quot;&lt;0 0 1 1&gt;&quot;),     // erst nach 2 Cycles
+  lead.mask(&quot;&lt;0 0 0 1&gt;&quot;)      // erst im 4. Cycle
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Cycle:    1    2    3    4
-// drums:    X    X    X    X
-// bass:     -    -    X    X
-// lead:     -    -    -    X
-//          ─────────────────────
-//          dünn  dünn dichter voll
-//
-// Klassischer 4-Cycle-Build-Up.
-
-
-// -----------------------------------------------------
-// mask mit längeren Patterns
-// -----------------------------------------------------
-
-stack(
+<p>Cycle:    1    2    3    4 drums:    X    X    X    X bass:     -    -    X    X lead:     -    -    -    X          ─────────────────────          dünn  dünn dichter voll</p>
+<p>Klassischer 4-Cycle-Build-Up.</p>
+<h3>mask mit längeren Patterns</h3>
+<div class="snippet" id="snip-006" data-code-b64="c3RhY2soCiAgZHJ1bXMsCiAgYmFzcy5tYXNrKCI8MCAwIDAgMCAxIDEgMSAxPiIpLAogIGxlYWQubWFzaygiPDAgMCAwIDAgMCAwIDEgMT4iKQop"><pre class="snippet-code"><code>stack(
   drums,
-  bass.mask("<0 0 0 0 1 1 1 1>"),
-  lead.mask("<0 0 0 0 0 0 1 1>")
-)
+  bass.mask(&quot;&lt;0 0 0 0 1 1 1 1&gt;&quot;),
+  lead.mask(&quot;&lt;0 0 0 0 0 0 1 1&gt;&quot;)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// 8-Cycle-Build: 4 Cycles nur Drums, 2 Cycles + Bass,
-// 2 Cycles alles.
-
-
-// -----------------------------------------------------
-// Übergänge — Crossfade per mask
-// -----------------------------------------------------
-// Eine alte Sektion fadet aus während die neue einkommt.
-//
-//   Cycle:    1    2    3    4
-//   sek_a:    X    X    X    -
-//   sek_b:    -    -    X    X
-//                       ↑
-//                  Überlappung: beide spielen
-//
-// Asymmetrische Grenzen sind das Ohr-Goldstück. Wenn alle
-// Sektionen exakt am 4er- oder 8er-Raster wechseln, klingt
-// das gepatched. Eine Spur die einen halben Takt früher
-// startet wirkt komponiert.
-
-const sektion_a = stack(s("bd*4"), note("c2*4").s("sawtooth"))
-const sektion_b = stack(s("bd cp sd cp"), note("a1*4").s("sawtooth"))
+<p>8-Cycle-Build: 4 Cycles nur Drums, 2 Cycles + Bass, 2 Cycles alles.</p>
+<h3>Übergänge — Crossfade per mask</h3>
+<p>Eine alte Sektion fadet aus während die neue einkommt.</p>
+<pre><code>  Cycle:    1    2    3    4
+  sek_a:    X    X    X    -
+  sek_b:    -    -    X    X
+                      ↑
+                 Überlappung: beide spielen
+</code></pre>
+<p>Asymmetrische Grenzen sind das Ohr-Goldstück. Wenn alle Sektionen exakt am 4er- oder 8er-Raster wechseln, klingt das gepatched. Eine Spur die einen halben Takt früher startet wirkt komponiert.</p>
+<div class="snippet" id="snip-007" data-code-b64="Y29uc3Qgc2VrdGlvbl9hID0gc3RhY2socygiYmQqNCIpLCBub3RlKCJjMio0Iikucygic2F3dG9vdGgiKSkKY29uc3Qgc2VrdGlvbl9iID0gc3RhY2socygiYmQgY3Agc2QgY3AiKSwgbm90ZSgiYTEqNCIpLnMoInNhd3Rvb3RoIikpCgpzdGFjaygKICBzZWt0aW9uX2EubWFzaygiPDEgMSAxIDA+IiksICAgIC8vIDMgQ3ljbGVzIGFrdGl2LCAxIGF1cwogIHNla3Rpb25fYi5tYXNrKCI8MCAwIDEgMT4iKSAgICAgLy8gMiBDeWNsZXMgYXVzLCAyIGFrdGl2ICjDnGJlcmxhcHAhKQop"><pre class="snippet-code"><code>const sektion_a = stack(s(&quot;bd*4&quot;), note(&quot;c2*4&quot;).s(&quot;sawtooth&quot;))
+const sektion_b = stack(s(&quot;bd cp sd cp&quot;), note(&quot;a1*4&quot;).s(&quot;sawtooth&quot;))
 
 stack(
-  sektion_a.mask("<1 1 1 0>"),    // 3 Cycles aktiv, 1 aus
-  sektion_b.mask("<0 0 1 1>")     // 2 Cycles aus, 2 aktiv (Überlapp!)
-)
+  sektion_a.mask(&quot;&lt;1 1 1 0&gt;&quot;),    // 3 Cycles aktiv, 1 aus
+  sektion_b.mask(&quot;&lt;0 0 1 1&gt;&quot;)     // 2 Cycles aus, 2 aktiv (Überlapp!)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Transitions — Sweep / Riser zwischen Sektionen
-// -----------------------------------------------------
-
-const riser = note("c2*32")
-  .s("sawtooth")
+<h3>Transitions — Sweep / Riser zwischen Sektionen</h3>
+<div class="snippet" id="snip-008" data-code-b64="Y29uc3QgcmlzZXIgPSBub3RlKCJjMiozMiIpCiAgLnMoInNhd3Rvb3RoIikKICAubHBmKHNhdy5yYW5nZSgyMDAsIDgwMDApLnNsb3coNCkpCiAgLmdhaW4oc2F3LnJhbmdlKDAuMiwgMSkuc2xvdyg0KSkKICAucm9vbSgwLjUpCgphcnJhbmdlKAogIFs0LCBpbnRyb19kcnVtc10sCiAgWzQsIHN0YWNrKGludHJvX2RydW1zLCByaXNlcildLCAgIC8vIFJpc2VyIMO8YmVyIEludHJvCiAgWzE2LCBkcm9wX2RydW1zXSwKICBbNCwgaW50cm9fZHJ1bXNdCik="><pre class="snippet-code"><code>const riser = note(&quot;c2*32&quot;)
+  .s(&quot;sawtooth&quot;)
   .lpf(saw.range(200, 8000).slow(4))
   .gain(saw.range(0.2, 1).slow(4))
   .room(0.5)
@@ -209,40 +135,34 @@ arrange(
   [4, stack(intro_drums, riser)],   // Riser über Intro
   [16, drop_drums],
   [4, intro_drums]
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// 4 Cycles Intro, 4 Cycles Intro + Riser (Build-Up), dann Drop.
-// Der Riser baut Spannung auf bevor der Drop kommt.
+<p>4 Cycles Intro, 4 Cycles Intro + Riser (Build-Up), dann Drop. Der Riser baut Spannung auf bevor der Drop kommt.</p>
+<h3>Vollständige Song-Struktur</h3>
+<div class="snippet" id="snip-009" data-code-b64="Y29uc3Qgc2tsID0gIkM6bWlub3Ii"><pre class="snippet-code"><code>const skl = &quot;C:minor&quot;</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// Vollständige Song-Struktur
-// -----------------------------------------------------
-
-const skl = "C:minor"
-
-// === Material ===
-const drm_kick    = s("bd*4")
-const drm_clap    = s("~ cp ~ cp")
-const drm_hh      = s("hh*16").gain(0.4)
-const drm_oh      = s("[~ ~ ~ oh]/2").gain(0.5)
-const bass_simple = note("c2 c2 eb2 g2").scale(skl).s("sawtooth").lpf(500).gain(0.7)
-const bass_acid   = note("c2*8").scale(skl).s("sawtooth")
+<p>=== Material ===</p>
+<div class="snippet" id="snip-010" data-code-b64="Y29uc3QgZHJtX2tpY2sgICAgPSBzKCJiZCo0IikKY29uc3QgZHJtX2NsYXAgICAgPSBzKCJ+IGNwIH4gY3AiKQpjb25zdCBkcm1faGggICAgICA9IHMoImhoKjE2IikuZ2FpbigwLjQpCmNvbnN0IGRybV9vaCAgICAgID0gcygiW34gfiB+IG9oXS8yIikuZ2FpbigwLjUpCmNvbnN0IGJhc3Nfc2ltcGxlID0gbm90ZSgiYzIgYzIgZWIyIGcyIikuc2NhbGUoc2tsKS5zKCJzYXd0b290aCIpLmxwZig1MDApLmdhaW4oMC43KQpjb25zdCBiYXNzX2FjaWQgICA9IG5vdGUoImMyKjgiKS5zY2FsZShza2wpLnMoInNhd3Rvb3RoIikKICAgICAgICAgICAgICAgICAgICAgIC5scGYoNDAwKS5scGVudig4KS5scGEoMCkubHBkKDAuMSkubHBxKDEwKS5nYWluKDAuNykKY29uc3QgbGVhZF9wYWQgICAgPSBub3RlKCJbMCwyLDRdIikuc2NhbGUoc2tsKS5zKCJ0cmlhbmdsZSIpCiAgICAgICAgICAgICAgICAgICAgICAuYXR0YWNrKDAuNSkucmVsZWFzZSgyKS5scGYoMjAwMCkuZ2FpbigwLjQpCmNvbnN0IGxlYWRfYXJwICAgID0gbm90ZSgiMCA0IDcgNCIpLnNjYWxlKHNrbCkuYWRkKDE0KS5zKCJwaWFubyIpLmdhaW4oMC40KQ=="><pre class="snippet-code"><code>const drm_kick    = s(&quot;bd*4&quot;)
+const drm_clap    = s(&quot;~ cp ~ cp&quot;)
+const drm_hh      = s(&quot;hh*16&quot;).gain(0.4)
+const drm_oh      = s(&quot;[~ ~ ~ oh]/2&quot;).gain(0.5)
+const bass_simple = note(&quot;c2 c2 eb2 g2&quot;).scale(skl).s(&quot;sawtooth&quot;).lpf(500).gain(0.7)
+const bass_acid   = note(&quot;c2*8&quot;).scale(skl).s(&quot;sawtooth&quot;)
                       .lpf(400).lpenv(8).lpa(0).lpd(0.1).lpq(10).gain(0.7)
-const lead_pad    = note("[0,2,4]").scale(skl).s("triangle")
+const lead_pad    = note(&quot;[0,2,4]&quot;).scale(skl).s(&quot;triangle&quot;)
                       .attack(0.5).release(2).lpf(2000).gain(0.4)
-const lead_arp    = note("0 4 7 4").scale(skl).add(14).s("piano").gain(0.4)
+const lead_arp    = note(&quot;0 4 7 4&quot;).scale(skl).add(14).s(&quot;piano&quot;).gain(0.4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// === Sektionen ===
-const intro    = stack(drm_kick.gain(0.7), drm_hh, lead_pad)
+<p>=== Sektionen ===</p>
+<div class="snippet" id="snip-011" data-code-b64="Y29uc3QgaW50cm8gICAgPSBzdGFjayhkcm1fa2ljay5nYWluKDAuNyksIGRybV9oaCwgbGVhZF9wYWQpCmNvbnN0IHZlcnNlICAgID0gc3RhY2soZHJtX2tpY2ssIGRybV9jbGFwLCBkcm1faGgsIGJhc3Nfc2ltcGxlKQpjb25zdCBwcmVjaG9yICA9IHN0YWNrKGRybV9raWNrLCBkcm1fY2xhcCwgZHJtX2hoLCBkcm1fb2gsIGJhc3Nfc2ltcGxlLCBsZWFkX3BhZCkKY29uc3QgY2hvcnVzICAgPSBzdGFjayhkcm1fa2ljaywgZHJtX2NsYXAsIGRybV9oaCwgZHJtX29oLCBiYXNzX2FjaWQsIGxlYWRfcGFkLCBsZWFkX2FycCkKY29uc3QgYnJpZGdlICAgPSBzdGFjayhkcm1fa2ljay5nYWluKDAuNiksIGRybV9oaC5nYWluKDAuMyksIGJhc3Nfc2ltcGxlLCBsZWFkX3BhZCkKY29uc3Qgb3V0cm8gICAgPSBzdGFjayhkcm1fa2ljay5nYWluKDAuNyksIGRybV9oaCwgbGVhZF9wYWQp"><pre class="snippet-code"><code>const intro    = stack(drm_kick.gain(0.7), drm_hh, lead_pad)
 const verse    = stack(drm_kick, drm_clap, drm_hh, bass_simple)
 const prechor  = stack(drm_kick, drm_clap, drm_hh, drm_oh, bass_simple, lead_pad)
 const chorus   = stack(drm_kick, drm_clap, drm_hh, drm_oh, bass_acid, lead_pad, lead_arp)
 const bridge   = stack(drm_kick.gain(0.6), drm_hh.gain(0.3), bass_simple, lead_pad)
-const outro    = stack(drm_kick.gain(0.7), drm_hh, lead_pad)
+const outro    = stack(drm_kick.gain(0.7), drm_hh, lead_pad)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// === Arrangement ===
-arrange(
+<p>=== Arrangement ===</p>
+<div class="snippet" id="snip-012" data-code-b64="YXJyYW5nZSgKICBbNCwgaW50cm9dLAogIFs4LCB2ZXJzZV0sCiAgWzQsIHByZWNob3JdLAogIFsxNiwgY2hvcnVzXSwKICBbOCwgYnJpZGdlXSwKICBbMTYsIGNob3J1c10sCiAgWzQsIG91dHJvXQop"><pre class="snippet-code"><code>arrange(
   [4, intro],
   [8, verse],
   [4, prechor],
@@ -250,93 +170,44 @@ arrange(
   [8, bridge],
   [16, chorus],
   [4, outro]
-)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// 60 Cycles. Bei cps = 0.5 sind das 2 Minuten — ein vollständiger
-// Track.
+<p>60 Cycles. Bei cps = 0.5 sind das 2 Minuten — ein vollständiger Track.</p>
+<h3>FINALE — Live-Performance-Setup</h3>
+<p>Im Live-Set willst du oft NICHT arrange, sondern manuelles Wechseln. So sieht die Datei dann aus:</p>
+<p>(Material und Sektionen wie oben — gekürzt)</p>
+<p>stack(intro) stack(verse) stack(prechor)</p>
+<div class="snippet" id="snip-013" data-code-b64="c3RhY2soY2hvcnVzKSAgICAgICAgIC8vIOKGkCBha3R1ZWxsIGzDpHVmdCBkYXM="><pre class="snippet-code"><code>stack(chorus)         // ← aktuell läuft das</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// FINALE — Live-Performance-Setup
-// -----------------------------------------------------
-// Im Live-Set willst du oft NICHT arrange, sondern manuelles
-// Wechseln. So sieht die Datei dann aus:
-
-// (Material und Sektionen wie oben — gekürzt)
-
-// stack(intro)
-// stack(verse)
-// stack(prechor)
-stack(chorus)         // ← aktuell läuft das
-// stack(bridge)
-// stack(outro)
-
-// Während der Performance:
-// 1. Fertige Variablen-Bibliothek im oberen Teil der Datei.
-// 2. Unten in der Sektions-Liste die Zeile aktivieren die
-//    spielen soll, alle anderen kommentieren.
-// 3. Strg+Enter — Strudel macht Crossfade.
-//
-// Praktisch: Variablen vorher debuggt, Sektionen nur wechseln.
-
-
-// -----------------------------------------------------
-// Was Strudel NICHT hat
-// -----------------------------------------------------
-// - Keine Timeline-Editor-View. Alles bleibt Code.
-// - Keine "Markers" oder Section-Names außer Variablen-Namen.
-// - Kein conditional include via Slider — d.h. ein Slider
-//   kann nicht direkt eine Sektion ein- oder ausschalten.
-//   (Workaround: gain(slider().range(0,1)) — Layer wird stumm.)
-//
-// Das ist Live-Coding-Philosophie. Strudel ist ein Werkzeug
-// um Tracks zu PERFORMEN, nicht zu RENDERN. Final-Mix passiert
-// eher in einer DAW (Reaper, Ableton) mit Strudel-Audio
-// aufgenommen.
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Eigene Song-Struktur
-// -----------------------------------------------------
-// Schreib drei eigene Sektionen (intro, verse, drop) mit
-// jeweils unterschiedlichen Drum-Patterns und einem Bass.
-// Pack sie in arrange() mit unterschiedlichen Längen.
-// Lass den Track 30+ Cycles laufen.
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 11
-// -----------------------------------------------------
-//   const x = ...                    → Variable für Sektion
-//   stack(...)                       → Layer parallel
-//   arrange([n, pat], ...)           → automatisches Sequencing
-//   .mask("<1 0 1 1>")               → Layer cycle-weise an/aus
-//   silence                          → leeres Pattern
-//
-// Drei Live-Strategien:
-//   1. arrange() — vorgeplanter Verlauf
-//   2. manuell auskommentieren — frei live
-//   3. mask + Slider — semi-live
-//
-// Zum Komponieren: zuerst eine Sektion polieren bis sie für
-// 8 Cycles gut klingt. Dann zweite Sektion. Dann Übergang.
-// Bauen geht von INNEN nach AUSSEN.
-//
-// Weiter zu 12_mini_track_in_50_zeilen.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<p>stack(bridge) stack(outro)</p>
+<p>Während der Performance: 1. Fertige Variablen-Bibliothek im oberen Teil der Datei. 2. Unten in der Sektions-Liste die Zeile aktivieren die    spielen soll, alle anderen kommentieren. 3. Strg+Enter — Strudel macht Crossfade.</p>
+<p>Praktisch: Variablen vorher debuggt, Sektionen nur wechseln.</p>
+<h3>Was Strudel NICHT hat</h3>
+<ul>
+<li>Keine Timeline-Editor-View. Alles bleibt Code. - Keine "Markers" oder Section-Names außer Variablen-Namen. - Kein conditional include via Slider — d.h. ein Slider   kann nicht direkt eine Sektion ein- oder ausschalten.   (Workaround: gain(slider().range(0,1)) — Layer wird stumm.)</li>
+</ul>
+<p>Das ist Live-Coding-Philosophie. Strudel ist ein Werkzeug um Tracks zu PERFORMEN, nicht zu RENDERN. Final-Mix passiert eher in einer DAW (Reaper, Ableton) mit Strudel-Audio aufgenommen.</p>
+<h3>▶ AUFGABE: Eigene Song-Struktur</h3>
+<p>Schreib drei eigene Sektionen (intro, verse, drop) mit jeweils unterschiedlichen Drum-Patterns und einem Bass. Pack sie in arrange() mit unterschiedlichen Längen. Lass den Track 30+ Cycles laufen.</p>
+<h3>Mini-Zusammenfassung Kapitel 11</h3>
+<pre><code>  const x = ...                    → Variable für Sektion
+  stack(...)                       → Layer parallel
+  arrange([n, pat], ...)           → automatisches Sequencing
+  .mask(&quot;&lt;1 0 1 1&gt;&quot;)               → Layer cycle-weise an/aus
+  silence                          → leeres Pattern
+</code></pre>
+<pre><code>Drei Live-Strategien:
+  1. arrange() — vorgeplanter Verlauf
+  2. manuell auskommentieren — frei live
+  3. mask + Slider — semi-live
+</code></pre>
+<p>Zum Komponieren: zuerst eine Sektion polieren bis sie für 8 Cycles gut klingt. Dann zweite Sektion. Dann Übergang. Bauen geht von INNEN nach AUSSEN.</p>
+<p>Weiter zu 12_mini_track_in_50_zeilen.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

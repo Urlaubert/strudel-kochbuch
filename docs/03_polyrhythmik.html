@@ -4,313 +4,191 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>03 — Polyrhythmik — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>03 — Polyrhythmik</h1>
-<nav class="chapter-nav"><a href="02_mininotation.html" title="02 — Mini-Notation">← Vorheriges</a><a href="04_euklidisch.html" title="04 — Euklidische Rhythmen">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="02_mininotation.html" title="02 — Mini-Notation">← Zurück</a><a href="04_euklidisch.html" title="04 — Euklidische Rhythmen">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 03 — Polyrhythmik (mehrere Spuren übereinander)
-// =====================================================
-// Bisher hattest du EINE Spur. Selbst wenn da viel los war —
-// es war eine. Jetzt kommen mehrere parallel.
-//
-// Das Grundwerkzeug heißt stack(). Es ist der Wendepunkt vom
-// "Pattern" zum "Stück".
-// =====================================================
+<article class="prose">
+<h1>Kapitel 03 — Polyrhythmik (mehrere Spuren übereinander)</h1>
+<p>Bisher hattest du EINE Spur. Selbst wenn da viel los war — es war eine. Jetzt kommen mehrere parallel.</p>
+<p>Das Grundwerkzeug heißt stack(). Es ist der Wendepunkt vom "Pattern" zum "Stück".</p>
+<h3>stack — gleichzeitig spielen</h3>
+<p>stack() nimmt beliebig viele Pattern und spielt sie alle zur gleichen Zeit ab.</p>
+<div class="snippet" id="snip-000" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjgiKQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;hh*8&quot;)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Eine Bass-Drum auf jedem Viertel, plus durchlaufende 8tel-Hihats.</p>
+<pre><code>  bd:  X . . . X . . . X . . . X . . .
+  hh:  X . X . X . X . X . X . X . X .
+</code></pre>
+<p>Das ist schon ein Beat.</p>
+<div class="snippet" id="snip-001" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjgiKQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*8&quot;)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// stack — gleichzeitig spielen
-// -----------------------------------------------------
-// stack() nimmt beliebig viele Pattern und spielt sie alle
-// zur gleichen Zeit ab.
+<p>Plus Backbeat-Claps. Das ist quasi der Standard-Drum-Pattern der Welt. Du wirst ihn überall hören.</p>
+<h3>stack mit Lautstärken</h3>
+<p>Hihats sind oft zu laut. Per Layer abdimmen:</p>
+<div class="snippet" id="snip-002" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjgiKS5nYWluKDAuNCkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*8&quot;).gain(0.4)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-stack(
-  s("bd*4"),
-  s("hh*8")
+<p>.gain() wirkt nur auf den Layer, an den es gehängt ist. Andere Layer bleiben unberührt.</p>
+<h3>stack mit melodischem Layer</h3>
+<div class="snippet" id="snip-003" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjgiKS5nYWluKDAuNCksCiAgbm90ZSgiYzIgYzIgZWIyIGcyIikucygic2F3dG9vdGgiKS5scGYoODAwKS5nYWluKDAuNikKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*8&quot;).gain(0.4),
+  note(&quot;c2 c2 eb2 g2&quot;).s(&quot;sawtooth&quot;).lpf(800).gain(0.6)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<pre><code>Vier Schichten:
+  1. Kick — Puls
+  2. Snare/Clap — Backbeat
+  3. Hihat — Subdivision
+  4. Bass-Linie — Melodie
+</code></pre>
+<p>Das ist der Aufbau der meisten elektronischen Tracks.</p>
+<h3>Polyrhythmik — verschiedene Längen</h3>
+<p>stack() ist auch dann interessant wenn die Spuren NICHT dieselbe Anzahl von Schritten haben. Das ergibt Polyrhythmen.</p>
+<div class="snippet" id="snip-004" data-code-b64="c3RhY2soCiAgcygiYmQqMyIpLCAgICAvLyAzIELDpHNzZSBwcm8gQ3ljbGUKICBzKCJoaCo0IikgICAgIC8vIDQgSGloYXRzIHBybyBDeWNsZQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*3&quot;),    // 3 Bässe pro Cycle
+  s(&quot;hh*4&quot;)     // 4 Hihats pro Cycle
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>3 gegen 4. Sie treffen sich nur am Anfang jedes Cycles.</p>
+<pre><code>  bd:  X . . . X . . . X . . .
+  hh:  X . . X . . X . . X . .
+       ↑                       ↑
+     treffen                  treffen
+</code></pre>
+<p>Das fühlt sich verwoben an, nicht ganz greifbar.</p>
+<div class="snippet" id="snip-005" data-code-b64="c3RhY2soCiAgcygiYmQqNSIpLCAgICAvLyA1IGdlZ2VuIDYg4oCUIHR5cGlzY2ggd2VzdGFmcmlrYW5pc2NoCiAgcygiaGgqNiIpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*5&quot;),    // 5 gegen 6 — typisch westafrikanisch
+  s(&quot;hh*6&quot;)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>Polyrhythmik mit Kommas im selben String</h3>
+<p>Du kannst stack() umgehen indem du das Komma in Mini-Notation nutzt — auf oberster Ebene:</p>
+<div class="snippet" id="snip-006" data-code-b64="cygiYmQqNCwgaGgqMTYsIH4gY3AgfiBjcCIp"><pre class="snippet-code"><code>s(&quot;bd*4, hh*16, ~ cp ~ cp&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Identisch zu stack() mit drei Spuren. Kürzer für einfache Sachen. Bei komplexeren Sachen wird stack() lesbarer.</p>
+<h3>Spuren mit unterschiedlicher Tempo-Wirkung</h3>
+<p>Eine Spur kann pro Cycle auch LANGSAMER laufen.</p>
+<div class="snippet" id="snip-007" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjgiKS5nYWluKDAuNCksCiAgbm90ZSgiYzIgZzEiKS5zKCJzYXd0b290aCIpLmxwZig0MDApLnNsb3coMikKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;hh*8&quot;).gain(0.4),
+  note(&quot;c2 g1&quot;).s(&quot;sawtooth&quot;).lpf(400).slow(2)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Der Bass wechselt nur alle 2 Cycles. Drei Spuren, drei Geschwindigkeiten — aber alle synchron im großen Raster.</p>
+<h3>▶ AUFGABE: Drei-Schicht-Beat</h3>
+<pre><code>Bau einen Beat mit:
+  - Kick auf jedem Viertel
+  - Snare auf 2 und 4
+  - Hihat 16tel mit reduziertem Gain
+  - (Optional) eine Bass-Note alle 2 Cycles
+</code></pre>
+<div class="snippet" id="snip-008" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gc2QgfiBzZCIpLAogIHMoImhoKjE2IikuZ2FpbigwLjMpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ sd ~ sd&quot;),
+  s(&quot;hh*16&quot;).gain(0.3)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>Variation — verschiedene Hihat-Akzente</h3>
+<p>Ein 16tel-Hihat-Pattern wird interessanter, wenn manche Schläge betont sind.</p>
+<div class="snippet" id="snip-009" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjE2IikuZ2FpbigiMC4zIDAuMyAwLjYgMC4zIDAuMyAwLjMgMC42IDAuMyIpLAogIG5vdGUoImMyKjgiKS5zKCJzYXd0b290aCIpLmxwZig2MDApCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*16&quot;).gain(&quot;0.3 0.3 0.6 0.3 0.3 0.3 0.6 0.3&quot;),
+  note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(600)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.gain() kann selbst ein Pattern sein. Hier abwechselnd 0.3, 0.3, 0.6 — die 3. von 8 ist lauter, gibt einen kleinen Akzent.</p>
+<p>Du kannst quasi jeden Parameter pattern-isieren. Das ist Strudels Superkraft.</p>
+<h3>Stack mit Open-Hihat-Variation</h3>
+<div class="snippet" id="snip-010" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjE2IikuZ2FpbigwLjMpLAogIHMoIlt+IH4gfiBvaF0vMiIpLmdhaW4oMC41KQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*16&quot;).gain(0.3),
+  s(&quot;[~ ~ ~ oh]/2&quot;).gain(0.5)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Open-Hihat (oh) im 4. Step jedes zweiten Cycles. Klassisch.</p>
+<h3>Mehrere Bass-Patterns übereinander — Vorsicht</h3>
+<div class="snippet" id="snip-011" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIG5vdGUoImMyKjQiKS5zKCJzYXd0b290aCIpLmxwZig0MDApLAogIG5vdGUoImcyIH4gfiB+IikucygidHJpYW5nbGUiKS5scGYoODAwKQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  note(&quot;c2*4&quot;).s(&quot;sawtooth&quot;).lpf(400),
+  note(&quot;g2 ~ ~ ~&quot;).s(&quot;triangle&quot;).lpf(800)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Zwei Bass-Linien mit ähnlichem Frequenzbereich konkurrieren um den Platz. Gute Praxis: ein Sub-Bass tief, dazu eine Lead-Linie höher. Hier ist der Triangle-Bass den C-Bass im Weg — du hörst Matschiges.</p>
+<p>In Kapitel 07 lernen wir Filter um sowas zu trennen.</p>
+<p>💡 PRAXIS — Frequenz-Slots (Sound-Design-Konvention) Im Mix hat jeder Sound seinen Frequenzbereich. Wenn zwei Sounds denselben Slot besetzen, frisst einer den anderen.</p>
+<pre><code>Standard-Aufteilung (Pop/EDM):
+  Sub      20-80 Hz    Sub-Bass, Kick-Tail
+  Low      80-250 Hz   Bass-Body, Kick-Body
+  Lower-Mid 250-500 Hz Pad-Body — oft &quot;Matsch-Zone&quot;
+  Mid      500 Hz-2 kHz Vocals, Lead-Synth, Snare-Body
+  Upper    2-5 kHz     Bite, Hihat-Body
+  High     5-10 kHz    Hihat, Cymbal
+  Air      10-20 kHz   Reverb-Tails
+</code></pre>
+<p>Layer-Faustregel: 2-5 Layer pro Patch. Drunter dünn, drüber Brei. Sweet Spot: 3 Layer (Body + Charakter + Air). Wenn du die Aufgabe eines Layers nicht in 3 Worten sagen kannst — raus damit.</p>
+<h3>Variablen — Spuren wiederverwenden</h3>
+<p>stack() hat als Argument JEDES JS-Wert. Du kannst Spuren in Variablen speichern — das wird besonders ab Kapitel 11 (Song-Struktur) wichtig.</p>
+<div class="snippet" id="snip-012" data-code-b64="Y29uc3QgZHJ1bXMgPSBzdGFjaygKICBzKCJiZCo0IiksCiAgcygifiBjcCB+IGNwIiksCiAgcygiaGgqMTYiKS5nYWluKDAuMykKKQoKY29uc3QgYmFzcyA9IG5vdGUoImMyIGMyIGViMiBnMiIpLnMoInNhd3Rvb3RoIikubHBmKDcwMCkKCnN0YWNrKGRydW1zLCBiYXNzKQ=="><pre class="snippet-code"><code>const drums = stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*16&quot;).gain(0.3)
 )
 
-// Eine Bass-Drum auf jedem Viertel, plus durchlaufende 8tel-Hihats.
-//
-//   bd:  X . . . X . . . X . . . X . . .
-//   hh:  X . X . X . X . X . X . X . X .
-//
-// Das ist schon ein Beat.
+const bass = note(&quot;c2 c2 eb2 g2&quot;).s(&quot;sawtooth&quot;).lpf(700)
 
-stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*8")
+stack(drums, bass)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Dasselbe Ergebnis wie ein riesiger stack(), aber lesbarer. "drums" und "bass" sind Bausteine.</p>
+<h3>FINALE — ein dichter Beat mit Variation</h3>
+<div class="snippet" id="snip-013" data-code-b64="Y29uc3QgYmVhdCA9IHN0YWNrKAogIHMoImJkKjQiKSwKICBzKCJ+IGNwIH4gY3AiKSwKICBzKCJoaCoxNiIpLmdhaW4oIjAuMyAwLjMgMC41IDAuMyIpLAogIHMoIlt+IH4gfiBvaF0vMiIpLmdhaW4oMC40KQopCgpjb25zdCBncm9vdmUgPSBub3RlKCJjMiBjMiBlYjIgZzIgYzIgYzIgZWIyIGYyIikKICAucygic2F3dG9vdGgiKQogIC5scGYoODAwKQogIC5nYWluKDAuNykKCnN0YWNrKGJlYXQsIGdyb292ZSk="><pre class="snippet-code"><code>const beat = stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*16&quot;).gain(&quot;0.3 0.3 0.5 0.3&quot;),
+  s(&quot;[~ ~ ~ oh]/2&quot;).gain(0.4)
 )
 
-// Plus Backbeat-Claps. Das ist quasi der Standard-Drum-Pattern
-// der Welt. Du wirst ihn überall hören.
-
-
-// -----------------------------------------------------
-// stack mit Lautstärken
-// -----------------------------------------------------
-// Hihats sind oft zu laut. Per Layer abdimmen:
-
-stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*8").gain(0.4)
-)
-
-// .gain() wirkt nur auf den Layer, an den es gehängt ist.
-// Andere Layer bleiben unberührt.
-
-
-// -----------------------------------------------------
-// stack mit melodischem Layer
-// -----------------------------------------------------
-
-stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*8").gain(0.4),
-  note("c2 c2 eb2 g2").s("sawtooth").lpf(800).gain(0.6)
-)
-
-// Vier Schichten:
-//   1. Kick — Puls
-//   2. Snare/Clap — Backbeat
-//   3. Hihat — Subdivision
-//   4. Bass-Linie — Melodie
-//
-// Das ist der Aufbau der meisten elektronischen Tracks.
-
-
-// -----------------------------------------------------
-// Polyrhythmik — verschiedene Längen
-// -----------------------------------------------------
-// stack() ist auch dann interessant wenn die Spuren NICHT
-// dieselbe Anzahl von Schritten haben. Das ergibt Polyrhythmen.
-
-stack(
-  s("bd*3"),    // 3 Bässe pro Cycle
-  s("hh*4")     // 4 Hihats pro Cycle
-)
-
-// 3 gegen 4. Sie treffen sich nur am Anfang jedes Cycles.
-//
-//   bd:  X . . . X . . . X . . .
-//   hh:  X . . X . . X . . X . .
-//        ↑                       ↑
-//      treffen                  treffen
-//
-// Das fühlt sich verwoben an, nicht ganz greifbar.
-
-stack(
-  s("bd*5"),    // 5 gegen 6 — typisch westafrikanisch
-  s("hh*6")
-)
-
-
-// -----------------------------------------------------
-// Polyrhythmik mit Kommas im selben String
-// -----------------------------------------------------
-// Du kannst stack() umgehen indem du das Komma in Mini-Notation
-// nutzt — auf oberster Ebene:
-
-s("bd*4, hh*16, ~ cp ~ cp")
-
-// Identisch zu stack() mit drei Spuren. Kürzer für einfache Sachen.
-// Bei komplexeren Sachen wird stack() lesbarer.
-
-
-// -----------------------------------------------------
-// Spuren mit unterschiedlicher Tempo-Wirkung
-// -----------------------------------------------------
-// Eine Spur kann pro Cycle auch LANGSAMER laufen.
-
-stack(
-  s("bd*4"),
-  s("hh*8").gain(0.4),
-  note("c2 g1").s("sawtooth").lpf(400).slow(2)
-)
-
-// Der Bass wechselt nur alle 2 Cycles. Drei Spuren, drei
-// Geschwindigkeiten — aber alle synchron im großen Raster.
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Drei-Schicht-Beat
-// -----------------------------------------------------
-// Bau einen Beat mit:
-//   - Kick auf jedem Viertel
-//   - Snare auf 2 und 4
-//   - Hihat 16tel mit reduziertem Gain
-//   - (Optional) eine Bass-Note alle 2 Cycles
-
-stack(
-  s("bd*4"),
-  s("~ sd ~ sd"),
-  s("hh*16").gain(0.3)
-)
-
-
-// -----------------------------------------------------
-// Variation — verschiedene Hihat-Akzente
-// -----------------------------------------------------
-// Ein 16tel-Hihat-Pattern wird interessanter, wenn manche
-// Schläge betont sind.
-
-stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*16").gain("0.3 0.3 0.6 0.3 0.3 0.3 0.6 0.3"),
-  note("c2*8").s("sawtooth").lpf(600)
-)
-
-// .gain() kann selbst ein Pattern sein. Hier abwechselnd
-// 0.3, 0.3, 0.6 — die 3. von 8 ist lauter, gibt einen
-// kleinen Akzent.
-//
-// Du kannst quasi jeden Parameter pattern-isieren. Das ist
-// Strudels Superkraft.
-
-
-// -----------------------------------------------------
-// Stack mit Open-Hihat-Variation
-// -----------------------------------------------------
-
-stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*16").gain(0.3),
-  s("[~ ~ ~ oh]/2").gain(0.5)
-)
-
-// Open-Hihat (oh) im 4. Step jedes zweiten Cycles. Klassisch.
-
-
-// -----------------------------------------------------
-// Mehrere Bass-Patterns übereinander — Vorsicht
-// -----------------------------------------------------
-
-stack(
-  s("bd*4"),
-  note("c2*4").s("sawtooth").lpf(400),
-  note("g2 ~ ~ ~").s("triangle").lpf(800)
-)
-
-// Zwei Bass-Linien mit ähnlichem Frequenzbereich konkurrieren um
-// den Platz. Gute Praxis: ein Sub-Bass tief, dazu eine Lead-Linie
-// höher. Hier ist der Triangle-Bass den C-Bass im Weg — du hörst
-// Matschiges.
-//
-// In Kapitel 07 lernen wir Filter um sowas zu trennen.
-
-
-// 💡 PRAXIS — Frequenz-Slots (Sound-Design-Konvention)
-// Im Mix hat jeder Sound seinen Frequenzbereich. Wenn zwei
-// Sounds denselben Slot besetzen, frisst einer den anderen.
-//
-// Standard-Aufteilung (Pop/EDM):
-//   Sub      20-80 Hz    Sub-Bass, Kick-Tail
-//   Low      80-250 Hz   Bass-Body, Kick-Body
-//   Lower-Mid 250-500 Hz Pad-Body — oft "Matsch-Zone"
-//   Mid      500 Hz-2 kHz Vocals, Lead-Synth, Snare-Body
-//   Upper    2-5 kHz     Bite, Hihat-Body
-//   High     5-10 kHz    Hihat, Cymbal
-//   Air      10-20 kHz   Reverb-Tails
-//
-// Layer-Faustregel: 2-5 Layer pro Patch. Drunter dünn,
-// drüber Brei. Sweet Spot: 3 Layer (Body + Charakter + Air).
-// Wenn du die Aufgabe eines Layers nicht in 3 Worten sagen
-// kannst — raus damit.
-
-
-// -----------------------------------------------------
-// Variablen — Spuren wiederverwenden
-// -----------------------------------------------------
-// stack() hat als Argument JEDES JS-Wert. Du kannst Spuren in
-// Variablen speichern — das wird besonders ab Kapitel 11
-// (Song-Struktur) wichtig.
-
-const drums = stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*16").gain(0.3)
-)
-
-const bass = note("c2 c2 eb2 g2").s("sawtooth").lpf(700)
-
-stack(drums, bass)
-
-// Dasselbe Ergebnis wie ein riesiger stack(), aber lesbarer.
-// "drums" und "bass" sind Bausteine.
-
-
-// -----------------------------------------------------
-// FINALE — ein dichter Beat mit Variation
-// -----------------------------------------------------
-
-const beat = stack(
-  s("bd*4"),
-  s("~ cp ~ cp"),
-  s("hh*16").gain("0.3 0.3 0.5 0.3"),
-  s("[~ ~ ~ oh]/2").gain(0.4)
-)
-
-const groove = note("c2 c2 eb2 g2 c2 c2 eb2 f2")
-  .s("sawtooth")
+const groove = note(&quot;c2 c2 eb2 g2 c2 c2 eb2 f2&quot;)
+  .s(&quot;sawtooth&quot;)
   .lpf(800)
   .gain(0.7)
 
-stack(beat, groove)
+stack(beat, groove)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Schreib deinen ersten Stack
-// -----------------------------------------------------
-// Mindestens drei Spuren. Mindestens eine Pause-Spur (~).
-// Mindestens eine melodische Spur. Eine Spur mit reduziertem Gain.
-// Keine Regel ist heilig. Probier.
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 03
-// -----------------------------------------------------
-//   stack(...)              → mehrere Pattern zugleich
-//   "a, b, c"               → Komma im String, gleicher Effekt
-//   .gain(0.3)              → Lautstärke nur dieser Spur
-//   slow(n)                 → diese Spur n-fach langsamer
-//   const x = ...           → Spuren als Variablen
-//
-// Polyrhythmik = unterschiedliche Step-Zahlen in den Spuren.
-// Funktioniert "von alleine" — jede Spur teilt den Cycle nach
-// ihrer eigenen Logik auf.
-//
-// Weiter zu 04_euklidisch.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<h3>▶ AUFGABE: Schreib deinen ersten Stack</h3>
+<p>Mindestens drei Spuren. Mindestens eine Pause-Spur (~). Mindestens eine melodische Spur. Eine Spur mit reduziertem Gain. Keine Regel ist heilig. Probier.</p>
+<h3>Mini-Zusammenfassung Kapitel 03</h3>
+<pre><code>  stack(...)              → mehrere Pattern zugleich
+  &quot;a, b, c&quot;               → Komma im String, gleicher Effekt
+  .gain(0.3)              → Lautstärke nur dieser Spur
+  slow(n)                 → diese Spur n-fach langsamer
+  const x = ...           → Spuren als Variablen
+</code></pre>
+<p>Polyrhythmik = unterschiedliche Step-Zahlen in den Spuren. Funktioniert "von alleine" — jede Spur teilt den Cycle nach ihrer eigenen Logik auf.</p>
+<p>Weiter zu 04_euklidisch.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>

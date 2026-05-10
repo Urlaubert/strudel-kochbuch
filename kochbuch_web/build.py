@@ -1,354 +1,33 @@
-"""
-Build script: convert .strudel files from lehrbuch/ into HTML pages
-with embedded Strudel REPL, plus an index page.
+"""Build HTML pages from Markdown chapters in lehrbuch_md/.
 
-Usage:
-    python build.py
+Each ```strudel code fence becomes a small inline Strudel REPL iframe
+(loading strudel.cc with the code base64-encoded as URL hash).
 
 Output:
     docs/index.html
+    docs/style.css
+    docs/strudel-snippet.js
     docs/01_hello_sound.html
-    docs/02_mininotation.html
     ...
 """
 
 from __future__ import annotations
 
+import base64
+import hashlib
+import html
 import re
 from pathlib import Path
 
+import markdown
+
 WEB_DIR = Path(__file__).parent
-# Repo layout (parent of WEB_DIR is the repo root):
-#   strudel-kochbuch/
-#     lehrbuch/        source .strudel files
-#     kochbuch_web/    this build script
-#     docs/            output, GitHub Pages serves /docs
 REPO_ROOT = WEB_DIR.parent
-LEHRBUCH_DIR = REPO_ROOT / "lehrbuch"
+LEHRBUCH_MD = REPO_ROOT / "lehrbuch_md"
 DOCS_DIR = REPO_ROOT / "docs"
 
-CHAPTER_HTML_TEMPLATE = """<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title} — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v={css_hash}">
-</head>
-<body class="chapter">
-<header>
-<a href="index.html" class="back">← Inhalt</a>
-<h1>{title}</h1>
-{nav}
-</header>
-<main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-{code}
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {{
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-}})();
-</script>
-</body>
-</html>
-"""
 
-INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v={css_hash}">
-</head>
-<body class="index">
-<header>
-<h1>Strudel Kochbuch</h1>
-<p class="lead">Ein Strudel-Lehrbuch in Strudel. Jedes Kapitel ist lauffähiger Code mit eingebauter Erklärung. Tippe ein Kapitel an, dann <kbd>Strg+Enter</kbd> oder das Play-Symbol.</p>
-</header>
-<main>
-<ol class="chapters">
-{chapter_links}
-</ol>
-<section class="hints">
-<h2>Hinweise</h2>
-<ul>
-<li>Funktioniert in Chrome und Safari (auch iPad).</li>
-<li>Erstes Sample-Trigger kann 1-2 Sekunden Stille sein — Sample wird geladen.</li>
-<li>Master-Volume rechts unten im REPL.</li>
-<li>Vollständiger Strudel-Editor mit allen Features: <a href="https://strudel.cc">strudel.cc</a></li>
-</ul>
-</section>
-</main>
-<footer>
-<p>Quelltext: <a href="https://github.com/Urlaubert/strudel-kochbuch">github.com/Urlaubert/strudel-kochbuch</a></p>
-</footer>
-</body>
-</html>
-"""
-
-CSS = """\
-:root {
-  color-scheme: dark;
-  --bg: #1a1a1a;
-  --fg: #e8e8e8;
-  --muted: #888;
-  --accent: #ffcc00;
-  --link: #6cf;
-  --code-bg: #0a0a0a;
-}
-
-* { box-sizing: border-box; }
-
-html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  line-height: 1.5;
-}
-
-body.chapter {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  height: 100dvh;          /* dynamic viewport — fixes iOS Safari URL-bar */
-  overflow: hidden;
-}
-
-body.chapter header {
-  flex: 0 0 auto;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #333;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-body.chapter header h1 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 500;
-  flex: 1;
-}
-
-.back {
-  color: var(--link);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.chapter-nav {
-  display: flex;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.chapter-nav a {
-  color: var(--link);
-  text-decoration: none;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid #333;
-  border-radius: 4px;
-}
-
-.chapter-nav a:hover {
-  border-color: var(--link);
-}
-
-.chapter-nav span.disabled {
-  color: var(--muted);
-  padding: 0.25rem 0.5rem;
-  border: 1px solid #222;
-  border-radius: 4px;
-}
-
-body.chapter main {
-  flex: 1 1 auto;
-  display: block;
-  width: 100%;
-  position: relative;
-  min-height: 0;           /* lets the iframe shrink within flex parent */
-}
-
-#strudel {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: #1a1a1a;
-}
-
-body.chapter footer {
-  flex: 0 0 auto;
-  padding: 0.75rem 1rem;
-  border-top: 1px solid #333;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-body.chapter footer p { margin: 0.3rem 0; }
-
-kbd {
-  background: var(--code-bg);
-  border: 1px solid #333;
-  border-radius: 3px;
-  padding: 0.1rem 0.4rem;
-  font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
-  font-size: 0.85em;
-}
-
-/* index page */
-
-body.index {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 2rem 1.25rem;
-}
-
-body.index header h1 {
-  font-size: 2rem;
-  margin: 0 0 0.5rem;
-}
-
-.lead {
-  color: var(--muted);
-  font-size: 1.05rem;
-}
-
-ol.chapters {
-  list-style: none;
-  padding: 0;
-  margin: 2rem 0;
-  display: grid;
-  gap: 0.5rem;
-}
-
-ol.chapters li {
-  padding: 0;
-}
-
-ol.chapters a {
-  display: flex;
-  align-items: baseline;
-  padding: 0.85rem 1rem;
-  background: #232323;
-  border-radius: 6px;
-  text-decoration: none;
-  color: var(--fg);
-  border: 1px solid transparent;
-  transition: border-color 0.15s, background 0.15s;
-  gap: 1rem;
-}
-
-ol.chapters a:hover {
-  border-color: var(--accent);
-  background: #2a2a2a;
-}
-
-.chap-num {
-  color: var(--accent);
-  font-family: ui-monospace, "JetBrains Mono", monospace;
-  font-weight: 600;
-  flex-shrink: 0;
-  width: 2.5rem;
-}
-
-.chap-title {
-  flex: 1;
-}
-
-.chap-tagline {
-  color: var(--muted);
-  font-size: 0.9rem;
-  margin-top: 0.15rem;
-}
-
-.hints {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #333;
-}
-
-.hints h2 {
-  font-size: 1rem;
-  margin: 0 0 0.5rem;
-  color: var(--muted);
-  font-weight: 500;
-}
-
-.hints ul {
-  margin: 0;
-  padding-left: 1.25rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.hints li {
-  margin: 0.3rem 0;
-}
-
-.hints a {
-  color: var(--link);
-}
-
-body.index footer {
-  margin-top: 3rem;
-  padding-top: 1rem;
-  border-top: 1px solid #333;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-body.index footer a {
-  color: var(--link);
-}
-
-/* Mobile / iPad tweaks */
-@media (max-width: 700px) {
-  body.chapter header {
-    padding: 0.5rem 0.75rem;
-    gap: 0.5rem;
-  }
-  body.chapter header h1 {
-    font-size: 0.95rem;
-    width: 100%;
-    order: 3;
-  }
-  body.chapter footer {
-    font-size: 0.75rem;
-    padding: 0.5rem 0.75rem;
-  }
-  body.chapter footer p { margin: 0.15rem 0; }
-  .chapter-nav { font-size: 0.85rem; }
-}
-
-/* iPhone in portrait: hide footer for max REPL height. */
-@media (max-width: 480px) {
-  body.chapter footer { display: none; }
-}
-"""
-
-
-# Mapping of chapter file stems to human-readable titles + taglines.
-# Order matters — defines the index ordering.
+# Mapping of chapter file stems to (title, tagline). Order = index order.
 CHAPTER_META: list[tuple[str, str, str]] = [
     ("00_lies_mich_zuerst", "00 — Lies mich zuerst", "Bedienung"),
     ("01_hello_sound", "01 — Hello Sound", "Eine Note. Ein Sample."),
@@ -374,40 +53,82 @@ CHAPTER_META: list[tuple[str, str, str]] = [
 ]
 
 
-def sanitize_for_script_tag(code: str) -> str:
-    """Code lives inside <script id="strudel-code" type="text/plain">.
-    The HTML parser only stops at the literal sequence '</script' (case
-    insensitive). The lehrbuch never writes that, but we replace it
-    defensively so nobody surprises us later."""
-    # Insert zero-width space inside any '</script' so the parser sees a
-    # different tag name. The decoded code on the JS side will contain the
-    # zero-width char too, but it's invisible and harmless inside comments.
-    import re as _re
-    return _re.sub(r"</(script)", r"</​\1", code, flags=_re.IGNORECASE)
+def utf8_b64(s: str) -> str:
+    return base64.b64encode(s.encode("utf-8")).decode("ascii")
+
+
+# Regex to find ```strudel fenced code blocks.
+STRUDEL_FENCE_RE = re.compile(
+    r"^```strudel\s*\n(.*?)^```\s*$", re.MULTILINE | re.DOTALL
+)
+
+
+def render_strudel_block(code: str, snippet_id: str) -> str:
+    """Replace a strudel code fence with a snippet HTML block.
+
+    The block contains the code as a <pre><code> + a button that
+    loads a Strudel iframe on demand. Lazy-load saves bandwidth and
+    avoids hammering strudel.cc when a page has 30 snippets.
+    """
+    code = code.rstrip()
+    code_html = html.escape(code)
+    code_b64 = utf8_b64(code)
+    return (
+        f'<div class="snippet" id="{snippet_id}" data-code-b64="{code_b64}">'
+        f'<pre class="snippet-code"><code>{code_html}</code></pre>'
+        f'<button class="snippet-play" type="button">▶ Spielen</button>'
+        f'</div>'
+    )
+
+
+def expand_strudel_blocks(md_text: str) -> tuple[str, int]:
+    """Replace ```strudel blocks with snippet placeholders.
+
+    We do this BEFORE markdown processing because markdown might munge
+    the HTML otherwise. We use unique placeholder strings that survive
+    the markdown pipeline, then substitute back.
+    """
+    placeholders: list[str] = []
+    counter = [0]
+
+    def replace(match: re.Match) -> str:
+        code = match.group(1)
+        sid = f"snip-{counter[0]:03d}"
+        counter[0] += 1
+        html_block = render_strudel_block(code, sid)
+        # Markdown ignores raw HTML blocks IF they're block-level and surrounded
+        # by blank lines. Make sure we have those.
+        placeholders.append(html_block)
+        # Use a unique placeholder that markdown won't touch.
+        return f"\n\n<!--SNIPPET-{len(placeholders) - 1}-->\n\n"
+
+    new_text = STRUDEL_FENCE_RE.sub(replace, md_text)
+    return new_text, len(placeholders), placeholders
 
 
 def build_chapter_nav(idx: int, total: int) -> str:
-    """Build prev/next nav for a chapter."""
-    parts = ['<nav class="chapter-nav">']
+    parts: list[str] = ['<nav class="chapter-nav">']
     if idx > 0:
         prev_stem, prev_title, _ = CHAPTER_META[idx - 1]
-        parts.append(f'<a href="{prev_stem}.html" title="{prev_title}">← Vorheriges</a>')
+        parts.append(
+            f'<a href="{prev_stem}.html" title="{html.escape(prev_title)}">← Zurück</a>'
+        )
     else:
-        parts.append('<span class="disabled">← Vorheriges</span>')
+        parts.append('<span class="disabled">← Zurück</span>')
     if idx < total - 1:
         next_stem, next_title, _ = CHAPTER_META[idx + 1]
-        parts.append(f'<a href="{next_stem}.html" title="{next_title}">Nächstes →</a>')
+        parts.append(
+            f'<a href="{next_stem}.html" title="{html.escape(next_title)}">Weiter →</a>'
+        )
     else:
-        parts.append('<span class="disabled">Nächstes →</span>')
-    parts.append('</nav>')
+        parts.append('<span class="disabled">Weiter →</span>')
+    parts.append("</nav>")
     return "".join(parts)
 
 
 def build_chapter_links() -> str:
-    """Build the index <li> entries."""
     items = []
     for stem, title, tagline in CHAPTER_META:
-        # Split title into number and rest for styled rendering.
         m = re.match(r"^(\d+)\s+—\s+(.+)$", title)
         if m:
             num, rest = m.group(1), m.group(2)
@@ -416,51 +137,411 @@ def build_chapter_links() -> str:
         items.append(
             f'<li><a href="{stem}.html">'
             f'<span class="chap-num">{num}</span>'
-            f'<span class="chap-title">{rest}'
-            f'<div class="chap-tagline">{tagline}</div>'
-            f'</span></a></li>'
+            f'<span class="chap-body">'
+            f'<span class="chap-title">{html.escape(rest)}</span>'
+            f'<span class="chap-tagline">{html.escape(tagline)}</span>'
+            f"</span></a></li>"
         )
     return "\n".join(items)
 
 
-def build() -> None:
-    import hashlib
+CHAPTER_TEMPLATE = """<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title} — Strudel Kochbuch</title>
+<link rel="stylesheet" href="style.css?v={css_hash}">
+</head>
+<body class="chapter">
+<header>
+<a href="index.html" class="back">← Inhalt</a>
+{nav}
+</header>
+<main>
+<article class="prose">
+{body}
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v={js_hash}" defer></script>
+</body>
+</html>
+"""
 
+INDEX_TEMPLATE = """<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strudel Kochbuch</title>
+<link rel="stylesheet" href="style.css?v={css_hash}">
+</head>
+<body class="index">
+<header>
+<h1>Strudel Kochbuch</h1>
+<p class="lead">Ein Strudel-Lehrbuch in Strudel. Jedes Kapitel hat erklärenden Text und kleine spielbare Code-Beispiele direkt in der Seite. Klick „Spielen" — der Editor öffnet sich mit dem Code, drück <kbd>Strg+Enter</kbd> oder das Play-Symbol.</p>
+</header>
+<main>
+<ol class="chapters">
+{chapter_links}
+</ol>
+<section class="hints">
+<h2>Hinweise</h2>
+<ul>
+<li>Funktioniert in Chrome und Safari (Desktop + iPhone/iPad).</li>
+<li>Erstes Sample-Trigger kann 1-2 Sekunden brauchen — Sample wird geladen.</li>
+<li>Vollständiger Strudel-Editor mit allen Features: <a href="https://strudel.cc">strudel.cc</a></li>
+</ul>
+</section>
+</main>
+<footer>
+<p>Quelltext: <a href="https://github.com/Urlaubert/strudel-kochbuch">github.com/Urlaubert/strudel-kochbuch</a></p>
+</footer>
+</body>
+</html>
+"""
+
+CSS = """\
+:root {
+  color-scheme: dark;
+  --bg: #1a1a1a;
+  --bg-elev: #232323;
+  --bg-code: #0e0e0e;
+  --fg: #e8e8e8;
+  --muted: #888;
+  --accent: #ffcc00;
+  --link: #6cf;
+  --border: #333;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+a { color: var(--link); }
+
+kbd {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1rem 0.4rem;
+  font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.85em;
+}
+
+/* ---------- Chapter page ---------- */
+
+body.chapter header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1rem;
+  background: rgba(26, 26, 26, 0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border);
+}
+
+.back {
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.chapter-nav { display: flex; gap: 0.5rem; font-size: 0.9rem; }
+.chapter-nav a {
+  text-decoration: none;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.chapter-nav a:hover { border-color: var(--link); }
+.chapter-nav span.disabled {
+  color: var(--muted);
+  padding: 0.25rem 0.6rem;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+}
+
+.prose {
+  max-width: 760px;
+  margin: 1.5rem auto 4rem;
+  padding: 0 1.25rem;
+}
+
+.prose h1 {
+  font-size: 2rem;
+  margin: 0.5rem 0 1.5rem;
+  line-height: 1.2;
+}
+.prose h2 {
+  font-size: 1.4rem;
+  margin: 2.5rem 0 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.prose h3 {
+  font-size: 1.1rem;
+  margin: 1.75rem 0 0.5rem;
+  color: var(--fg);
+}
+
+.prose p { margin: 0 0 1rem; }
+.prose ul, .prose ol { margin: 0 0 1rem 1.5rem; padding: 0; }
+.prose li { margin: 0.25rem 0; }
+
+.prose code {
+  background: var(--bg-code);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.9em;
+}
+
+/* ---------- Snippet ---------- */
+
+.snippet {
+  margin: 1.25rem 0 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bg-elev);
+}
+
+.snippet-code {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  background: var(--bg-code);
+  font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+.snippet-code code { background: transparent; padding: 0; }
+
+.snippet-play {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 1rem;
+  background: var(--bg-elev);
+  color: var(--fg);
+  border: 0;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+}
+.snippet-play:hover { background: #2a2a2a; color: var(--accent); }
+
+.snippet.playing .snippet-play { display: none; }
+.snippet.playing .snippet-code { display: none; }
+.snippet iframe {
+  display: block;
+  width: 100%;
+  height: 360px;
+  border: 0;
+  background: var(--bg-code);
+}
+
+/* footer */
+
+body.chapter footer {
+  max-width: 760px;
+  margin: 2rem auto 1.5rem;
+  padding: 1rem 1.25rem 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ---------- Index page ---------- */
+
+body.index {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+body.index header h1 {
+  font-size: 2.4rem;
+  margin: 0 0 0.5rem;
+}
+.lead {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin: 0 0 2rem;
+}
+
+ol.chapters {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 3rem;
+  display: grid;
+  gap: 0.5rem;
+}
+ol.chapters a {
+  display: flex;
+  align-items: baseline;
+  padding: 0.85rem 1rem;
+  background: var(--bg-elev);
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--fg);
+  border: 1px solid transparent;
+  gap: 1rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+ol.chapters a:hover { border-color: var(--accent); background: #2a2a2a; }
+.chap-num {
+  color: var(--accent);
+  font-family: ui-monospace, monospace;
+  font-weight: 600;
+  flex-shrink: 0;
+  width: 2.5rem;
+}
+.chap-body { display: flex; flex-direction: column; }
+.chap-tagline { color: var(--muted); font-size: 0.9rem; }
+
+.hints {
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  margin-top: 2rem;
+}
+.hints h2 { font-size: 1rem; color: var(--muted); font-weight: 500; margin: 0 0 0.5rem; }
+.hints ul { margin: 0; padding-left: 1.25rem; color: var(--muted); font-size: 0.9rem; }
+.hints li { margin: 0.3rem 0; }
+
+body.index footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 600px) {
+  body.chapter header { padding: 0.5rem 0.75rem; }
+  .chapter-nav { font-size: 0.85rem; }
+  .chapter-nav a, .chapter-nav span.disabled { padding: 0.2rem 0.45rem; }
+  .prose { padding: 0 1rem; margin: 1rem auto 3rem; }
+  .prose h1 { font-size: 1.7rem; }
+  .prose h2 { font-size: 1.25rem; margin-top: 2rem; }
+  .prose h3 { font-size: 1.05rem; }
+  .snippet-code { font-size: 0.82rem; padding: 0.7rem 0.85rem; }
+  .snippet iframe { height: 320px; }
+  body.index { padding: 1.5rem 1rem 3rem; }
+  body.index header h1 { font-size: 1.8rem; }
+}
+"""
+
+
+JS = """\
+// Lazy-load Strudel REPL iframes when "Spielen" is clicked.
+// Each .snippet has data-code-b64 with UTF-8 base64 of the code.
+(function () {
+  document.querySelectorAll('.snippet-play').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var snippet = btn.closest('.snippet');
+      if (!snippet || snippet.classList.contains('playing')) return;
+      var b64 = snippet.getAttribute('data-code-b64');
+      if (!b64) return;
+      var src = 'https://strudel.cc/#' + encodeURIComponent(b64);
+      var iframe = document.createElement('iframe');
+      iframe.setAttribute('src', src);
+      iframe.setAttribute('title', 'Strudel REPL');
+      iframe.setAttribute('allow', 'autoplay');
+      iframe.setAttribute('loading', 'lazy');
+      snippet.appendChild(iframe);
+      snippet.classList.add('playing');
+    });
+  });
+})();
+"""
+
+
+def render_chapter(idx: int, stem: str, title: str) -> str:
+    src = LEHRBUCH_MD / f"{stem}.md"
+    if not src.exists():
+        return ""
+    md_text = src.read_text(encoding="utf-8")
+
+    # Replace ```strudel fences with placeholder + render to HTML blocks later.
+    md_no_fences, n_snippets, snippet_html = expand_strudel_blocks(md_text)
+
+    # Markdown -> HTML.
+    html_body = markdown.markdown(
+        md_no_fences,
+        extensions=["extra", "sane_lists"],
+    )
+
+    # Substitute snippet placeholders back. Markdown wraps HTML comments
+    # in <p> sometimes; strip the wrapping.
+    for i, block in enumerate(snippet_html):
+        # Possible forms: <p><!--SNIPPET-i--></p>  or  <!--SNIPPET-i-->
+        for needle in (
+            f"<p><!--SNIPPET-{i}--></p>",
+            f"<!--SNIPPET-{i}-->",
+        ):
+            html_body = html_body.replace(needle, block)
+
+    return html_body
+
+
+def build() -> None:
     DOCS_DIR.mkdir(exist_ok=True)
 
-    # Hash CSS so HTML can reference it cache-busted.
     css_hash = hashlib.sha1(CSS.encode("utf-8")).hexdigest()[:10]
-    (DOCS_DIR / "style.css").write_text(CSS, encoding="utf-8")
-    print(f"  wrote {DOCS_DIR / 'style.css'} (hash {css_hash})")
+    js_hash = hashlib.sha1(JS.encode("utf-8")).hexdigest()[:10]
 
-    # Write each chapter HTML.
+    (DOCS_DIR / "style.css").write_text(CSS, encoding="utf-8")
+    print(f"  wrote style.css (hash {css_hash})")
+    (DOCS_DIR / "strudel-snippet.js").write_text(JS, encoding="utf-8")
+    print(f"  wrote strudel-snippet.js (hash {js_hash})")
+
     total = len(CHAPTER_META)
+    snippet_total = 0
     for idx, (stem, title, _tagline) in enumerate(CHAPTER_META):
-        src = LEHRBUCH_DIR / f"{stem}.strudel"
-        if not src.exists():
-            print(f"  ! missing: {src}")
+        body = render_chapter(idx, stem, title)
+        if not body:
+            print(f"  ! missing markdown for {stem}")
             continue
-        code = src.read_text(encoding="utf-8")
-        code_safe = sanitize_for_script_tag(code)
-        html = CHAPTER_HTML_TEMPLATE.format(
-            title=title,
-            nav=build_chapter_nav(idx, total),
-            code=code_safe,
+        # Count snippets for the report.
+        snippet_total += body.count('class="snippet"')
+        nav = build_chapter_nav(idx, total)
+        page = CHAPTER_TEMPLATE.format(
+            title=html.escape(title),
+            nav=nav,
+            body=body,
             css_hash=css_hash,
+            js_hash=js_hash,
         )
         out = DOCS_DIR / f"{stem}.html"
-        out.write_text(html, encoding="utf-8")
-        print(f"  wrote {out}")
+        out.write_text(page, encoding="utf-8")
+        print(f"  wrote {stem}.html")
 
-    # Write index.
-    index = INDEX_HTML_TEMPLATE.format(
+    index = INDEX_TEMPLATE.format(
         chapter_links=build_chapter_links(),
         css_hash=css_hash,
     )
     (DOCS_DIR / "index.html").write_text(index, encoding="utf-8")
-    print(f"  wrote {DOCS_DIR / 'index.html'}")
-
-    print(f"\nDone. {total} chapters generated in {DOCS_DIR}")
+    print(f"  wrote index.html")
+    print(f"\nDone. {total} chapters, {snippet_total} snippets in {DOCS_DIR}")
 
 
 if __name__ == "__main__":

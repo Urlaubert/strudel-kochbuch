@@ -4,196 +4,99 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>01 — Hello Sound — Strudel Kochbuch</title>
-<link rel="stylesheet" href="style.css?v=4f95615b9b">
+<link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<h1>01 — Hello Sound</h1>
-<nav class="chapter-nav"><a href="00_lies_mich_zuerst.html" title="00 — Lies mich zuerst">← Vorheriges</a><a href="02_mininotation.html" title="02 — Mini-Notation">Nächstes →</a></nav>
+<nav class="chapter-nav"><a href="00_lies_mich_zuerst.html" title="00 — Lies mich zuerst">← Zurück</a><a href="02_mininotation.html" title="02 — Mini-Notation">Weiter →</a></nav>
 </header>
 <main>
-<iframe id="strudel" title="Strudel REPL" allow="autoplay" loading="lazy"></iframe>
-</main>
-<footer>
-<p>Drücke <kbd>Strg+Enter</kbd> (oder <kbd>Cmd+Enter</kbd> auf dem Mac) im Code-Bereich um den untersten nicht-kommentierten Block zu spielen. <kbd>Strg+.</kbd> stoppt.</p>
-<p>Auf dem iPad: lange auf den Code tippen → "Auswählen", dann auf das Play-Symbol unten.</p>
-</footer>
-<script id="strudel-code" type="text/plain">
-// =====================================================
-// Kapitel 01 — Hello Sound
-// =====================================================
-// Bevor wir über Pattern reden, machen wir EINEN TON.
-// Dann EIN SAMPLE. Damit du das Werkzeug spürst, bevor wir
-// es benennen.
-// =====================================================
+<article class="prose">
+<h1>Kapitel 01 — Hello Sound</h1>
+<p>Bevor wir über Pattern reden, machen wir EINEN TON. Dann EIN SAMPLE. Damit du das Werkzeug spürst, bevor wir es benennen.</p>
+<h3>Eine Note</h3>
+<p>note() nimmt einen Tonnamen. "c4" ist mittleres C. Strg+Enter.</p>
+<div class="snippet" id="snip-000" data-code-b64="bm90ZSgiYzQiKQ=="><pre class="snippet-code"><code>note(&quot;c4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>Du hörst eine kurze Klavier-artige Note, und dann Stille. Strudel spielt sie einmal pro "Cycle", was ungefähr 2 Sekunden sind. Hör nochmal hin, du wirst die Wiederholung bemerken.</p>
+<p>Wenn nichts kommt, drück nochmal Strg+Enter. Das Sample muss erst geladen werden.</p>
+<h3>Ein anderer Ton, ein anderer Klang</h3>
+<p>note() hat einen Default-Sound (triangle, glaube ich). Mit .s() hängen wir einen anderen dran. Es heißt "sound" oder "s" — beides geht.</p>
+<div class="snippet" id="snip-001" data-code-b64="bm90ZSgiYzQiKS5zKCJwaWFubyIp"><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;piano&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Eine Note
-// -----------------------------------------------------
-// note() nimmt einen Tonnamen. "c4" ist mittleres C.
-// Strg+Enter.
+<p>Ein Klavier. Probier:</p>
+<div class="snippet" id="snip-002" data-code-b64="bm90ZSgiYzQiKS5zKCJzYXd0b290aCIpCm5vdGUoImM0Iikucygic3F1YXJlIikKbm90ZSgiYzQiKS5zKCJnbV9hY291c3RpY19ncmFuZF9waWFubyIp"><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;sawtooth&quot;)
+note(&quot;c4&quot;).s(&quot;square&quot;)
+note(&quot;c4&quot;).s(&quot;gm_acoustic_grand_piano&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-note("c4")
+<p>(Den letzten nur ausführen wenn du Bock auf vollen GM-Soundbank hast — wird beim ersten Mal etwas dauern zu laden.)</p>
+<h3>▶ AUFGABE: Ändere "c4" zu "c5". Was passiert?</h3>
+<div class="snippet" id="snip-003" data-code-b64="bm90ZSgiYzQiKS5zKCJwaWFubyIp"><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;piano&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Du hörst eine kurze Klavier-artige Note, und dann Stille.
-// Strudel spielt sie einmal pro "Cycle", was ungefähr 2 Sekunden
-// sind. Hör nochmal hin, du wirst die Wiederholung bemerken.
-//
-// Wenn nichts kommt, drück nochmal Strg+Enter. Das Sample muss
-// erst geladen werden.
+<p>Octave höher. c3 wäre tiefer. c2 noch tiefer.</p>
+<p>Tonnamen funktionieren wie auf dem Papier: c, d, e, f, g, a, b — gefolgt von Oktave (1-7 üblich). b ist H im deutschen System, wenn das verwirrt: Strudel benutzt englische Notation. b = H, kein Es-Reflex. Vorzeichen: cs = c#, db = des, fs = f#, ab = as.</p>
+<h3>Ein Sample (= aufgenommener Sound, kein Synth)</h3>
+<p>s() ohne note() spielt ein Sample. "bd" ist eine Bass Drum.</p>
+<div class="snippet" id="snip-004" data-code-b64="cygiYmQiKQ=="><pre class="snippet-code"><code>s(&quot;bd&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
+<p>"sd" ist Snare. "hh" ist Hi-Hat. "cp" ist Clap. Diese Kürzel kommen aus den Roland-Drum-Computer-Tagen (TR-808/909) und sind in der Live-Coding-Welt Standard.</p>
+<div class="snippet" id="snip-005" data-code-b64="cygic2QiKQpzKCJoaCIpCnMoImNwIik="><pre class="snippet-code"><code>s(&quot;sd&quot;)
+s(&quot;hh&quot;)
+s(&quot;cp&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// -----------------------------------------------------
-// Ein anderer Ton, ein anderer Klang
-// -----------------------------------------------------
-// note() hat einen Default-Sound (triangle, glaube ich). Mit .s()
-// hängen wir einen anderen dran. Es heißt "sound" oder "s" —
-// beides geht.
+<p>Du kannst ALLE eingebauten Sounds anschauen: rechts unten im Strudel-Editor gibt's einen "sounds"-Tab. Da kannst du klicken und reinhören.</p>
+<h3>Sample-Varianten mit :n</h3>
+<p>Manche Sounds haben mehrere Varianten. "jazz:0" ist die erste Jazz-Drum, "jazz:1" die zweite, etc.</p>
+<div class="snippet" id="snip-006" data-code-b64="cygiamF6ejowIikKcygiamF6ejozIikKcygiamF6ejo3Iik="><pre class="snippet-code"><code>s(&quot;jazz:0&quot;)
+s(&quot;jazz:3&quot;)
+s(&quot;jazz:7&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-note("c4").s("piano")
+<p>▶ AUFGABE: Probier verschiedene Zahlen 0-7 mit "jazz:N". Welche gefällt dir?</p>
+<h3>Lautstärke regeln mit .gain()</h3>
+<p>1 = normal. 0.5 = halb so laut. 0 = stumm. Werte über 1 gehen auch, aber Vorsicht — kann clippen.</p>
+<div class="snippet" id="snip-007" data-code-b64="cygiYmQiKS5nYWluKDAuMykKcygiYmQiKS5nYWluKDEuMCkKcygiYmQiKS5nYWluKDEuNSk="><pre class="snippet-code"><code>s(&quot;bd&quot;).gain(0.3)
+s(&quot;bd&quot;).gain(1.0)
+s(&quot;bd&quot;).gain(1.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Ein Klavier. Probier:
+<h3>Ein Klang, ein Effekt</h3>
+<p>.lpf() ist ein Lowpass-Filter. Macht den Klang dumpfer. Die Zahl ist die Cutoff-Frequenz in Hz — alles darüber wird abgeschnitten.</p>
+<div class="snippet" id="snip-008" data-code-b64="bm90ZSgiYzQiKS5zKCJzYXd0b290aCIpLmxwZigyMDApCm5vdGUoImM0Iikucygic2F3dG9vdGgiKS5scGYoMjAwMCkKbm90ZSgiYzQiKS5zKCJzYXd0b290aCIpLmxwZig4MDAwKQ=="><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;sawtooth&quot;).lpf(200)
+note(&quot;c4&quot;).s(&quot;sawtooth&quot;).lpf(2000)
+note(&quot;c4&quot;).s(&quot;sawtooth&quot;).lpf(8000)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-note("c4").s("sawtooth")
-note("c4").s("square")
-note("c4").s("gm_acoustic_grand_piano")
+<p>200 Hz: dumpf, wie hinter einer Wand. 2000 Hz: warm, ausgewogen. 8000 Hz: spitz, alle Obertöne durch.</p>
+<h3>Method-Chaining — jeder Punkt ist ein neuer Effekt</h3>
+<p>Du hängst Effekte einfach hintereinander. Liest sich von links nach rechts wie ein Effekt-Pedalboard.</p>
+<div class="snippet" id="snip-009" data-code-b64="bm90ZSgiYzQiKS5zKCJzYXd0b290aCIpLmxwZig4MDApLmdhaW4oMC42KS5yb29tKDAuNSk="><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;sawtooth&quot;).lpf(800).gain(0.6).room(0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// (Den letzten nur ausführen wenn du Bock auf vollen GM-Soundbank
-// hast — wird beim ersten Mal etwas dauern zu laden.)
-
-
-// -----------------------------------------------------
-// ▶ AUFGABE: Ändere "c4" zu "c5". Was passiert?
-// -----------------------------------------------------
-note("c4").s("piano")
-
-// Octave höher. c3 wäre tiefer. c2 noch tiefer.
-//
-// Tonnamen funktionieren wie auf dem Papier:
-// c, d, e, f, g, a, b — gefolgt von Oktave (1-7 üblich).
-// b ist H im deutschen System, wenn das verwirrt: Strudel benutzt
-// englische Notation. b = H, kein Es-Reflex.
-// Vorzeichen: cs = c#, db = des, fs = f#, ab = as.
-
-
-// -----------------------------------------------------
-// Ein Sample (= aufgenommener Sound, kein Synth)
-// -----------------------------------------------------
-// s() ohne note() spielt ein Sample. "bd" ist eine Bass Drum.
-
-s("bd")
-
-// "sd" ist Snare. "hh" ist Hi-Hat. "cp" ist Clap.
-// Diese Kürzel kommen aus den Roland-Drum-Computer-Tagen
-// (TR-808/909) und sind in der Live-Coding-Welt Standard.
-
-s("sd")
-s("hh")
-s("cp")
-
-// Du kannst ALLE eingebauten Sounds anschauen: rechts unten im
-// Strudel-Editor gibt's einen "sounds"-Tab. Da kannst du klicken
-// und reinhören.
-
-
-// -----------------------------------------------------
-// Sample-Varianten mit :n
-// -----------------------------------------------------
-// Manche Sounds haben mehrere Varianten. "jazz:0" ist die erste
-// Jazz-Drum, "jazz:1" die zweite, etc.
-
-s("jazz:0")
-s("jazz:3")
-s("jazz:7")
-
-// ▶ AUFGABE: Probier verschiedene Zahlen 0-7 mit "jazz:N".
-// Welche gefällt dir?
-
-
-// -----------------------------------------------------
-// Lautstärke regeln mit .gain()
-// -----------------------------------------------------
-// 1 = normal. 0.5 = halb so laut. 0 = stumm. Werte über 1 gehen
-// auch, aber Vorsicht — kann clippen.
-
-s("bd").gain(0.3)
-s("bd").gain(1.0)
-s("bd").gain(1.5)
-
-
-// -----------------------------------------------------
-// Ein Klang, ein Effekt
-// -----------------------------------------------------
-// .lpf() ist ein Lowpass-Filter. Macht den Klang dumpfer.
-// Die Zahl ist die Cutoff-Frequenz in Hz — alles darüber
-// wird abgeschnitten.
-
-note("c4").s("sawtooth").lpf(200)
-note("c4").s("sawtooth").lpf(2000)
-note("c4").s("sawtooth").lpf(8000)
-
-// 200 Hz: dumpf, wie hinter einer Wand.
-// 2000 Hz: warm, ausgewogen.
-// 8000 Hz: spitz, alle Obertöne durch.
-
-
-// -----------------------------------------------------
-// Method-Chaining — jeder Punkt ist ein neuer Effekt
-// -----------------------------------------------------
-// Du hängst Effekte einfach hintereinander. Liest sich von
-// links nach rechts wie ein Effekt-Pedalboard.
-
-note("c4").s("sawtooth").lpf(800).gain(0.6).room(0.5)
-
-// .room() ist Hall ("room"). 0 = trocken, 1 = stark hallig.
-
-
-// -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 01
-// -----------------------------------------------------
-// Du kannst:
-//   - Eine Note spielen      → note("c4")
-//   - Sound wechseln         → .s("piano")
-//   - Ein Sample triggern    → s("bd")
-//   - Sample-Varianten       → s("jazz:3")
-//   - Lautstärke regeln      → .gain(0.7)
-//   - Filtern                → .lpf(800)
-//   - Hall                   → .room(0.4)
-//   - Effekte verketten      → .lpf(800).gain(0.6).room(0.5)
-//
-// Das ist das ganze Vokabular für die Eingangsschicht.
-
-
-// -----------------------------------------------------
-// FINALE — alles zusammen
-// -----------------------------------------------------
-
-note("c3")
-  .s("sawtooth")
+<p>.room() ist Hall ("room"). 0 = trocken, 1 = stark hallig.</p>
+<h3>Mini-Zusammenfassung Kapitel 01</h3>
+<pre><code>Du kannst:
+  - Eine Note spielen      → note(&quot;c4&quot;)
+  - Sound wechseln         → .s(&quot;piano&quot;)
+  - Ein Sample triggern    → s(&quot;bd&quot;)
+  - Sample-Varianten       → s(&quot;jazz:3&quot;)
+  - Lautstärke regeln      → .gain(0.7)
+  - Filtern                → .lpf(800)
+  - Hall                   → .room(0.4)
+  - Effekte verketten      → .lpf(800).gain(0.6).room(0.5)
+</code></pre>
+<p>Das ist das ganze Vokabular für die Eingangsschicht.</p>
+<h3>FINALE — alles zusammen</h3>
+<div class="snippet" id="snip-010" data-code-b64="bm90ZSgiYzMiKQogIC5zKCJzYXd0b290aCIpCiAgLmxwZig2MDApCiAgLmdhaW4oMC44KQogIC5yb29tKDAuNik="><pre class="snippet-code"><code>note(&quot;c3&quot;)
+  .s(&quot;sawtooth&quot;)
   .lpf(600)
   .gain(0.8)
-  .room(0.6)
+  .room(0.6)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
-// Tiefer Bass-Ton, etwas dumpf, mit Hall.
-//
-// Im nächsten Kapitel: mehrere Töne. Pattern. Klammern.
-// 02_mininotation.strudel.
-
-</script>
-<script>
-// Inline UTF-8-safe variant of @strudel/embed.
-// The original package uses btoa() which only handles Latin-1 — chokes
-// on Umlaute, arrows, emoji, box-drawing chars in the lehrbuch.
-(function () {
-  var code = document.getElementById('strudel-code').textContent;
-  var bytes = new TextEncoder().encode(code);
-  var binary = '';
-  for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  var src = 'https://strudel.cc/#' + encodeURIComponent(btoa(binary));
-  document.getElementById('strudel').setAttribute('src', src);
-})();
-</script>
+<p>Tiefer Bass-Ton, etwas dumpf, mit Hall.</p>
+<p>Im nächsten Kapitel: mehrere Töne. Pattern. Klammern. 02_mininotation.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
 </body>
 </html>
