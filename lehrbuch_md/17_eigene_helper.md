@@ -1,4 +1,4 @@
-# Kapitel 16 — Eigene Helper-Funktionen
+# Kapitel 17 — Eigene Helper-Funktionen
 
 Bisher hast du Strudel benutzt wie es kommt. Jetzt baust du dir eigene Vokabeln. Helper-Funktionen die deine Sprache erweitern: ein Aufruf, viele Effekte. "macheBassWarm()" statt 8 Zeilen Filter-Distortion-Reverb-EQ.
 
@@ -313,7 +313,7 @@ Aus Switch Angels Stil:
 
 1. EIN Helper, EIN Konzept. Nicht 10 Modi in einer Funktion. 2. Defaults die "richtig" klingen — bei Wert 0 transparent. 3. Range-Limits beachten. Nie lpf auf 0 oder gain auf 0    ohne Sicherheitsabstand → sonst Stille/Clipping. 4. Zwei Funktionen pro Achse: xLayer(x) und xShift(pat, x). 5. Composable — Helper können andere Helper nutzen. 6. Test-Snippet pro Helper im Helper-File.
 
-### Mini-Zusammenfassung Kapitel 16
+### Mini-Zusammenfassung Kapitel 17
 
 ```
   function name(pat) { return pat... }      → freie Funktion
@@ -332,4 +332,4 @@ Achsen-Pattern:
 
 Mit eigenen Helpern wird Live-Coding zu KOMPONIEREN — du hast Vokabeln für Stimmungen, nicht nur für Filter.
 
-Weiter zu 17_hap_internals.strudel.
+Weiter zu 18_hap_internals.strudel.

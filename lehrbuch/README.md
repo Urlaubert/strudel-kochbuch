@@ -37,14 +37,15 @@ Jedes Kapitel hat:
 | 10 | `10_samples_eigene.strudel` | Eigene WAVs laden, slicen |
 | 11 | `11_song_struktur.strudel` | `arrange`, Sektionen |
 | 12 | `12_mini_track_in_50_zeilen.strudel` | Alles zusammen, ein Track |
-| 13 | `13_synthese_tief.strudel` | Sound-Design aus Bordmitteln |
-| 14 | `14_midi_und_io.strudel` | Hardware-Knobs rein, Synths raus |
-| 15 | `15_performance_hygiene.strudel` | Live-Set-Tipps |
-| 16 | `16_eigene_helper.strudel` | `register()`, Achsen-Konzept |
-| 17 | `17_hap_internals.strudel` | Pattern-Theorie |
-| 18 | `18_genre_kochbuch.strudel` | Vorlagen pro Genre |
-| 19 | `19_valenz_und_arousal.strudel` | Stimmungs-Achsen (Russell-Modell) |
-| 20 | `20_cheatsheet.strudel` | Spickzettel |
+| 13 | `13_praxis_beispiele.strudel` | 12 fertige Anwendungs-Lessons |
+| 14 | `14_synthese_tief.strudel` | Sound-Design aus Bordmitteln |
+| 15 | `15_midi_und_io.strudel` | Hardware-Knobs rein, Synths raus |
+| 16 | `16_performance_hygiene.strudel` | Live-Set-Tipps |
+| 17 | `17_eigene_helper.strudel` | `register()`, Achsen-Konzept |
+| 18 | `18_hap_internals.strudel` | Pattern-Theorie |
+| 19 | `19_genre_kochbuch.strudel` | Vorlagen pro Genre |
+| 20 | `20_valenz_und_arousal.strudel` | Stimmungs-Achsen (Russell-Modell) |
+| 21 | `21_cheatsheet.strudel` | Spickzettel |
 
 ## Voraussetzungen
 

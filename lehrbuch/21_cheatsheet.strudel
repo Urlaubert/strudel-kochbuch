@@ -1,5 +1,5 @@
 // =====================================================
-// Kapitel 18 — Cheatsheet
+// Kapitel 21 — Cheatsheet
 // =====================================================
 // Spickzettel zum Einkleben. Alles was du regelmäßig
 // vergisst, hier auf einen Blick. Nicht zum Lesen — zum
@@ -286,7 +286,7 @@ acidBass(note("c2*8 g1*4 eb2*4 c2*8"))
 
 
 // =====================================================
-// GENRE-DEFAULTS (Spickzettel zu Kapitel 18)
+// GENRE-DEFAULTS (Spickzettel zu Kapitel 19)
 // =====================================================
 //   Genre        cps    Charakter
 //   ─────────────────────────────────────────────
@@ -304,7 +304,7 @@ acidBass(note("c2*8 g1*4 eb2*4 c2*8"))
 
 
 // =====================================================
-// VALENZ-AROUSAL-MAPPING (zu Kapitel 19)
+// VALENZ-AROUSAL-MAPPING (zu Kapitel 20)
 // =====================================================
 // Vier Quadranten:
 //
@@ -321,7 +321,7 @@ acidBass(note("c2*8 g1*4 eb2*4 c2*8"))
 // Arousal-Treiber:  Tempo, Dichte, Brightness
 // Valenz-Treiber:   Modalität (Dur/Moll), Konsonanz, Attack
 //
-// Code-Pattern (siehe 19_valenz_und_arousal.strudel):
+// Code-Pattern (siehe 20_valenz_und_arousal.strudel):
 //   const A = sq(slider(0.5))
 //   const V = sq(slider(0.5))
 //   stack(arousalShift(pat, A), arousalLayer(A),

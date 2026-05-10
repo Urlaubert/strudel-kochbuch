@@ -1,5 +1,5 @@
 // =====================================================
-// Kapitel 16 — Eigene Helper-Funktionen
+// Kapitel 17 — Eigene Helper-Funktionen
 // =====================================================
 // Bisher hast du Strudel benutzt wie es kommt. Jetzt baust
 // du dir eigene Vokabeln. Helper-Funktionen die deine Sprache
@@ -325,7 +325,7 @@ stack(
 
 
 // -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 16
+// Mini-Zusammenfassung Kapitel 17
 // -----------------------------------------------------
 //   function name(pat) { return pat... }      → freie Funktion
 //   register('name', (pat) => ...)             → chainbar (nur in Prebake!)
@@ -341,4 +341,4 @@ stack(
 // Mit eigenen Helpern wird Live-Coding zu KOMPONIEREN —
 // du hast Vokabeln für Stimmungen, nicht nur für Filter.
 //
-// Weiter zu 17_hap_internals.strudel.
+// Weiter zu 18_hap_internals.strudel.

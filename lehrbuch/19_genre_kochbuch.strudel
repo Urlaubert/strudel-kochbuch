@@ -1,5 +1,5 @@
 // =====================================================
-// Kapitel 18 — Genre-Kochbuch
+// Kapitel 19 — Genre-Kochbuch
 // =====================================================
 // Pro Genre eine kurze Strudel-Vorlage mit den typischen
 // Defaults: Tempo, Drum-Bank, Bass-Charakter, Effekt-Reihen-
@@ -360,7 +360,7 @@ stack(
 
 
 // -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 18
+// Mini-Zusammenfassung Kapitel 19
 // -----------------------------------------------------
 // Genre-Defaults sind Konventionen, keine Gesetze. Bewusst
 // im Genre starten gibt dir Kontrast wenn du brichst.
@@ -379,4 +379,4 @@ stack(
 //   Drone          0     ein Ton, ewig
 //   Cinematic      var.  Sub-Bass, Hybrid-Pads
 //
-// Weiter zu 19_valenz_und_arousal.strudel.
+// Weiter zu 20_valenz_und_arousal.strudel.

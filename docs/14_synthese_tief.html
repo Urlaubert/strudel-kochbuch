@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>13 — Synthese tief — Strudel Kochbuch</title>
+<title>14 — Synthese tief — Strudel Kochbuch</title>
 <link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<nav class="chapter-nav"><a href="12_mini_track_in_50_zeilen.html" title="12 — Mini-Track">← Zurück</a><a href="14_midi_und_io.html" title="14 — MIDI und IO">Weiter →</a></nav>
+<nav class="chapter-nav"><a href="13_praxis_beispiele.html" title="13 — Praxis-Beispiele">← Zurück</a><a href="15_midi_und_io.html" title="15 — MIDI und IO">Weiter →</a></nav>
 </header>
 <main>
 <article class="prose">
-<h1>Kapitel 13 — Synthese, tiefer</h1>
+<h1>Kapitel 14 — Synthese, tiefer</h1>
 <p>Strudels eingebaute Synths sind einfach — sine, sawtooth, square, triangle, supersaw. Mit ADSR und Filter-Envelopes kannst du daraus aber sehr viel rausholen.</p>
 <p>Hier: wie du aus den Bordmitteln Bass, Lead, Pad, Stab, Pluck, Acid, Sub baust. Plus FM (siehe DX-Helper).</p>
 <p>Wichtig: Strudel ist NICHT für Custom-SynthDefs gemacht. Wenn du komplexe Patches willst — vorher in Vital/Reaper rendern und als WAV laden (siehe Kapitel 10).</p>
@@ -242,7 +242,7 @@ stack(
 </code></pre>
 <p>Workaround: Sound in Vital/Reaper bauen und als WAV importieren. Strudel triggert das Sample dann mit .speed() für Pitch.</p>
 <p>Das war von den Strudel-Entwicklern absichtlich begrenzt — Live-Coding-Tool, nicht Synth-Lab.</p>
-<h3>Mini-Zusammenfassung Kapitel 13</h3>
+<h3>Mini-Zusammenfassung Kapitel 14</h3>
 <p>Engines:    sine, triangle, sawtooth, square, pulse, supersaw,              noise, pink, brown FM:         .fmh(N) .fmi(N) .fmattack .fmdecay PWM:        .pwm(0..1) Detune:     .detune(Halbtöne als Bruchzahl) Pitch-Env:  .penv(N) .pattack .pdecay .pcurve ADSR:       .attack .decay .sustain .release Filter-Env: .lpenv .lpa .lpd .lps .lpr (auch hp/bp)</p>
 <pre><code>Tipp: Wenn ein Sound nicht klingt wie du willst, prüf in
 dieser Reihenfolge:
@@ -252,7 +252,7 @@ dieser Reihenfolge:
   4. Layer (Sub-Bass + Body + Klick)
   5. Reverb/Delay als letztes
 </code></pre>
-<p>Weiter zu 14_midi_und_io.strudel.</p>
+<p>Weiter zu 15_midi_und_io.strudel.</p>
 </article>
 </main>
 <footer>

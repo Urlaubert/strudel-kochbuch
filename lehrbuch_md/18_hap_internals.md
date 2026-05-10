@@ -1,4 +1,4 @@
-# Kapitel 17 — Hap-Internals
+# Kapitel 18 — Hap-Internals
 
 Was IST ein Pattern in Strudel eigentlich? Wir haben es bisher als "musikalische Sequenz" benutzt, aber unter der Haube ist es ein mathematisches Konstrukt mit klaren Eigenschaften. Wenn du das verstehst, verstehst du WARUM manche Sachen gehen und andere nicht.
 
@@ -209,7 +209,7 @@ Heißt: das Modell ist ein Ideal, die Realität hat Lecks. Aber das ist nichts u
 
 - Functional Reactive Programming (FRP) — Strudel ist eine   musikalische Variante davon.
 
-### Mini-Zusammenfassung Kapitel 17
+### Mini-Zusammenfassung Kapitel 18
 
 Pattern :: TimeRange -> [Hap]   Hap = {whole, part, value}
 
@@ -231,4 +231,4 @@ Zufall ist pseudo-zufällig, aber reproduzierbar. Audio-Renderer fragt das Patte
 
 Wenn du das verstanden hast, kannst du Strudels Verhalten in Edge-Cases vorhersagen statt zu raten.
 
-Weiter zu 18_genre_kochbuch.strudel.
+Weiter zu 19_genre_kochbuch.strudel.

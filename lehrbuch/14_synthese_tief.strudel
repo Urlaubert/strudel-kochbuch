@@ -1,5 +1,5 @@
 // =====================================================
-// Kapitel 13 — Synthese, tiefer
+// Kapitel 14 — Synthese, tiefer
 // =====================================================
 // Strudels eingebaute Synths sind einfach — sine, sawtooth,
 // square, triangle, supersaw. Mit ADSR und Filter-Envelopes
@@ -330,7 +330,7 @@ stack(
 
 
 // -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 13
+// Mini-Zusammenfassung Kapitel 14
 // -----------------------------------------------------
 // Engines:    sine, triangle, sawtooth, square, pulse, supersaw,
 //              noise, pink, brown
@@ -349,4 +349,4 @@ stack(
 //   4. Layer (Sub-Bass + Body + Klick)
 //   5. Reverb/Delay als letztes
 //
-// Weiter zu 14_midi_und_io.strudel.
+// Weiter zu 15_midi_und_io.strudel.

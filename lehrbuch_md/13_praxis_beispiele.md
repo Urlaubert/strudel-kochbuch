@@ -1,0 +1,619 @@
+# Kapitel 13 — Praxis-Beispiele
+
+Zwoelf Lessons. Jede davon beantwortet eine konkrete Frage: "wie mach ich einen fetten Kick", "wie pumpt das wie in House", "wie baue ich einen Drop". Keine Theorie — nur Snippets die direkt klingen.
+
+Reihenfolge ist locker. Pick was du gerade brauchst. Jede Lesson laeuft fuer sich.
+
+## 1. HH-Akzente mit Round-Robin
+
+Hihats werden schnell zu Maschinengewehr. Drei Tricks: Velocity-Pattern, Sample-Variation, Open-Hihat als Akzent.
+
+(Tiefer ausgefuehrt in Kapitel 03. Hier die Quick- Reference fuer den Track.)
+
+### Statisches Pattern
+
+```strudel
+s("hh*16").gain(0.4)
+```
+
+Drei Sekunden, dann nervt's. Brauchen Akzente.
+
+### Velocity-Pattern
+
+```strudel
+s("hh*16").gain("1 0.3 0.5 0.3   1 0.3 0.5 0.3   1 0.3 0.5 0.3   1 0.3 0.5 0.3")
+```
+
+Drei Velocity-Ebenen. Klingt nach echtem Drummer.
+
+### Round-Robin gegen Maschinengewehr
+
+```strudel
+s("hh*16").n(irand(3)).gain(0.4).speed(rand.range(0.98, 1.02))
+```
+
+irand(3) zieht aus drei Sample-Variationen. speed mit rand.range pitcht jeden Schlag minimal anders. Beides zusammen — kein Schlag klingt wie der vorherige.
+
+### Closed + Open als Akzent
+
+```strudel
+stack(
+  s("hh*16").gain(0.35),
+  s("oh ~ ~ ~ ~ ~ ~ ~ ~ ~ oh ~ ~ ~ ~ ~").gain(0.65).cut(1)
+)
+```
+
+.cut(1) ist der Closed/Open-Choke wie an echten Hihats.
+
+## 2. Bass-Drum-Layering (Sub + Body + Klick)
+
+Eine echte fette Kick ist drei Sounds in einem: tief (Sub), Mitte (Body), oben (Klick). Strudels eingebaute "bd"-Samples haben oft nur Body. Wir bauen die anderen dazu.
+
+### Vergleich: pure 'bd'
+
+```strudel
+s("bd*4")
+```
+
+Funktioniert, aber klingt duenn. Zu wenig Sub fuer den Club, zu wenig Klick fuer Punch.
+
+### Drei Layer als Stack
+
+```strudel
+stack(
+  s("bd*4").gain(0.9),
+  note("c1*4").s("sine").attack(0.001).decay(0.2).sustain(0).gain(0.8),
+  s("cp*4").hpf(3000).gain(0.25)
+)
+```
+
+Layer 1: bd-Sample fuer Body. Layer 2: Sine auf C1 mit kurzem Decay — der Sub-Tail. Layer 3: Clap-Sample stark gefiltert (hpf 3000) — nur noch das Klick-Geraeusch, kein Body. Das ist die "Trans- ient" oben drauf.
+
+Klingt schon wie 909-Kick.
+
+### Mit Pitch-Envelope (klassische 808/909)
+
+```strudel
+stack(
+  s("bd*4"),
+  note("c1*4").s("sine")
+    .attack(0.001).decay(0.3).sustain(0)
+    .penv(24).pdecay(0.05).gain(0.9),
+  s("cp*4").hpf(3000).gain(0.25)
+)
+```
+
+.penv(24) startet zwei Oktaven hoeher, faellt in 50ms auf die eigentliche Note. Das ist der typische "Bumph" — wie bei der TR-808.
+
+### Sauber im Mix mit lpf
+
+```strudel
+stack(
+  s("bd*4").lpf(120),
+  note("c1*4").s("sine").attack(0.001).decay(0.3).sustain(0).penv(24).pdecay(0.05),
+  s("cp*4").hpf(4000).gain(0.2)
+)
+```
+
+bd-Sample bekommt einen Lowpass — alles ueber 120 Hz macht der Sub. Damit kein Matsch im Bass-Bereich.
+
+## 3. Sidechain-Pumping (House/Techno)
+
+Der "atmende" Effekt in House und Techno: wenn die Kick schlaegt, wird der Bass kurz leiser. Im Original mit einem Sidechain-Kompressor. In Strudel mit duckorbit.
+
+### Ohne Sidechain — Bass und Kick konkurrieren
+
+```strudel
+stack(
+  s("bd*4"),
+  note("c2*8").s("sawtooth").lpf(600).gain(0.8)
+)
+```
+
+Kick und Bass kaempfen um den Sub-Bereich. Klingt zu.
+
+### Mit duckorbit
+
+```strudel
+stack(
+  s("bd*4").orbit(1),
+  note("c2*8").s("sawtooth").lpf(600).gain(0.8).duckorbit(1)
+)
+```
+
+.orbit(1) markiert die Kick als "ducker". .duckorbit(1) sagt: bei Hit auf Orbit 1 dein Gain runter- ziehen. Standard-Duck-Kurve eingebaut.
+
+Sofort hoerst du das "Atmen".
+
+### Stark fuer EDM
+
+```strudel
+stack(
+  s("bd*4").orbit(1).gain(1),
+  note("c2 c2 g1 c2 c2 c2 eb2 c2").s("sawtooth").lpf(800)
+    .gain(0.9).duckorbit(1).duckattack(0.005).duckrelease(0.3)
+)
+```
+
+.duckattack — wie schnell der Bass nach unten geht. .duckrelease — wie lange er gedrueckt bleibt (laenger = staerker Pumpen). 0.3 ist typisch EDM-Big-Room.
+
+### Auch Pads und Synths ducken
+
+```strudel
+stack(
+  s("bd*4").orbit(1),
+  note("<c3'maj7 f3'maj7 g3'maj7 c3'maj7>").s("sawtooth")
+    .lpf(1200).attack(0.5).release(2).gain(0.5)
+    .duckorbit(1).duckrelease(0.4)
+)
+```
+
+Lange Pad-Akkorde mit Sidechain — das ist Daft-Punk- Territorium. Akkorde "fliessen" mit dem Pumpen.
+
+## 4. Build-Up zum Drop
+
+Vier klassische Bausteine eines Build-Ups: Riser, HH- Acceleration, Filter-Sweep, Snare-Roll. Alle hier einzeln, dann zusammen.
+
+### Riser (aufsteigender Noise-Sweep)
+
+```strudel
+note("c4").s("white").hpf(sine.range(200, 8000).slow(8)).gain(0.4)
+```
+
+White-Noise als kontinuierlicher Ton (note triggert den Noise-Synth). Der Highpass faehrt in 8 Cycles von 200 Hz auf 8000 Hz. Klingt wie ein Atemzug, der lauter wird. Mit gain-Anstieg dazu — siehe weiter unten.
+
+### Hihat-Acceleration
+
+```strudel
+s("hh").fast(saw.range(1, 16).slow(8))
+```
+
+saw geht in 8 Cycles linear von 1 auf 16. fast(N) macht das Pattern N-mal schneller. Aus einer Hihat wird ein rasendes 16tel-Pattern. Klassischer Build-Tease.
+
+### Filter-Sweep auf der Drum-Spur
+
+```strudel
+const drums = stack(s("bd*4"), s("~ cp ~ cp"), s("hh*16").gain(0.3))
+
+drums.lpf(sine.range(200, 8000).slow(16))
+```
+
+Cutoff faehrt langsam hoch — alles wird heller. Auf den letzten 4 Takten vorm Drop einsetzen.
+
+### Snare-Roll (Verdichtung)
+
+```strudel
+s("sd").fast("1 2 4 8 16 16 32 32").slow(2)
+```
+
+Pro Schritt schneller. Endet im 32tel-Geknatter. Die 0.5 Sekunden vor dem Drop.
+
+### Alles zusammen
+
+```strudel
+stack(
+  s("bd*4").gain(saw.range(0.3, 1).slow(8)),
+  s("hh").fast(saw.range(1, 16).slow(8)).gain(0.4),
+  note("c4").s("white").hpf(sine.range(200, 8000).slow(8)).gain(saw.range(0, 0.5).slow(8)),
+  note("c2*8").s("sawtooth").lpf(sine.range(400, 4000).slow(8))
+).slow(2)
+```
+
+8-Cycle-Build (mit slow(2) = 16 Cycles real). Alles crescendiert gemeinsam.
+
+## 5. Vocal-Chop + Slicing
+
+Ein Vocal-Sample in kleine Stuecke schneiden und neu arrangieren. Mainstream-EDM-Technik (Disclosure, Skrillex, halbe Pop-Charts). Funktioniert mit jedem Sample.
+
+Erste Lessons mit Strudels eingebauten Samples — wenn du eigene WAVs hast, in Kapitel 10 wird's konkret.
+
+### Sample-Slicing per slice()
+
+```strudel
+s("vocal").slice(8, "0 1 2 3 4 5 6 7")
+```
+
+Teilt das Sample in 8 gleiche Stuecke und spielt sie in Reihenfolge. (Ersetz "vocal" durch dein Sample.)
+
+### Reihenfolge umstellen
+
+```strudel
+s("vocal").slice(8, "0 3 1 7 2 5 4 6")
+```
+
+Andere Reihenfolge = ganz anderer Rhythmus. Kein Audio-Editor noetig.
+
+### Mit Variation per pick / euklidisch
+
+```strudel
+s("vocal").slice(16, "<0 3 1 7 2 5 4 6>".fast(2)).gain(0.7)
+
+s("vocal").slice(16, irand(16))
+```
+
+irand(16) wuerfelt jeden Schlag neu — Stutter-Glitch- Stil. Pro Cycle anders.
+
+### Mit Effekt-Kette
+
+```strudel
+s("vocal")
+  .slice(16, "<0 1 2 3 4 5 6 7> [~ 8] 10 11".fast(2))
+  .gain(0.8)
+  .room(0.3).rsize(0.6)
+  .delay(0.3).delaytime(0.375).delayfeedback(0.3)
+```
+
+Hall + Dotted-8th-Delay (.375 = 8tel triolisch). Klingt nach Disclosure.
+
+### Reverse-Chop
+
+```strudel
+s("vocal").slice(8, "0 1 2 3").rev().gain(0.6)
+```
+
+rev() spielt das gesamte Pattern rueckwaerts. Vocals rueckwaerts haben einen surrealen Beiklang — wenn's nur kurze Chops sind, wirkt's wie Atem.
+
+## 6. Drum-Fill mit Variations-Disziplin
+
+Ein Fill ist das was am Ende eines 4er- oder 8er-Takts passiert — Snare-Roll, Tom-Run, Hihat-Trip. Die Regel: nicht jeden Takt, sonst nervt's. Alle 4 oder 8 Takte.
+
+### Basis-Beat
+
+```strudel
+stack(
+  s("bd*4"),
+  s("~ cp ~ cp"),
+  s("hh*8").gain(0.4)
+)
+```
+
+### Mit Fill alle 4 Takte (every)
+
+```strudel
+stack(
+  s("bd*4").every(4, x => x.append(s("sd*8"))),
+  s("~ cp ~ cp"),
+  s("hh*8").gain(0.4)
+)
+```
+
+.every(N, fn) — alle N Cycles wird fn auf das Pattern angewendet. .append haengt das Fill am Ende dran (letztes Cycle wird doppelt so lang).
+
+### Verschiedene Fills per cat
+
+```strudel
+const drums = stack(s("bd*4"), s("~ cp ~ cp"), s("hh*8").gain(0.4))
+const fillA = s("sd*8").gain(0.7)
+const fillB = s("sd*16").gain(saw.range(0.3, 0.9))
+const fillC = s("[sd lt mt ht]").gain(0.7)
+
+cat(drums, drums, drums, fillA, drums, drums, drums, fillB)
+```
+
+Sequenz von 8 Cycles. Auf den 4. und 8. Cycle kommt ein anderes Fill. Wenig Code, sehr abwechslungsreich.
+
+### Pop/Rock-Style: zwei Snare-Schlaege als Ende-Fill
+
+```strudel
+cat(drums, drums, drums, stack(s("bd*4"), s("~ ~ sd sd"), s("hh*8").gain(0.4)))
+```
+
+Im 4. Takt ein simples Snare-Snare. Reicht oft schon — muss kein 32tel-Geknatter sein.
+
+## 7. Akkord-Folge mit Bassgang
+
+Eine Akkord-Folge mit dazu passender Bass-Linie. Trick: Bass spielt den Grundton des Akkords, mit Durchgangs- Toenen dazwischen.
+
+### Basis: vier Akkorde
+
+```strudel
+note("<c3'maj7 a2'min7 f2'maj7 g2'7>").s("sawtooth").lpf(1200)
+```
+
+I - vi - IV - V in C. "die" 4-Akkord-Folge der Popmusik.
+
+### Bass spielt den Grundton
+
+```strudel
+stack(
+  note("<c3'maj7 a2'min7 f2'maj7 g2'7>").s("sawtooth").lpf(1200).gain(0.5),
+  note("<c2 a1 f1 g1>").s("sawtooth").lpf(400).gain(0.7)
+)
+```
+
+Vier Akkorde, vier Bass-Toene. Solide aber statisch.
+
+### Bass mit Durchgangs-Achteln
+
+```strudel
+stack(
+  note("<c3'maj7 a2'min7 f2'maj7 g2'7>").s("sawtooth").lpf(1200).gain(0.5),
+  note("<[c2 e2 g2 e2] [a1 c2 e2 c2] [f1 a1 c2 a1] [g1 b1 d2 b1]>")
+    .s("sawtooth").lpf(500).gain(0.7)
+)
+```
+
+Pro Akkord eine kleine Bass-Phrase mit Akkord-Toenen. Klingt sofort lebendiger — die Bass-Linie hat eine Geste.
+
+### Mit Glide (Slides zwischen den Toenen)
+
+```strudel
+stack(
+  note("<c3'maj7 a2'min7 f2'maj7 g2'7>").s("sawtooth").lpf(1200).gain(0.5),
+  note("<c2 a1 f1 g1>").s("sawtooth").lpf(500).gain(0.7)
+    .legato(0.95)
+)
+```
+
+.legato(0.95) — Note dauert 95% des Slots, Ueberlappung fast nahtlos. Bei manchen Sounds gibt's einen Glide-Effekt.
+
+## 8. Off-Number-Polyrhythmik (5/7/11)
+
+Drei Spuren mit teilerfremden Step-Zahlen. 4 gegen 5 klingt schon kompliziert — 5 gegen 7 ist Aphex-Twin- Territorium. Funktioniert nur wenn der Puls (die langsamste Spur) klar bleibt.
+
+### Klassisch: 3 gegen 4
+
+```strudel
+stack(
+  s("bd*3"),
+  s("hh*4")
+)
+```
+
+Bekannte Polyrhythmik. Bd auf 3, hh auf 4 — sie treffen sich am Anfang jedes Cycles.
+
+### 5 gegen 7
+
+```strudel
+stack(
+  s("bd*5").gain(0.8),
+  s("hh*7").gain(0.4)
+)
+```
+
+Niemand zaehlt das mit. Trotzdem klingt's nicht zu- faellig. Hihn und Kick "interferieren" — Muster die du gerade erkennst sind nach einem Cycle wieder weg.
+
+### Drei teilerfremde
+
+```strudel
+stack(
+  s("bd*5").gain(0.8),
+  s("cp*7").gain(0.5),
+  s("hh*11").gain(0.3)
+)
+```
+
+5, 7, 11. Erst nach 5*7*11 = 385 16tel wiederholt sich das Gesamtmuster exakt. Drei Minuten Praezisions-Chaos.
+
+### Mit klarem Puls als Anker
+
+```strudel
+stack(
+  s("bd*4"),
+  s("hh*5").gain(0.4),
+  s("cp*7").gain(0.3),
+  note("c2*1").s("sawtooth").lpf(400).gain(0.5)
+)
+```
+
+Bd auf 4 als Anker, der Rest polyrhythmisch dagegen. Funktioniert besser als komplett ohne Puls — der Hoerer hat einen Ankerpunkt.
+
+## 9. Crescendo / Decrescendo
+
+Lautstaerke ueber Zeit. Klingt offensichtlich, aber 90% der elektronischen Tracks ueberhoeren das — alles haut auf 0 dB und ist gleich laut. Schon ein leichtes Cresc macht Sektionen lebendiger.
+
+### Saegezahn-Anstieg (Build)
+
+```strudel
+s("hh*16").gain(saw.range(0.1, 0.6).slow(4))
+```
+
+saw geht in 4 Cycles linear von 0 auf 1 — gain mappt das auf 0.1 bis 0.6. Klassischer Build-Anstieg.
+
+### Decrescendo nach dem Drop
+
+```strudel
+s("hh*16").gain(saw.range(0.7, 0.1).slow(8))
+```
+
+Wie der Build, aber range umgedreht: erst 0.7, am Ende 0.1. 8 Cycles lang langsam leiser werden. Fuer "Ausklang"-Sektionen.
+
+### Wave-foermig (sinusoidal)
+
+```strudel
+stack(
+  s("bd*4"),
+  s("hh*16").gain(sine.range(0.2, 0.5).slow(16))
+)
+```
+
+Hihat atmet langsam — uebers 16-Cycle-Fenster werden die Hihats lauter und wieder leiser. Mehr Macroform als pures statisches Pattern.
+
+### Stufenweise per cat
+
+```strudel
+const beat = stack(s("bd*4"), s("~ cp ~ cp"), s("hh*8").gain(0.4))
+
+cat(
+  beat.gain(0.3),
+  beat.gain(0.5),
+  beat.gain(0.7),
+  beat.gain(1.0)
+)
+```
+
+Vier Stufen Anstieg ueber 4 Cycles. Hoerbar "vier Bloecke", nicht kontinuierlich — kann gewollt sein.
+
+## 10. Auto-Pan und Stereo-Drift
+
+Stereo ist unterbewertet. Drums in der Mitte, Pads links, Lead rechts — schon hast du Raum. Plus ein bisschen Bewegung im Stereo-Bild.
+
+### Statisches Pan
+
+```strudel
+stack(
+  s("bd*4").pan(0.5),
+  s("hh*16").pan(0.3).gain(0.4),
+  s("~ cp ~ cp").pan(0.7)
+)
+```
+
+Bd Mitte, Hihat leicht links, Clap leicht rechts. Schon raumiger als alles in Mitte.
+
+### Auto-Pan per LFO
+
+```strudel
+note("c4*8").s("sawtooth").lpf(1500).pan(sine.range(0, 1).slow(4))
+```
+
+Pan oszilliert zwischen links und rechts ueber 4 Cycles. Klassischer Trance-Effekt fuer Pad-Layer.
+
+### Ping-Pong (jeder Schlag andere Seite)
+
+```strudel
+s("hh*8").pan("0 1 0 1 0 1 0 1").gain(0.4)
+```
+
+Jeder Schlag wechselt die Seite. Auf Kopfhoerern auf- faellig, auf Boxen subtil.
+
+### Random-Pan fuer Stutter-Sounds
+
+```strudel
+s("hh*16").pan(rand).gain(0.3)
+```
+
+rand wuerfelt jeden Schlag einen Pan-Wert zwischen 0 und 1. Klingt nach Glitch-Cloud, ueberall im Raum. Sparsam einsetzen — bei Drums zu unruhig, bei Texturen genau richtig.
+
+## 11. Drum-Break-Slicing (Amen-Break-Style)
+
+Der Amen-Break ist ein 6-sekuendiges Drum-Solo aus 1969 (The Winstons - "Amen, Brother"). Jungle, Drum & Bass, Hip-Hop, Breakcore — alles slict diesen Loop. Hier mit Strudels "amencutup"-Trick (oder einem eigenen Sample).
+
+### Sample im Original
+
+```strudel
+s("amencutup").slow(2)
+```
+
+"amencutup" ist eines der vorinstallierten Sample-Packs. slow(2) damit's nicht zu schnell ist.
+
+### Slice-Order umstellen
+
+```strudel
+s("amencutup").slice(8, "0 1 2 3 4 5 6 7")
+s("amencutup").slice(8, "0 4 2 6 1 5 3 7")
+```
+
+Erste Zeile = Original-Reihenfolge. Zweite = vertauscht. Ein anderer Groove ohne neue Aufnahme.
+
+### Klassischer Jungle-Cut
+
+```strudel
+s("amencutup").slice(16, "0 1 2 [3 4] 5 6 [7 0] 1 2 3 [4 5]").fast(2)
+```
+
+Subdivision mit Klammern, doppelt so schnell. Klingt nach LTJ Bukem.
+
+### Mit hpf fuer Old-School-Vibe
+
+```strudel
+s("amencutup")
+  .slice(16, "<0 1 2 3 [4 5] 6 7 0>".fast(2))
+  .hpf(200).gain(0.8)
+  .room(0.2)
+```
+
+Highpass nimmt den Sub raus — so klangen Breakbeats auf alten Records. Wenig Hall fuer Vintage-Atmo.
+
+## 12. Acid-Bass mit Filter-Envelope
+
+Der "Acid"-Sound = TB-303-Bass. Saegezahn, hohe Resonanz, pro Note ein Filter-Envelope der sich oeffnet und wieder zugeht. Plus glide zwischen Noten. Plus Akzent-Pattern.
+
+### Basis-Bass (ohne Acid-Tricks)
+
+```strudel
+note("c2 c2 eb2 c2 g1 c2 eb2 c2").s("sawtooth").lpf(800)
+```
+
+Standard-Bass. Klingt okay, aber nicht nach Acid.
+
+### Mit Filter-Envelope
+
+```strudel
+note("c2 c2 eb2 c2 g1 c2 eb2 c2")
+  .s("sawtooth")
+  .lpf(300).lpq(15)
+  .lpenv(4).lpa(0.001).lpd(0.15).lps(0).lpr(0)
+```
+
+.lpenv(4) — Envelope-Modulation des Cutoffs (4 = vier Oktaven hoch). .lpa/.lpd/.lps/.lpr = Filter-ADSR. Hier: schnelle Attack, 150ms Decay, kein Sustain — der typische "Wow"-Sweep pro Note.
+
+.lpq(15) ist die Resonanz — die macht das pfeifende "303"-Element.
+
+### Akzent-Pattern fuer den Squelch
+
+```strudel
+note("c2 c2 eb2 c2 g1 c2 eb2 c2")
+  .s("sawtooth")
+  .lpf(300).lpq(15)
+  .lpenv("3 6 3 8 3 4 3 6").lpa(0.001).lpd(0.15)
+```
+
+.lpenv als Pattern — manche Noten mit groesserem Hub. Die Akzent-Noten "miauen" staerker als die anderen. Das ist der ganze Trick der 303.
+
+### Vollstaendig: mit Glide und Distortion
+
+```strudel
+note("c2(3,8)")
+  .s("sawtooth")
+  .add(note("<0 0 -2 5 0 0 3 -2>"))
+  .lpf(200).lpq(18)
+  .lpenv("3 6 3 8 3 4 8 6").lpa(0.001).lpd(0.18)
+  .distort(0.4)
+  .legato(0.95)
+```
+
+Euklidischer Rhythmus 3-aus-8, transponiert per .add() pro Schritt. lpq(18) richtig brizzelig. .distort(0.4) fuer die Anschmutzung. .legato(0.95) — Noten ueberlappen fast, das gibt den Slide.
+
+Das ist Hardfloor 1993.
+
+### Im Mix mit 909-Drums
+
+```strudel
+stack(
+  s("bd*4").orbit(1),
+  s("~ cp ~ cp"),
+  s("hh*16").gain(0.35),
+  note("c2(3,8)")
+    .add(note("<0 0 -2 5 0 0 3 -2>"))
+    .s("sawtooth")
+    .lpf(250).lpq(18)
+    .lpenv("3 6 3 8 3 4 8 6").lpa(0.001).lpd(0.18)
+    .distort(0.4).legato(0.95)
+    .duckorbit(1).gain(0.7)
+)
+```
+
+Acid-Bass im Sidechain mit 909-Drums. Das ist der Joey- Beltram-1991-Sound. Funktioniert auch heute noch.
+
+### Mini-Zusammenfassung Kapitel 13
+
+Zwoelf Lessons als Toolkit. Was hier drinsteht ist nicht vollstaendig — jede Lesson koennte ein eigenes Kapitel sein. Aber die Snippets klingen aus dem Stand.
+
+```
+  1. HH-Akzente + Round-Robin    → gegen Maschinengewehr
+  2. Bass-Drum-Layering          → fette Kick aus 3 Sounds
+  3. Sidechain-Pumping           → orbit + duckorbit
+  4. Build-Up zum Drop           → Riser + HH + Sweep + Roll
+  5. Vocal-Chop + Slicing        → slice() + irand()
+  6. Drum-Fill + Disziplin       → every() + cat()
+  7. Akkord-Folge + Bassgang     → Grundton + Durchgangstoene
+  8. Off-Number-Polyrhythmik     → 5/7/11 + Anker-Puls
+  9. Crescendo / Decrescendo     → gain(saw/sine.range...)
+ 10. Auto-Pan + Stereo-Drift     → pan(sine), pan(rand)
+ 11. Drum-Break-Slicing          → slice() auf amencutup
+ 12. Acid-Bass + Filter-Envelope → lpenv, lpq, distort
+```
+
+Tipp fuer den naechsten eigenen Track: such dir drei Lessons aus, kombinier sie. Bass-Layering + Sidechain + HH-Akzente = ein House-Track. Acid-Bass + Off-Number + Sweep = experimentelle Techno-Skizze.
+
+Weiter zu 14_synthese_tief.strudel.

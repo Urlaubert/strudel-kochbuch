@@ -42,14 +42,15 @@ CHAPTER_META: list[tuple[str, str, str]] = [
     ("10_samples_eigene", "10 — Eigene Samples", "WAVs laden, slicen"),
     ("11_song_struktur", "11 — Song-Struktur", "arrange, Sektionen"),
     ("12_mini_track_in_50_zeilen", "12 — Mini-Track", "Alles zusammen"),
-    ("13_synthese_tief", "13 — Synthese tief", "Sound-Design aus Bordmitteln"),
-    ("14_midi_und_io", "14 — MIDI und IO", "Hardware-Knobs, externe Synths"),
-    ("15_performance_hygiene", "15 — Performance-Hygiene", "Live-Set-Tipps"),
-    ("16_eigene_helper", "16 — Eigene Helper", "register(), Achsen"),
-    ("17_hap_internals", "17 — Hap-Internals", "Pattern-Theorie"),
-    ("18_genre_kochbuch", "18 — Genre-Kochbuch", "Vorlagen pro Genre"),
-    ("19_valenz_und_arousal", "19 — Valenz und Arousal", "Stimmungs-Achsen"),
-    ("20_cheatsheet", "20 — Cheatsheet", "Spickzettel"),
+    ("13_praxis_beispiele", "13 — Praxis-Beispiele", "12 fertige Anwendungs-Lessons"),
+    ("14_synthese_tief", "14 — Synthese tief", "Sound-Design aus Bordmitteln"),
+    ("15_midi_und_io", "15 — MIDI und IO", "Hardware-Knobs, externe Synths"),
+    ("16_performance_hygiene", "16 — Performance-Hygiene", "Live-Set-Tipps"),
+    ("17_eigene_helper", "17 — Eigene Helper", "register(), Achsen"),
+    ("18_hap_internals", "18 — Hap-Internals", "Pattern-Theorie"),
+    ("19_genre_kochbuch", "19 — Genre-Kochbuch", "Vorlagen pro Genre"),
+    ("20_valenz_und_arousal", "20 — Valenz und Arousal", "Stimmungs-Achsen"),
+    ("21_cheatsheet", "21 — Cheatsheet", "Spickzettel"),
 ]
 
 

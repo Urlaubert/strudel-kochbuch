@@ -1,4 +1,4 @@
-# Kapitel 13 — Synthese, tiefer
+# Kapitel 14 — Synthese, tiefer
 
 Strudels eingebaute Synths sind einfach — sine, sawtooth, square, triangle, supersaw. Mit ADSR und Filter-Envelopes kannst du daraus aber sehr viel rausholen.
 
@@ -332,7 +332,7 @@ Workaround: Sound in Vital/Reaper bauen und als WAV importieren. Strudel trigger
 
 Das war von den Strudel-Entwicklern absichtlich begrenzt — Live-Coding-Tool, nicht Synth-Lab.
 
-### Mini-Zusammenfassung Kapitel 13
+### Mini-Zusammenfassung Kapitel 14
 
 Engines:    sine, triangle, sawtooth, square, pulse, supersaw,              noise, pink, brown FM:         .fmh(N) .fmi(N) .fmattack .fmdecay PWM:        .pwm(0..1) Detune:     .detune(Halbtöne als Bruchzahl) Pitch-Env:  .penv(N) .pattack .pdecay .pcurve ADSR:       .attack .decay .sustain .release Filter-Env: .lpenv .lpa .lpd .lps .lpr (auch hp/bp)
 
@@ -346,4 +346,4 @@ dieser Reihenfolge:
   5. Reverb/Delay als letztes
 ```
 
-Weiter zu 14_midi_und_io.strudel.
+Weiter zu 15_midi_und_io.strudel.

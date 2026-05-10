@@ -1,5 +1,5 @@
 // =====================================================
-// Kapitel 14 — MIDI und IO
+// Kapitel 15 — MIDI und IO
 // =====================================================
 // Strudel allein im Browser ist schon viel. Aber: Hardware
 // kann rein (Knobs steuern Parameter, E-Drums triggern
@@ -269,7 +269,7 @@ stack(
 
 
 // -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 14
+// Mini-Zusammenfassung Kapitel 15
 // -----------------------------------------------------
 // Input:
 //   midin('Gerät')              → CC und Notes lesen
@@ -289,4 +289,4 @@ stack(
 //   8 Knobs auf 8 Achsen mappen, 1 Stunde proben, dann live.
 //   Code als "Material" — zur Performance werden Knobs gedreht.
 //
-// Weiter zu 15_performance_hygiene.strudel.
+// Weiter zu 16_performance_hygiene.strudel.

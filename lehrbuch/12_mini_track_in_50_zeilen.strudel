@@ -185,14 +185,15 @@ note("c2 g1 eb2 g1").s("sawtooth").lpf(500)
 // -----------------------------------------------------
 // Die ersten 12 Kapitel decken das Grundvokabular ab. Was
 // danach kommt:
-//   13 — Synthese (eigene Sounds aus Bordmitteln)
-//   14 — MIDI (Hardware-Knobs rein, Synths raus)
-//   15 — Performance-Hygiene (Live ohne Pannen)
-//   16 — Eigene Helper-Funktionen (Achsen-Konzept)
-//   17 — Hap-Internals (Pattern-Theorie)
-//   18 — Genre-Kochbuch (Vorlagen pro Genre)
-//   19 — Valenz und Arousal (Stimmungs-Achsen)
-//   20 — Cheatsheet
+//   13 — Praxis-Beispiele (12 fertige Anwendungs-Lessons)
+//   14 — Synthese (eigene Sounds aus Bordmitteln)
+//   15 — MIDI (Hardware-Knobs rein, Synths raus)
+//   16 — Performance-Hygiene (Live ohne Pannen)
+//   17 — Eigene Helper-Funktionen (Achsen-Konzept)
+//   18 — Hap-Internals (Pattern-Theorie)
+//   19 — Genre-Kochbuch (Vorlagen pro Genre)
+//   20 — Valenz und Arousal (Stimmungs-Achsen)
+//   21 — Cheatsheet
 //
-// 13-17 sind themenspezifisch — nimm was du brauchst.
+// 14-18 sind themenspezifisch — nimm was du brauchst.
 // 18-19 sind anwendungsorientiert.

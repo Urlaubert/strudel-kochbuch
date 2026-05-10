@@ -239,12 +239,74 @@ stack(beat, groove)
 
 Mindestens drei Spuren. Mindestens eine Pause-Spur (~). Mindestens eine melodische Spur. Eine Spur mit reduziertem Gain. Keine Regel ist heilig. Probier.
 
+## Akzente und Velocity
+
+Ein durchlaufendes Hihat-Pattern klingt schnell wie ein Maschinengewehr. Echte Drummer setzen Akzente — manche Schlaege sind lauter, manche heller, manche kuerzer. Das macht den Unterschied zwischen "tickt im Hintergrund" und "groovet".
+
+Die naechsten Snippets gehen von einfach zu komplett: erst Gain als Pattern, dann velocity, dann Round-Robin gegen die Maschinengewehr-Symmetrie.
+
+### Gain als Pattern — die einfachste Variante
+
+```strudel
+s("hh*16").gain("1 0.4 0.4 0.4   0.4 0.4 0.4 0.4   1 0.4 0.4 0.4   0.4 0.4 0.4 0.4")
+```
+
+Akzent auf 1 und 3 (Step 1 und Step 9 im 16tel-Raster). Vier mal lauter — sofort hoerst du den Puls.
+
+.gain() kann ein Pattern sein. Du legst die Velocity- Kurve direkt auf den Schlag.
+
+### velocity statt gain
+
+```strudel
+s("hh*16").velocity("0.4 0.4 0.4 0.4   0.4 0.4 0.4 0.4   1 0.4 0.4 0.4   0.4 0.4 0.4 0.4")
+```
+
+.velocity() ist semantisch sauberer. Bei Drum-Samples triggert das oft auch Filter und Decay mit — wie bei einem echten Drumset, wo ein lauterer Schlag auch heller klingt. Bei Synths skaliert es zusaetzlich die Hull-Kurve.
+
+### Akzent-Spur per stack
+
+```strudel
+stack(
+  s("hh*16").gain(0.4),
+  s("oh ~ ~ ~ ~ ~ ~ ~ ~ ~ oh ~ ~ ~ ~ ~").gain(0.6).cut(1)
+)
+```
+
+Closed-Hihat durchgehend leise, Open-Hihat als Akzent. .cut(1) schneidet das Closed ab wenn das Open kommt — klassisches Drumkit-Verhalten (Closed und Open teilen sich in echt dieselbe Hihat).
+
+### Mit Klangfarbe und Round-Robin
+
+```strudel
+stack(
+  s("hh*16").n(irand(3)).gain(0.4).lpf(7000),
+  s("oh ~ ~ ~ ~ ~ ~ ~ ~ ~ oh ~ ~ ~ ~ ~")
+    .n(irand(2)).gain(0.65).hpf(300).speed(1.02)
+    .attack(0.001).release(0.15).cut(1)
+)
+```
+
+irand(3) waehlt pro Schlag eine andere Sample-Variante (0, 1 oder 2 — sofern das Pack so viele hat). Damit ist nie zwei mal hintereinander exakt derselbe Klang — das ist der Trick gegen Maschinengewehr.
+
+Akzent-Open: heller (hpf 300), leicht hoeher gepitcht (speed 1.02), knackiger Release. Das ist wie's ein E-Drum mit Velocity-Layern macht.
+
+### Funk-Hihat mit drei Akzent-Ebenen
+
+```strudel
+s("hh*16").gain("1 0.3 0.5 0.3   1 0.3 0.5 0.3   1 0.3 0.5 0.3   1 0.3 0.5 0.3")
+```
+
+Viertel volle Akzente (1.0), 8tel-Off mittel (0.5), Rest leise (0.3). Drei Velocity-Ebenen statt zwei — das ist der Unterschied zwischen "robotisch zwei-laut" und "menschlich". Klassischer Funk-Groove, klingt nach Bernard Purdie auf Pillen.
+
 ### Mini-Zusammenfassung Kapitel 03
 
 ```
   stack(...)              → mehrere Pattern zugleich
   "a, b, c"               → Komma im String, gleicher Effekt
   .gain(0.3)              → Lautstärke nur dieser Spur
+  .gain("1 0.4 …")        → Velocity-Pattern, Akzente setzen
+  .velocity(…)            → wie gain, aber triggert Filter/Decay
+  .n(irand(3))            → Round-Robin gegen Maschinengewehr
+  .cut(1)                 → Closed/Open-Hihat-Choke
   slow(n)                 → diese Spur n-fach langsamer
   const x = ...           → Spuren als Variablen
 ```

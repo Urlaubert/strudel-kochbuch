@@ -1,4 +1,4 @@
-# Kapitel 18 — Cheatsheet
+# Kapitel 21 — Cheatsheet
 
 Spickzettel zum Einkleben. Alles was du regelmäßig vergisst, hier auf einen Blick. Nicht zum Lesen — zum Nachschlagen.
 
@@ -264,7 +264,7 @@ Mac: ersetze Strg durch Cmd.
 
 (3,4)   Cumbia (3,5)   Türkischer Rumba (3,7)   Bulgarischer Tanz (3,8)   Tresillo (Cuba) — der wichtigste (4,7)   Westafrika (5,8)   Cinquillo (Cuba) (5,9)   Aksak (5,12)  Westafrikanische Glocke (5,16)  Bossa Nova (7,8)   Bulgarisch (7,12)  Westafrika (7,16)  Samba (9,16)  Aksak (südosteuropäisch) (11,16) "fast straight" — guter Hihat-Pattern (11,24) Aka Pygmäen
 
-## GENRE-DEFAULTS (Spickzettel zu Kapitel 18)
+## GENRE-DEFAULTS (Spickzettel zu Kapitel 19)
 
 ```
   Genre        cps    Charakter
@@ -282,7 +282,7 @@ Mac: ersetze Strg durch Cmd.
   Cinematic      0.45  Sub-Bass, Hybrid-Pads
 ```
 
-## VALENZ-AROUSAL-MAPPING (zu Kapitel 19)
+## VALENZ-AROUSAL-MAPPING (zu Kapitel 20)
 
 Vier Quadranten:
 
@@ -301,7 +301,7 @@ Vier Quadranten:
 Arousal-Treiber:  Tempo, Dichte, Brightness Valenz-Treiber:   Modalität (Dur/Moll), Konsonanz, Attack
 
 ```
-Code-Pattern (siehe 19_valenz_und_arousal.strudel):
+Code-Pattern (siehe 20_valenz_und_arousal.strudel):
   const A = sq(slider(0.5))
   const V = sq(slider(0.5))
   stack(arousalShift(pat, A), arousalLayer(A),

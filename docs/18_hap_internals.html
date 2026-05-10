@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>17 — Hap-Internals — Strudel Kochbuch</title>
+<title>18 — Hap-Internals — Strudel Kochbuch</title>
 <link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<nav class="chapter-nav"><a href="16_eigene_helper.html" title="16 — Eigene Helper">← Zurück</a><a href="18_genre_kochbuch.html" title="18 — Genre-Kochbuch">Weiter →</a></nav>
+<nav class="chapter-nav"><a href="17_eigene_helper.html" title="17 — Eigene Helper">← Zurück</a><a href="19_genre_kochbuch.html" title="19 — Genre-Kochbuch">Weiter →</a></nav>
 </header>
 <main>
 <article class="prose">
-<h1>Kapitel 17 — Hap-Internals</h1>
+<h1>Kapitel 18 — Hap-Internals</h1>
 <p>Was IST ein Pattern in Strudel eigentlich? Wir haben es bisher als "musikalische Sequenz" benutzt, aber unter der Haube ist es ein mathematisches Konstrukt mit klaren Eigenschaften. Wenn du das verstehst, verstehst du WARUM manche Sachen gehen und andere nicht.</p>
 <p>Optional. Für eigene Pattern-Funktionen oder wenn du Strudel-Quellcode lesen willst.</p>
 <h3>Pattern = Funktion von Zeit zu Events</h3>
@@ -141,7 +141,7 @@ fifthEcho(note(&quot;c4 e4 g4&quot;)).s(&quot;piano&quot;)</code></pre><button c
 <ul>
 <li>Functional Reactive Programming (FRP) — Strudel ist eine   musikalische Variante davon.</li>
 </ul>
-<h3>Mini-Zusammenfassung Kapitel 17</h3>
+<h3>Mini-Zusammenfassung Kapitel 18</h3>
 <p>Pattern :: TimeRange -&gt; [Hap]   Hap = {whole, part, value}</p>
 <pre><code>Haps:
   whole = &quot;natürliche&quot; Event-Dauer
@@ -155,7 +155,7 @@ fifthEcho(note(&quot;c4 e4 g4&quot;)).s(&quot;piano&quot;)</code></pre><button c
 </code></pre>
 <p>Zufall ist pseudo-zufällig, aber reproduzierbar. Audio-Renderer fragt das Pattern in 50ms-Häppchen.</p>
 <p>Wenn du das verstanden hast, kannst du Strudels Verhalten in Edge-Cases vorhersagen statt zu raten.</p>
-<p>Weiter zu 18_genre_kochbuch.strudel.</p>
+<p>Weiter zu 19_genre_kochbuch.strudel.</p>
 </article>
 </main>
 <footer>

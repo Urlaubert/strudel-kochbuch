@@ -189,7 +189,7 @@ note("c4*16").s("sawtooth")
 
 Hier steuerst du die TIEFE des Sweeps. DEPTH = 0: kein Sweep. DEPTH = 1: voller Hub.
 
-(Das ist schon fortgeschritten. .fmap() transformiert den Signal-Wert. Mehr dazu in Kapitel 16.)
+(Das ist schon fortgeschritten. .fmap() transformiert den Signal-Wert. Mehr dazu in Kapitel 17.)
 
 ### Square als Gate
 

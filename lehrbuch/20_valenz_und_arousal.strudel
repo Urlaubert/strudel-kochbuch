@@ -1,5 +1,5 @@
 // =====================================================
-// Kapitel 19 — Valenz und Arousal
+// Kapitel 20 — Valenz und Arousal
 // =====================================================
 // Zwei Slider, vier Stimmungs-Quadranten. Russells
 // Circumplex-Modell (1980) sagt: jede musikalische
@@ -7,7 +7,7 @@
 // beschreiben. Die zwei Achsen sind unabhängig.
 //
 // Hier wird das in Strudel spielbar — du kannst durch
-// den Stimmungs-Raum live wandern. Verbindet Kapitel 16
+// den Stimmungs-Raum live wandern. Verbindet Kapitel 17
 // (Helper) mit konkreter Anwendung.
 // =====================================================
 
@@ -226,7 +226,7 @@ stack(
 // - Distance/Nähe — räumliche Dimension (Pan, Reverb)
 //
 // Russell ist ein GROBRASTER, kein Vollmodell. Spezial-
-// Achsen wie "Bedrohung" oder "Affen-Präsenz" (Kapitel 16)
+// Achsen wie "Bedrohung" oder "Affen-Präsenz" (Kapitel 17)
 // sitzen DARAUF und addieren spezifische Wirkungen.
 
 
@@ -241,11 +241,11 @@ stack(
 //   - "Sehnsucht" (gegenwärtig → entrückt)
 //     Mappings: delay hoch, attack lang, vowel-Filter sweep
 //
-// Bau dafür xLayer/xShift Funktionen wie in Kapitel 16.
+// Bau dafür xLayer/xShift Funktionen wie in Kapitel 17.
 
 
 // -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 19
+// Mini-Zusammenfassung Kapitel 20
 // -----------------------------------------------------
 //   Russells 2-Achsen-Modell:
 //     Arousal = Energie  →  Tempo, Dichte, Brightness
@@ -264,4 +264,4 @@ stack(
 //   Spezial-Achsen (Bedrohung, Nähe, Charakter) sitzen
 //   AUF diesem Grundraster.
 //
-// Weiter zu 20_cheatsheet.strudel.
+// Weiter zu 21_cheatsheet.strudel.

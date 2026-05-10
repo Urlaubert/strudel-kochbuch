@@ -1,4 +1,4 @@
-# Kapitel 15 — Performance-Hygiene
+# Kapitel 16 — Performance-Hygiene
 
 Live spielen ist anders als zuhause Pattern bauen. Stille fühlt sich auf der Bühne 10x länger an. Ein Tippfehler kostet 30 Sekunden — auf einem Festival ist das eine Ewigkeit.
 
@@ -61,7 +61,7 @@ Noch besser: dieser ganze Lehrbuch-Ordner ist git-tracked. Pack deine Performanc
 
 ### 5. Pre-Bake-Helper laden, NICHT live definieren
 
-Eigene Helper-Funktionen (siehe Kapitel 16) gehören in die "Prebake"-Settings von Strudel. Da werden sie EINMAL geladen und sind dann immer verfügbar.
+Eigene Helper-Funktionen (siehe Kapitel 17) gehören in die "Prebake"-Settings von Strudel. Da werden sie EINMAL geladen und sind dann immer verfügbar.
 
 Wenn du Helper mitten in der Live-Session mit "function ..." definierst, kann Strudel sie nicht zuverlässig re-evaluieren — du kriegst stille Layer ohne Fehlermeldung.
 
@@ -240,7 +240,7 @@ stack(silence)        // Backup: instant-stop ohne Strg+.
 
 stack(outro)
 
-### Mini-Zusammenfassung Kapitel 15
+### Mini-Zusammenfassung Kapitel 16
 
 ```
 Vor dem Set:
@@ -265,4 +265,4 @@ Set-Architektur:
   - Backup-Stack(silence) als sicherer Stop
 ```
 
-Weiter zu 16_eigene_helper.strudel.
+Weiter zu 17_eigene_helper.strudel.

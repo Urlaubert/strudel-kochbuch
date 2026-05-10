@@ -1,5 +1,5 @@
 // =====================================================
-// Kapitel 15 — Performance-Hygiene
+// Kapitel 16 — Performance-Hygiene
 // =====================================================
 // Live spielen ist anders als zuhause Pattern bauen. Stille
 // fühlt sich auf der Bühne 10x länger an. Ein Tippfehler
@@ -80,7 +80,7 @@ stack(
 // -----------------------------------------------------
 // 5. Pre-Bake-Helper laden, NICHT live definieren
 // -----------------------------------------------------
-// Eigene Helper-Funktionen (siehe Kapitel 16) gehören in
+// Eigene Helper-Funktionen (siehe Kapitel 17) gehören in
 // die "Prebake"-Settings von Strudel. Da werden sie EINMAL
 // geladen und sind dann immer verfügbar.
 //
@@ -306,7 +306,7 @@ stack(silence)        // Backup: instant-stop ohne Strg+.
 
 
 // -----------------------------------------------------
-// Mini-Zusammenfassung Kapitel 15
+// Mini-Zusammenfassung Kapitel 16
 // -----------------------------------------------------
 // Vor dem Set:
 //   - Tempo + alle Sounds in Cache laden
@@ -325,4 +325,4 @@ stack(silence)        // Backup: instant-stop ohne Strg+.
 //   - Übergangs-Sektionen explizit dazwischen
 //   - Backup-Stack(silence) als sicherer Stop
 //
-// Weiter zu 16_eigene_helper.strudel.
+// Weiter zu 17_eigene_helper.strudel.

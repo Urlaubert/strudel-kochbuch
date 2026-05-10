@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13 — Praxis-Beispiele — Strudel Kochbuch</title>
+<link rel="stylesheet" href="style.css?v=708c002f46">
+</head>
+<body class="chapter">
+<header>
+<a href="index.html" class="back">← Inhalt</a>
+<nav class="chapter-nav"><a href="12_mini_track_in_50_zeilen.html" title="12 — Mini-Track">← Zurück</a><a href="14_synthese_tief.html" title="14 — Synthese tief">Weiter →</a></nav>
+</header>
+<main>
+<article class="prose">
+<h1>Kapitel 13 — Praxis-Beispiele</h1>
+<p>Zwoelf Lessons. Jede davon beantwortet eine konkrete Frage: "wie mach ich einen fetten Kick", "wie pumpt das wie in House", "wie baue ich einen Drop". Keine Theorie — nur Snippets die direkt klingen.</p>
+<p>Reihenfolge ist locker. Pick was du gerade brauchst. Jede Lesson laeuft fuer sich.</p>
+<h2>1. HH-Akzente mit Round-Robin</h2>
+<p>Hihats werden schnell zu Maschinengewehr. Drei Tricks: Velocity-Pattern, Sample-Variation, Open-Hihat als Akzent.</p>
+<p>(Tiefer ausgefuehrt in Kapitel 03. Hier die Quick- Reference fuer den Track.)</p>
+<h3>Statisches Pattern</h3>
+<div class="snippet" id="snip-000" data-code-b64="cygiaGgqMTYiKS5nYWluKDAuNCk="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).gain(0.4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Drei Sekunden, dann nervt's. Brauchen Akzente.</p>
+<h3>Velocity-Pattern</h3>
+<div class="snippet" id="snip-001" data-code-b64="cygiaGgqMTYiKS5nYWluKCIxIDAuMyAwLjUgMC4zICAgMSAwLjMgMC41IDAuMyAgIDEgMC4zIDAuNSAwLjMgICAxIDAuMyAwLjUgMC4zIik="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).gain(&quot;1 0.3 0.5 0.3   1 0.3 0.5 0.3   1 0.3 0.5 0.3   1 0.3 0.5 0.3&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Drei Velocity-Ebenen. Klingt nach echtem Drummer.</p>
+<h3>Round-Robin gegen Maschinengewehr</h3>
+<div class="snippet" id="snip-002" data-code-b64="cygiaGgqMTYiKS5uKGlyYW5kKDMpKS5nYWluKDAuNCkuc3BlZWQocmFuZC5yYW5nZSgwLjk4LCAxLjAyKSk="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).n(irand(3)).gain(0.4).speed(rand.range(0.98, 1.02))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>irand(3) zieht aus drei Sample-Variationen. speed mit rand.range pitcht jeden Schlag minimal anders. Beides zusammen — kein Schlag klingt wie der vorherige.</p>
+<h3>Closed + Open als Akzent</h3>
+<div class="snippet" id="snip-003" data-code-b64="c3RhY2soCiAgcygiaGgqMTYiKS5nYWluKDAuMzUpLAogIHMoIm9oIH4gfiB+IH4gfiB+IH4gfiB+IG9oIH4gfiB+IH4gfiIpLmdhaW4oMC42NSkuY3V0KDEpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;hh*16&quot;).gain(0.35),
+  s(&quot;oh ~ ~ ~ ~ ~ ~ ~ ~ ~ oh ~ ~ ~ ~ ~&quot;).gain(0.65).cut(1)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.cut(1) ist der Closed/Open-Choke wie an echten Hihats.</p>
+<h2>2. Bass-Drum-Layering (Sub + Body + Klick)</h2>
+<p>Eine echte fette Kick ist drei Sounds in einem: tief (Sub), Mitte (Body), oben (Klick). Strudels eingebaute "bd"-Samples haben oft nur Body. Wir bauen die anderen dazu.</p>
+<h3>Vergleich: pure 'bd'</h3>
+<div class="snippet" id="snip-004" data-code-b64="cygiYmQqNCIp"><pre class="snippet-code"><code>s(&quot;bd*4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Funktioniert, aber klingt duenn. Zu wenig Sub fuer den Club, zu wenig Klick fuer Punch.</p>
+<h3>Drei Layer als Stack</h3>
+<div class="snippet" id="snip-005" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLmdhaW4oMC45KSwKICBub3RlKCJjMSo0Iikucygic2luZSIpLmF0dGFjaygwLjAwMSkuZGVjYXkoMC4yKS5zdXN0YWluKDApLmdhaW4oMC44KSwKICBzKCJjcCo0IikuaHBmKDMwMDApLmdhaW4oMC4yNSkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).gain(0.9),
+  note(&quot;c1*4&quot;).s(&quot;sine&quot;).attack(0.001).decay(0.2).sustain(0).gain(0.8),
+  s(&quot;cp*4&quot;).hpf(3000).gain(0.25)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Layer 1: bd-Sample fuer Body. Layer 2: Sine auf C1 mit kurzem Decay — der Sub-Tail. Layer 3: Clap-Sample stark gefiltert (hpf 3000) — nur noch das Klick-Geraeusch, kein Body. Das ist die "Trans- ient" oben drauf.</p>
+<p>Klingt schon wie 909-Kick.</p>
+<h3>Mit Pitch-Envelope (klassische 808/909)</h3>
+<div class="snippet" id="snip-006" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIG5vdGUoImMxKjQiKS5zKCJzaW5lIikKICAgIC5hdHRhY2soMC4wMDEpLmRlY2F5KDAuMykuc3VzdGFpbigwKQogICAgLnBlbnYoMjQpLnBkZWNheSgwLjA1KS5nYWluKDAuOSksCiAgcygiY3AqNCIpLmhwZigzMDAwKS5nYWluKDAuMjUpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  note(&quot;c1*4&quot;).s(&quot;sine&quot;)
+    .attack(0.001).decay(0.3).sustain(0)
+    .penv(24).pdecay(0.05).gain(0.9),
+  s(&quot;cp*4&quot;).hpf(3000).gain(0.25)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.penv(24) startet zwei Oktaven hoeher, faellt in 50ms auf die eigentliche Note. Das ist der typische "Bumph" — wie bei der TR-808.</p>
+<h3>Sauber im Mix mit lpf</h3>
+<div class="snippet" id="snip-007" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLmxwZigxMjApLAogIG5vdGUoImMxKjQiKS5zKCJzaW5lIikuYXR0YWNrKDAuMDAxKS5kZWNheSgwLjMpLnN1c3RhaW4oMCkucGVudigyNCkucGRlY2F5KDAuMDUpLAogIHMoImNwKjQiKS5ocGYoNDAwMCkuZ2FpbigwLjIpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).lpf(120),
+  note(&quot;c1*4&quot;).s(&quot;sine&quot;).attack(0.001).decay(0.3).sustain(0).penv(24).pdecay(0.05),
+  s(&quot;cp*4&quot;).hpf(4000).gain(0.2)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>bd-Sample bekommt einen Lowpass — alles ueber 120 Hz macht der Sub. Damit kein Matsch im Bass-Bereich.</p>
+<h2>3. Sidechain-Pumping (House/Techno)</h2>
+<p>Der "atmende" Effekt in House und Techno: wenn die Kick schlaegt, wird der Bass kurz leiser. Im Original mit einem Sidechain-Kompressor. In Strudel mit duckorbit.</p>
+<h3>Ohne Sidechain — Bass und Kick konkurrieren</h3>
+<div class="snippet" id="snip-008" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIG5vdGUoImMyKjgiKS5zKCJzYXd0b290aCIpLmxwZig2MDApLmdhaW4oMC44KQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(600).gain(0.8)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Kick und Bass kaempfen um den Sub-Bereich. Klingt zu.</p>
+<h3>Mit duckorbit</h3>
+<div class="snippet" id="snip-009" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLm9yYml0KDEpLAogIG5vdGUoImMyKjgiKS5zKCJzYXd0b290aCIpLmxwZig2MDApLmdhaW4oMC44KS5kdWNrb3JiaXQoMSkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).orbit(1),
+  note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(600).gain(0.8).duckorbit(1)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.orbit(1) markiert die Kick als "ducker". .duckorbit(1) sagt: bei Hit auf Orbit 1 dein Gain runter- ziehen. Standard-Duck-Kurve eingebaut.</p>
+<p>Sofort hoerst du das "Atmen".</p>
+<h3>Stark fuer EDM</h3>
+<div class="snippet" id="snip-010" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLm9yYml0KDEpLmdhaW4oMSksCiAgbm90ZSgiYzIgYzIgZzEgYzIgYzIgYzIgZWIyIGMyIikucygic2F3dG9vdGgiKS5scGYoODAwKQogICAgLmdhaW4oMC45KS5kdWNrb3JiaXQoMSkuZHVja2F0dGFjaygwLjAwNSkuZHVja3JlbGVhc2UoMC4zKQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).orbit(1).gain(1),
+  note(&quot;c2 c2 g1 c2 c2 c2 eb2 c2&quot;).s(&quot;sawtooth&quot;).lpf(800)
+    .gain(0.9).duckorbit(1).duckattack(0.005).duckrelease(0.3)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.duckattack — wie schnell der Bass nach unten geht. .duckrelease — wie lange er gedrueckt bleibt (laenger = staerker Pumpen). 0.3 ist typisch EDM-Big-Room.</p>
+<h3>Auch Pads und Synths ducken</h3>
+<div class="snippet" id="snip-011" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLm9yYml0KDEpLAogIG5vdGUoIjxjMydtYWo3IGYzJ21hajcgZzMnbWFqNyBjMydtYWo3PiIpLnMoInNhd3Rvb3RoIikKICAgIC5scGYoMTIwMCkuYXR0YWNrKDAuNSkucmVsZWFzZSgyKS5nYWluKDAuNSkKICAgIC5kdWNrb3JiaXQoMSkuZHVja3JlbGVhc2UoMC40KQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).orbit(1),
+  note(&quot;&lt;c3&#x27;maj7 f3&#x27;maj7 g3&#x27;maj7 c3&#x27;maj7&gt;&quot;).s(&quot;sawtooth&quot;)
+    .lpf(1200).attack(0.5).release(2).gain(0.5)
+    .duckorbit(1).duckrelease(0.4)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Lange Pad-Akkorde mit Sidechain — das ist Daft-Punk- Territorium. Akkorde "fliessen" mit dem Pumpen.</p>
+<h2>4. Build-Up zum Drop</h2>
+<p>Vier klassische Bausteine eines Build-Ups: Riser, HH- Acceleration, Filter-Sweep, Snare-Roll. Alle hier einzeln, dann zusammen.</p>
+<h3>Riser (aufsteigender Noise-Sweep)</h3>
+<div class="snippet" id="snip-012" data-code-b64="bm90ZSgiYzQiKS5zKCJ3aGl0ZSIpLmhwZihzaW5lLnJhbmdlKDIwMCwgODAwMCkuc2xvdyg4KSkuZ2FpbigwLjQp"><pre class="snippet-code"><code>note(&quot;c4&quot;).s(&quot;white&quot;).hpf(sine.range(200, 8000).slow(8)).gain(0.4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>White-Noise als kontinuierlicher Ton (note triggert den Noise-Synth). Der Highpass faehrt in 8 Cycles von 200 Hz auf 8000 Hz. Klingt wie ein Atemzug, der lauter wird. Mit gain-Anstieg dazu — siehe weiter unten.</p>
+<h3>Hihat-Acceleration</h3>
+<div class="snippet" id="snip-013" data-code-b64="cygiaGgiKS5mYXN0KHNhdy5yYW5nZSgxLCAxNikuc2xvdyg4KSk="><pre class="snippet-code"><code>s(&quot;hh&quot;).fast(saw.range(1, 16).slow(8))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>saw geht in 8 Cycles linear von 1 auf 16. fast(N) macht das Pattern N-mal schneller. Aus einer Hihat wird ein rasendes 16tel-Pattern. Klassischer Build-Tease.</p>
+<h3>Filter-Sweep auf der Drum-Spur</h3>
+<div class="snippet" id="snip-014" data-code-b64="Y29uc3QgZHJ1bXMgPSBzdGFjayhzKCJiZCo0IiksIHMoIn4gY3AgfiBjcCIpLCBzKCJoaCoxNiIpLmdhaW4oMC4zKSkKCmRydW1zLmxwZihzaW5lLnJhbmdlKDIwMCwgODAwMCkuc2xvdygxNikp"><pre class="snippet-code"><code>const drums = stack(s(&quot;bd*4&quot;), s(&quot;~ cp ~ cp&quot;), s(&quot;hh*16&quot;).gain(0.3))
+
+drums.lpf(sine.range(200, 8000).slow(16))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Cutoff faehrt langsam hoch — alles wird heller. Auf den letzten 4 Takten vorm Drop einsetzen.</p>
+<h3>Snare-Roll (Verdichtung)</h3>
+<div class="snippet" id="snip-015" data-code-b64="cygic2QiKS5mYXN0KCIxIDIgNCA4IDE2IDE2IDMyIDMyIikuc2xvdygyKQ=="><pre class="snippet-code"><code>s(&quot;sd&quot;).fast(&quot;1 2 4 8 16 16 32 32&quot;).slow(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Pro Schritt schneller. Endet im 32tel-Geknatter. Die 0.5 Sekunden vor dem Drop.</p>
+<h3>Alles zusammen</h3>
+<div class="snippet" id="snip-016" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLmdhaW4oc2F3LnJhbmdlKDAuMywgMSkuc2xvdyg4KSksCiAgcygiaGgiKS5mYXN0KHNhdy5yYW5nZSgxLCAxNikuc2xvdyg4KSkuZ2FpbigwLjQpLAogIG5vdGUoImM0Iikucygid2hpdGUiKS5ocGYoc2luZS5yYW5nZSgyMDAsIDgwMDApLnNsb3coOCkpLmdhaW4oc2F3LnJhbmdlKDAsIDAuNSkuc2xvdyg4KSksCiAgbm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKHNpbmUucmFuZ2UoNDAwLCA0MDAwKS5zbG93KDgpKQopLnNsb3coMik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).gain(saw.range(0.3, 1).slow(8)),
+  s(&quot;hh&quot;).fast(saw.range(1, 16).slow(8)).gain(0.4),
+  note(&quot;c4&quot;).s(&quot;white&quot;).hpf(sine.range(200, 8000).slow(8)).gain(saw.range(0, 0.5).slow(8)),
+  note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(sine.range(400, 4000).slow(8))
+).slow(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>8-Cycle-Build (mit slow(2) = 16 Cycles real). Alles crescendiert gemeinsam.</p>
+<h2>5. Vocal-Chop + Slicing</h2>
+<p>Ein Vocal-Sample in kleine Stuecke schneiden und neu arrangieren. Mainstream-EDM-Technik (Disclosure, Skrillex, halbe Pop-Charts). Funktioniert mit jedem Sample.</p>
+<p>Erste Lessons mit Strudels eingebauten Samples — wenn du eigene WAVs hast, in Kapitel 10 wird's konkret.</p>
+<h3>Sample-Slicing per slice()</h3>
+<div class="snippet" id="snip-017" data-code-b64="cygidm9jYWwiKS5zbGljZSg4LCAiMCAxIDIgMyA0IDUgNiA3Iik="><pre class="snippet-code"><code>s(&quot;vocal&quot;).slice(8, &quot;0 1 2 3 4 5 6 7&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Teilt das Sample in 8 gleiche Stuecke und spielt sie in Reihenfolge. (Ersetz "vocal" durch dein Sample.)</p>
+<h3>Reihenfolge umstellen</h3>
+<div class="snippet" id="snip-018" data-code-b64="cygidm9jYWwiKS5zbGljZSg4LCAiMCAzIDEgNyAyIDUgNCA2Iik="><pre class="snippet-code"><code>s(&quot;vocal&quot;).slice(8, &quot;0 3 1 7 2 5 4 6&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Andere Reihenfolge = ganz anderer Rhythmus. Kein Audio-Editor noetig.</p>
+<h3>Mit Variation per pick / euklidisch</h3>
+<div class="snippet" id="snip-019" data-code-b64="cygidm9jYWwiKS5zbGljZSgxNiwgIjwwIDMgMSA3IDIgNSA0IDY+Ii5mYXN0KDIpKS5nYWluKDAuNykKCnMoInZvY2FsIikuc2xpY2UoMTYsIGlyYW5kKDE2KSk="><pre class="snippet-code"><code>s(&quot;vocal&quot;).slice(16, &quot;&lt;0 3 1 7 2 5 4 6&gt;&quot;.fast(2)).gain(0.7)
+
+s(&quot;vocal&quot;).slice(16, irand(16))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>irand(16) wuerfelt jeden Schlag neu — Stutter-Glitch- Stil. Pro Cycle anders.</p>
+<h3>Mit Effekt-Kette</h3>
+<div class="snippet" id="snip-020" data-code-b64="cygidm9jYWwiKQogIC5zbGljZSgxNiwgIjwwIDEgMiAzIDQgNSA2IDc+IFt+IDhdIDEwIDExIi5mYXN0KDIpKQogIC5nYWluKDAuOCkKICAucm9vbSgwLjMpLnJzaXplKDAuNikKICAuZGVsYXkoMC4zKS5kZWxheXRpbWUoMC4zNzUpLmRlbGF5ZmVlZGJhY2soMC4zKQ=="><pre class="snippet-code"><code>s(&quot;vocal&quot;)
+  .slice(16, &quot;&lt;0 1 2 3 4 5 6 7&gt; [~ 8] 10 11&quot;.fast(2))
+  .gain(0.8)
+  .room(0.3).rsize(0.6)
+  .delay(0.3).delaytime(0.375).delayfeedback(0.3)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Hall + Dotted-8th-Delay (.375 = 8tel triolisch). Klingt nach Disclosure.</p>
+<h3>Reverse-Chop</h3>
+<div class="snippet" id="snip-021" data-code-b64="cygidm9jYWwiKS5zbGljZSg4LCAiMCAxIDIgMyIpLnJldigpLmdhaW4oMC42KQ=="><pre class="snippet-code"><code>s(&quot;vocal&quot;).slice(8, &quot;0 1 2 3&quot;).rev().gain(0.6)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>rev() spielt das gesamte Pattern rueckwaerts. Vocals rueckwaerts haben einen surrealen Beiklang — wenn's nur kurze Chops sind, wirkt's wie Atem.</p>
+<h2>6. Drum-Fill mit Variations-Disziplin</h2>
+<p>Ein Fill ist das was am Ende eines 4er- oder 8er-Takts passiert — Snare-Roll, Tom-Run, Hihat-Trip. Die Regel: nicht jeden Takt, sonst nervt's. Alle 4 oder 8 Takte.</p>
+<h3>Basis-Beat</h3>
+<div class="snippet" id="snip-022" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjgiKS5nYWluKDAuNCkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*8&quot;).gain(0.4)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<h3>Mit Fill alle 4 Takte (every)</h3>
+<div class="snippet" id="snip-023" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLmV2ZXJ5KDQsIHggPT4geC5hcHBlbmQocygic2QqOCIpKSksCiAgcygifiBjcCB+IGNwIiksCiAgcygiaGgqOCIpLmdhaW4oMC40KQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).every(4, x =&gt; x.append(s(&quot;sd*8&quot;))),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*8&quot;).gain(0.4)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.every(N, fn) — alle N Cycles wird fn auf das Pattern angewendet. .append haengt das Fill am Ende dran (letztes Cycle wird doppelt so lang).</p>
+<h3>Verschiedene Fills per cat</h3>
+<div class="snippet" id="snip-024" data-code-b64="Y29uc3QgZHJ1bXMgPSBzdGFjayhzKCJiZCo0IiksIHMoIn4gY3AgfiBjcCIpLCBzKCJoaCo4IikuZ2FpbigwLjQpKQpjb25zdCBmaWxsQSA9IHMoInNkKjgiKS5nYWluKDAuNykKY29uc3QgZmlsbEIgPSBzKCJzZCoxNiIpLmdhaW4oc2F3LnJhbmdlKDAuMywgMC45KSkKY29uc3QgZmlsbEMgPSBzKCJbc2QgbHQgbXQgaHRdIikuZ2FpbigwLjcpCgpjYXQoZHJ1bXMsIGRydW1zLCBkcnVtcywgZmlsbEEsIGRydW1zLCBkcnVtcywgZHJ1bXMsIGZpbGxCKQ=="><pre class="snippet-code"><code>const drums = stack(s(&quot;bd*4&quot;), s(&quot;~ cp ~ cp&quot;), s(&quot;hh*8&quot;).gain(0.4))
+const fillA = s(&quot;sd*8&quot;).gain(0.7)
+const fillB = s(&quot;sd*16&quot;).gain(saw.range(0.3, 0.9))
+const fillC = s(&quot;[sd lt mt ht]&quot;).gain(0.7)
+
+cat(drums, drums, drums, fillA, drums, drums, drums, fillB)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Sequenz von 8 Cycles. Auf den 4. und 8. Cycle kommt ein anderes Fill. Wenig Code, sehr abwechslungsreich.</p>
+<h3>Pop/Rock-Style: zwei Snare-Schlaege als Ende-Fill</h3>
+<div class="snippet" id="snip-025" data-code-b64="Y2F0KGRydW1zLCBkcnVtcywgZHJ1bXMsIHN0YWNrKHMoImJkKjQiKSwgcygifiB+IHNkIHNkIiksIHMoImhoKjgiKS5nYWluKDAuNCkpKQ=="><pre class="snippet-code"><code>cat(drums, drums, drums, stack(s(&quot;bd*4&quot;), s(&quot;~ ~ sd sd&quot;), s(&quot;hh*8&quot;).gain(0.4)))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Im 4. Takt ein simples Snare-Snare. Reicht oft schon — muss kein 32tel-Geknatter sein.</p>
+<h2>7. Akkord-Folge mit Bassgang</h2>
+<p>Eine Akkord-Folge mit dazu passender Bass-Linie. Trick: Bass spielt den Grundton des Akkords, mit Durchgangs- Toenen dazwischen.</p>
+<h3>Basis: vier Akkorde</h3>
+<div class="snippet" id="snip-026" data-code-b64="bm90ZSgiPGMzJ21hajcgYTInbWluNyBmMidtYWo3IGcyJzc+Iikucygic2F3dG9vdGgiKS5scGYoMTIwMCk="><pre class="snippet-code"><code>note(&quot;&lt;c3&#x27;maj7 a2&#x27;min7 f2&#x27;maj7 g2&#x27;7&gt;&quot;).s(&quot;sawtooth&quot;).lpf(1200)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>I - vi - IV - V in C. "die" 4-Akkord-Folge der Popmusik.</p>
+<h3>Bass spielt den Grundton</h3>
+<div class="snippet" id="snip-027" data-code-b64="c3RhY2soCiAgbm90ZSgiPGMzJ21hajcgYTInbWluNyBmMidtYWo3IGcyJzc+Iikucygic2F3dG9vdGgiKS5scGYoMTIwMCkuZ2FpbigwLjUpLAogIG5vdGUoIjxjMiBhMSBmMSBnMT4iKS5zKCJzYXd0b290aCIpLmxwZig0MDApLmdhaW4oMC43KQop"><pre class="snippet-code"><code>stack(
+  note(&quot;&lt;c3&#x27;maj7 a2&#x27;min7 f2&#x27;maj7 g2&#x27;7&gt;&quot;).s(&quot;sawtooth&quot;).lpf(1200).gain(0.5),
+  note(&quot;&lt;c2 a1 f1 g1&gt;&quot;).s(&quot;sawtooth&quot;).lpf(400).gain(0.7)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Vier Akkorde, vier Bass-Toene. Solide aber statisch.</p>
+<h3>Bass mit Durchgangs-Achteln</h3>
+<div class="snippet" id="snip-028" data-code-b64="c3RhY2soCiAgbm90ZSgiPGMzJ21hajcgYTInbWluNyBmMidtYWo3IGcyJzc+Iikucygic2F3dG9vdGgiKS5scGYoMTIwMCkuZ2FpbigwLjUpLAogIG5vdGUoIjxbYzIgZTIgZzIgZTJdIFthMSBjMiBlMiBjMl0gW2YxIGExIGMyIGExXSBbZzEgYjEgZDIgYjFdPiIpCiAgICAucygic2F3dG9vdGgiKS5scGYoNTAwKS5nYWluKDAuNykKKQ=="><pre class="snippet-code"><code>stack(
+  note(&quot;&lt;c3&#x27;maj7 a2&#x27;min7 f2&#x27;maj7 g2&#x27;7&gt;&quot;).s(&quot;sawtooth&quot;).lpf(1200).gain(0.5),
+  note(&quot;&lt;[c2 e2 g2 e2] [a1 c2 e2 c2] [f1 a1 c2 a1] [g1 b1 d2 b1]&gt;&quot;)
+    .s(&quot;sawtooth&quot;).lpf(500).gain(0.7)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Pro Akkord eine kleine Bass-Phrase mit Akkord-Toenen. Klingt sofort lebendiger — die Bass-Linie hat eine Geste.</p>
+<h3>Mit Glide (Slides zwischen den Toenen)</h3>
+<div class="snippet" id="snip-029" data-code-b64="c3RhY2soCiAgbm90ZSgiPGMzJ21hajcgYTInbWluNyBmMidtYWo3IGcyJzc+Iikucygic2F3dG9vdGgiKS5scGYoMTIwMCkuZ2FpbigwLjUpLAogIG5vdGUoIjxjMiBhMSBmMSBnMT4iKS5zKCJzYXd0b290aCIpLmxwZig1MDApLmdhaW4oMC43KQogICAgLmxlZ2F0bygwLjk1KQop"><pre class="snippet-code"><code>stack(
+  note(&quot;&lt;c3&#x27;maj7 a2&#x27;min7 f2&#x27;maj7 g2&#x27;7&gt;&quot;).s(&quot;sawtooth&quot;).lpf(1200).gain(0.5),
+  note(&quot;&lt;c2 a1 f1 g1&gt;&quot;).s(&quot;sawtooth&quot;).lpf(500).gain(0.7)
+    .legato(0.95)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.legato(0.95) — Note dauert 95% des Slots, Ueberlappung fast nahtlos. Bei manchen Sounds gibt's einen Glide-Effekt.</p>
+<h2>8. Off-Number-Polyrhythmik (5/7/11)</h2>
+<p>Drei Spuren mit teilerfremden Step-Zahlen. 4 gegen 5 klingt schon kompliziert — 5 gegen 7 ist Aphex-Twin- Territorium. Funktioniert nur wenn der Puls (die langsamste Spur) klar bleibt.</p>
+<h3>Klassisch: 3 gegen 4</h3>
+<div class="snippet" id="snip-030" data-code-b64="c3RhY2soCiAgcygiYmQqMyIpLAogIHMoImhoKjQiKQop"><pre class="snippet-code"><code>stack(
+  s(&quot;bd*3&quot;),
+  s(&quot;hh*4&quot;)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Bekannte Polyrhythmik. Bd auf 3, hh auf 4 — sie treffen sich am Anfang jedes Cycles.</p>
+<h3>5 gegen 7</h3>
+<div class="snippet" id="snip-031" data-code-b64="c3RhY2soCiAgcygiYmQqNSIpLmdhaW4oMC44KSwKICBzKCJoaCo3IikuZ2FpbigwLjQpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*5&quot;).gain(0.8),
+  s(&quot;hh*7&quot;).gain(0.4)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Niemand zaehlt das mit. Trotzdem klingt's nicht zu- faellig. Hihn und Kick "interferieren" — Muster die du gerade erkennst sind nach einem Cycle wieder weg.</p>
+<h3>Drei teilerfremde</h3>
+<div class="snippet" id="snip-032" data-code-b64="c3RhY2soCiAgcygiYmQqNSIpLmdhaW4oMC44KSwKICBzKCJjcCo3IikuZ2FpbigwLjUpLAogIHMoImhoKjExIikuZ2FpbigwLjMpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*5&quot;).gain(0.8),
+  s(&quot;cp*7&quot;).gain(0.5),
+  s(&quot;hh*11&quot;).gain(0.3)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>5, 7, 11. Erst nach 5<em>7</em>11 = 385 16tel wiederholt sich das Gesamtmuster exakt. Drei Minuten Praezisions-Chaos.</p>
+<h3>Mit klarem Puls als Anker</h3>
+<div class="snippet" id="snip-033" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjUiKS5nYWluKDAuNCksCiAgcygiY3AqNyIpLmdhaW4oMC4zKSwKICBub3RlKCJjMioxIikucygic2F3dG9vdGgiKS5scGYoNDAwKS5nYWluKDAuNSkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;hh*5&quot;).gain(0.4),
+  s(&quot;cp*7&quot;).gain(0.3),
+  note(&quot;c2*1&quot;).s(&quot;sawtooth&quot;).lpf(400).gain(0.5)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Bd auf 4 als Anker, der Rest polyrhythmisch dagegen. Funktioniert besser als komplett ohne Puls — der Hoerer hat einen Ankerpunkt.</p>
+<h2>9. Crescendo / Decrescendo</h2>
+<p>Lautstaerke ueber Zeit. Klingt offensichtlich, aber 90% der elektronischen Tracks ueberhoeren das — alles haut auf 0 dB und ist gleich laut. Schon ein leichtes Cresc macht Sektionen lebendiger.</p>
+<h3>Saegezahn-Anstieg (Build)</h3>
+<div class="snippet" id="snip-034" data-code-b64="cygiaGgqMTYiKS5nYWluKHNhdy5yYW5nZSgwLjEsIDAuNikuc2xvdyg0KSk="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).gain(saw.range(0.1, 0.6).slow(4))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>saw geht in 4 Cycles linear von 0 auf 1 — gain mappt das auf 0.1 bis 0.6. Klassischer Build-Anstieg.</p>
+<h3>Decrescendo nach dem Drop</h3>
+<div class="snippet" id="snip-035" data-code-b64="cygiaGgqMTYiKS5nYWluKHNhdy5yYW5nZSgwLjcsIDAuMSkuc2xvdyg4KSk="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).gain(saw.range(0.7, 0.1).slow(8))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Wie der Build, aber range umgedreht: erst 0.7, am Ende 0.1. 8 Cycles lang langsam leiser werden. Fuer "Ausklang"-Sektionen.</p>
+<h3>Wave-foermig (sinusoidal)</h3>
+<div class="snippet" id="snip-036" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjE2IikuZ2FpbihzaW5lLnJhbmdlKDAuMiwgMC41KS5zbG93KDE2KSkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;),
+  s(&quot;hh*16&quot;).gain(sine.range(0.2, 0.5).slow(16))
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Hihat atmet langsam — uebers 16-Cycle-Fenster werden die Hihats lauter und wieder leiser. Mehr Macroform als pures statisches Pattern.</p>
+<h3>Stufenweise per cat</h3>
+<div class="snippet" id="snip-037" data-code-b64="Y29uc3QgYmVhdCA9IHN0YWNrKHMoImJkKjQiKSwgcygifiBjcCB+IGNwIiksIHMoImhoKjgiKS5nYWluKDAuNCkpCgpjYXQoCiAgYmVhdC5nYWluKDAuMyksCiAgYmVhdC5nYWluKDAuNSksCiAgYmVhdC5nYWluKDAuNyksCiAgYmVhdC5nYWluKDEuMCkKKQ=="><pre class="snippet-code"><code>const beat = stack(s(&quot;bd*4&quot;), s(&quot;~ cp ~ cp&quot;), s(&quot;hh*8&quot;).gain(0.4))
+
+cat(
+  beat.gain(0.3),
+  beat.gain(0.5),
+  beat.gain(0.7),
+  beat.gain(1.0)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Vier Stufen Anstieg ueber 4 Cycles. Hoerbar "vier Bloecke", nicht kontinuierlich — kann gewollt sein.</p>
+<h2>10. Auto-Pan und Stereo-Drift</h2>
+<p>Stereo ist unterbewertet. Drums in der Mitte, Pads links, Lead rechts — schon hast du Raum. Plus ein bisschen Bewegung im Stereo-Bild.</p>
+<h3>Statisches Pan</h3>
+<div class="snippet" id="snip-038" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLnBhbigwLjUpLAogIHMoImhoKjE2IikucGFuKDAuMykuZ2FpbigwLjQpLAogIHMoIn4gY3AgfiBjcCIpLnBhbigwLjcpCik="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).pan(0.5),
+  s(&quot;hh*16&quot;).pan(0.3).gain(0.4),
+  s(&quot;~ cp ~ cp&quot;).pan(0.7)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Bd Mitte, Hihat leicht links, Clap leicht rechts. Schon raumiger als alles in Mitte.</p>
+<h3>Auto-Pan per LFO</h3>
+<div class="snippet" id="snip-039" data-code-b64="bm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikubHBmKDE1MDApLnBhbihzaW5lLnJhbmdlKDAsIDEpLnNsb3coNCkp"><pre class="snippet-code"><code>note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).lpf(1500).pan(sine.range(0, 1).slow(4))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Pan oszilliert zwischen links und rechts ueber 4 Cycles. Klassischer Trance-Effekt fuer Pad-Layer.</p>
+<h3>Ping-Pong (jeder Schlag andere Seite)</h3>
+<div class="snippet" id="snip-040" data-code-b64="cygiaGgqOCIpLnBhbigiMCAxIDAgMSAwIDEgMCAxIikuZ2FpbigwLjQp"><pre class="snippet-code"><code>s(&quot;hh*8&quot;).pan(&quot;0 1 0 1 0 1 0 1&quot;).gain(0.4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Jeder Schlag wechselt die Seite. Auf Kopfhoerern auf- faellig, auf Boxen subtil.</p>
+<h3>Random-Pan fuer Stutter-Sounds</h3>
+<div class="snippet" id="snip-041" data-code-b64="cygiaGgqMTYiKS5wYW4ocmFuZCkuZ2FpbigwLjMp"><pre class="snippet-code"><code>s(&quot;hh*16&quot;).pan(rand).gain(0.3)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>rand wuerfelt jeden Schlag einen Pan-Wert zwischen 0 und 1. Klingt nach Glitch-Cloud, ueberall im Raum. Sparsam einsetzen — bei Drums zu unruhig, bei Texturen genau richtig.</p>
+<h2>11. Drum-Break-Slicing (Amen-Break-Style)</h2>
+<p>Der Amen-Break ist ein 6-sekuendiges Drum-Solo aus 1969 (The Winstons - "Amen, Brother"). Jungle, Drum &amp; Bass, Hip-Hop, Breakcore — alles slict diesen Loop. Hier mit Strudels "amencutup"-Trick (oder einem eigenen Sample).</p>
+<h3>Sample im Original</h3>
+<div class="snippet" id="snip-042" data-code-b64="cygiYW1lbmN1dHVwIikuc2xvdygyKQ=="><pre class="snippet-code"><code>s(&quot;amencutup&quot;).slow(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>"amencutup" ist eines der vorinstallierten Sample-Packs. slow(2) damit's nicht zu schnell ist.</p>
+<h3>Slice-Order umstellen</h3>
+<div class="snippet" id="snip-043" data-code-b64="cygiYW1lbmN1dHVwIikuc2xpY2UoOCwgIjAgMSAyIDMgNCA1IDYgNyIpCnMoImFtZW5jdXR1cCIpLnNsaWNlKDgsICIwIDQgMiA2IDEgNSAzIDciKQ=="><pre class="snippet-code"><code>s(&quot;amencutup&quot;).slice(8, &quot;0 1 2 3 4 5 6 7&quot;)
+s(&quot;amencutup&quot;).slice(8, &quot;0 4 2 6 1 5 3 7&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Erste Zeile = Original-Reihenfolge. Zweite = vertauscht. Ein anderer Groove ohne neue Aufnahme.</p>
+<h3>Klassischer Jungle-Cut</h3>
+<div class="snippet" id="snip-044" data-code-b64="cygiYW1lbmN1dHVwIikuc2xpY2UoMTYsICIwIDEgMiBbMyA0XSA1IDYgWzcgMF0gMSAyIDMgWzQgNV0iKS5mYXN0KDIp"><pre class="snippet-code"><code>s(&quot;amencutup&quot;).slice(16, &quot;0 1 2 [3 4] 5 6 [7 0] 1 2 3 [4 5]&quot;).fast(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Subdivision mit Klammern, doppelt so schnell. Klingt nach LTJ Bukem.</p>
+<h3>Mit hpf fuer Old-School-Vibe</h3>
+<div class="snippet" id="snip-045" data-code-b64="cygiYW1lbmN1dHVwIikKICAuc2xpY2UoMTYsICI8MCAxIDIgMyBbNCA1XSA2IDcgMD4iLmZhc3QoMikpCiAgLmhwZigyMDApLmdhaW4oMC44KQogIC5yb29tKDAuMik="><pre class="snippet-code"><code>s(&quot;amencutup&quot;)
+  .slice(16, &quot;&lt;0 1 2 3 [4 5] 6 7 0&gt;&quot;.fast(2))
+  .hpf(200).gain(0.8)
+  .room(0.2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Highpass nimmt den Sub raus — so klangen Breakbeats auf alten Records. Wenig Hall fuer Vintage-Atmo.</p>
+<h2>12. Acid-Bass mit Filter-Envelope</h2>
+<p>Der "Acid"-Sound = TB-303-Bass. Saegezahn, hohe Resonanz, pro Note ein Filter-Envelope der sich oeffnet und wieder zugeht. Plus glide zwischen Noten. Plus Akzent-Pattern.</p>
+<h3>Basis-Bass (ohne Acid-Tricks)</h3>
+<div class="snippet" id="snip-046" data-code-b64="bm90ZSgiYzIgYzIgZWIyIGMyIGcxIGMyIGViMiBjMiIpLnMoInNhd3Rvb3RoIikubHBmKDgwMCk="><pre class="snippet-code"><code>note(&quot;c2 c2 eb2 c2 g1 c2 eb2 c2&quot;).s(&quot;sawtooth&quot;).lpf(800)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Standard-Bass. Klingt okay, aber nicht nach Acid.</p>
+<h3>Mit Filter-Envelope</h3>
+<div class="snippet" id="snip-047" data-code-b64="bm90ZSgiYzIgYzIgZWIyIGMyIGcxIGMyIGViMiBjMiIpCiAgLnMoInNhd3Rvb3RoIikKICAubHBmKDMwMCkubHBxKDE1KQogIC5scGVudig0KS5scGEoMC4wMDEpLmxwZCgwLjE1KS5scHMoMCkubHByKDAp"><pre class="snippet-code"><code>note(&quot;c2 c2 eb2 c2 g1 c2 eb2 c2&quot;)
+  .s(&quot;sawtooth&quot;)
+  .lpf(300).lpq(15)
+  .lpenv(4).lpa(0.001).lpd(0.15).lps(0).lpr(0)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.lpenv(4) — Envelope-Modulation des Cutoffs (4 = vier Oktaven hoch). .lpa/.lpd/.lps/.lpr = Filter-ADSR. Hier: schnelle Attack, 150ms Decay, kein Sustain — der typische "Wow"-Sweep pro Note.</p>
+<p>.lpq(15) ist die Resonanz — die macht das pfeifende "303"-Element.</p>
+<h3>Akzent-Pattern fuer den Squelch</h3>
+<div class="snippet" id="snip-048" data-code-b64="bm90ZSgiYzIgYzIgZWIyIGMyIGcxIGMyIGViMiBjMiIpCiAgLnMoInNhd3Rvb3RoIikKICAubHBmKDMwMCkubHBxKDE1KQogIC5scGVudigiMyA2IDMgOCAzIDQgMyA2IikubHBhKDAuMDAxKS5scGQoMC4xNSk="><pre class="snippet-code"><code>note(&quot;c2 c2 eb2 c2 g1 c2 eb2 c2&quot;)
+  .s(&quot;sawtooth&quot;)
+  .lpf(300).lpq(15)
+  .lpenv(&quot;3 6 3 8 3 4 3 6&quot;).lpa(0.001).lpd(0.15)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.lpenv als Pattern — manche Noten mit groesserem Hub. Die Akzent-Noten "miauen" staerker als die anderen. Das ist der ganze Trick der 303.</p>
+<h3>Vollstaendig: mit Glide und Distortion</h3>
+<div class="snippet" id="snip-049" data-code-b64="bm90ZSgiYzIoMyw4KSIpCiAgLnMoInNhd3Rvb3RoIikKICAuYWRkKG5vdGUoIjwwIDAgLTIgNSAwIDAgMyAtMj4iKSkKICAubHBmKDIwMCkubHBxKDE4KQogIC5scGVudigiMyA2IDMgOCAzIDQgOCA2IikubHBhKDAuMDAxKS5scGQoMC4xOCkKICAuZGlzdG9ydCgwLjQpCiAgLmxlZ2F0bygwLjk1KQ=="><pre class="snippet-code"><code>note(&quot;c2(3,8)&quot;)
+  .s(&quot;sawtooth&quot;)
+  .add(note(&quot;&lt;0 0 -2 5 0 0 3 -2&gt;&quot;))
+  .lpf(200).lpq(18)
+  .lpenv(&quot;3 6 3 8 3 4 8 6&quot;).lpa(0.001).lpd(0.18)
+  .distort(0.4)
+  .legato(0.95)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Euklidischer Rhythmus 3-aus-8, transponiert per .add() pro Schritt. lpq(18) richtig brizzelig. .distort(0.4) fuer die Anschmutzung. .legato(0.95) — Noten ueberlappen fast, das gibt den Slide.</p>
+<p>Das ist Hardfloor 1993.</p>
+<h3>Im Mix mit 909-Drums</h3>
+<div class="snippet" id="snip-050" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLm9yYml0KDEpLAogIHMoIn4gY3AgfiBjcCIpLAogIHMoImhoKjE2IikuZ2FpbigwLjM1KSwKICBub3RlKCJjMigzLDgpIikKICAgIC5hZGQobm90ZSgiPDAgMCAtMiA1IDAgMCAzIC0yPiIpKQogICAgLnMoInNhd3Rvb3RoIikKICAgIC5scGYoMjUwKS5scHEoMTgpCiAgICAubHBlbnYoIjMgNiAzIDggMyA0IDggNiIpLmxwYSgwLjAwMSkubHBkKDAuMTgpCiAgICAuZGlzdG9ydCgwLjQpLmxlZ2F0bygwLjk1KQogICAgLmR1Y2tvcmJpdCgxKS5nYWluKDAuNykKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;bd*4&quot;).orbit(1),
+  s(&quot;~ cp ~ cp&quot;),
+  s(&quot;hh*16&quot;).gain(0.35),
+  note(&quot;c2(3,8)&quot;)
+    .add(note(&quot;&lt;0 0 -2 5 0 0 3 -2&gt;&quot;))
+    .s(&quot;sawtooth&quot;)
+    .lpf(250).lpq(18)
+    .lpenv(&quot;3 6 3 8 3 4 8 6&quot;).lpa(0.001).lpd(0.18)
+    .distort(0.4).legato(0.95)
+    .duckorbit(1).gain(0.7)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Acid-Bass im Sidechain mit 909-Drums. Das ist der Joey- Beltram-1991-Sound. Funktioniert auch heute noch.</p>
+<h3>Mini-Zusammenfassung Kapitel 13</h3>
+<p>Zwoelf Lessons als Toolkit. Was hier drinsteht ist nicht vollstaendig — jede Lesson koennte ein eigenes Kapitel sein. Aber die Snippets klingen aus dem Stand.</p>
+<pre><code>  1. HH-Akzente + Round-Robin    → gegen Maschinengewehr
+  2. Bass-Drum-Layering          → fette Kick aus 3 Sounds
+  3. Sidechain-Pumping           → orbit + duckorbit
+  4. Build-Up zum Drop           → Riser + HH + Sweep + Roll
+  5. Vocal-Chop + Slicing        → slice() + irand()
+  6. Drum-Fill + Disziplin       → every() + cat()
+  7. Akkord-Folge + Bassgang     → Grundton + Durchgangstoene
+  8. Off-Number-Polyrhythmik     → 5/7/11 + Anker-Puls
+  9. Crescendo / Decrescendo     → gain(saw/sine.range...)
+ 10. Auto-Pan + Stereo-Drift     → pan(sine), pan(rand)
+ 11. Drum-Break-Slicing          → slice() auf amencutup
+ 12. Acid-Bass + Filter-Envelope → lpenv, lpq, distort
+</code></pre>
+<p>Tipp fuer den naechsten eigenen Track: such dir drei Lessons aus, kombinier sie. Bass-Layering + Sidechain + HH-Akzente = ein House-Track. Acid-Bass + Off-Number + Sweep = experimentelle Techno-Skizze.</p>
+<p>Weiter zu 14_synthese_tief.strudel.</p>
+</article>
+</main>
+<footer>
+<p>Tipp: <kbd>Strg+Enter</kbd> startet/aktualisiert ein Pattern, <kbd>Strg+.</kbd> stoppt.</p>
+</footer>
+<script src="strudel-snippet.js?v=f0d2d6358a" defer></script>
+</body>
+</html>

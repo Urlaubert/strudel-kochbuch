@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>15 — Performance-Hygiene — Strudel Kochbuch</title>
+<title>16 — Performance-Hygiene — Strudel Kochbuch</title>
 <link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<nav class="chapter-nav"><a href="14_midi_und_io.html" title="14 — MIDI und IO">← Zurück</a><a href="16_eigene_helper.html" title="16 — Eigene Helper">Weiter →</a></nav>
+<nav class="chapter-nav"><a href="15_midi_und_io.html" title="15 — MIDI und IO">← Zurück</a><a href="17_eigene_helper.html" title="17 — Eigene Helper">Weiter →</a></nav>
 </header>
 <main>
 <article class="prose">
-<h1>Kapitel 15 — Performance-Hygiene</h1>
+<h1>Kapitel 16 — Performance-Hygiene</h1>
 <p>Live spielen ist anders als zuhause Pattern bauen. Stille fühlt sich auf der Bühne 10x länger an. Ein Tippfehler kostet 30 Sekunden — auf einem Festival ist das eine Ewigkeit.</p>
 <p>Hier sind die Tricks die etablierte Live-Coder benutzen damit aus einem Set kein Drama wird.</p>
 <h3>1. Tempo am Anfang setzen, NICHT mitten im Set ändern</h3>
@@ -51,7 +51,7 @@
 <p>Vor jeder Performance: Code in eine .txt-Datei kopieren, auf Desktop legen. Bei Crash: Datei öffnen, in den Editor pasten, Cmd+Enter.</p>
 <p>Noch besser: dieser ganze Lehrbuch-Ordner ist git-tracked. Pack deine Performance-Datei dazu.</p>
 <h3>5. Pre-Bake-Helper laden, NICHT live definieren</h3>
-<p>Eigene Helper-Funktionen (siehe Kapitel 16) gehören in die "Prebake"-Settings von Strudel. Da werden sie EINMAL geladen und sind dann immer verfügbar.</p>
+<p>Eigene Helper-Funktionen (siehe Kapitel 17) gehören in die "Prebake"-Settings von Strudel. Da werden sie EINMAL geladen und sind dann immer verfügbar.</p>
 <p>Wenn du Helper mitten in der Live-Session mit "function ..." definierst, kann Strudel sie nicht zuverlässig re-evaluieren — du kriegst stille Layer ohne Fehlermeldung.</p>
 <h3>6. CPU-Spitzen vermeiden</h3>
 <p>Strudel rendert ALLES in Echtzeit. Das CPU-Budget ist nicht unendlich. Was schluckt CPU:</p>
@@ -158,7 +158,7 @@ const bass_sub    = note(&quot;c2*4&quot;).s(&quot;sine&quot;).attack(0.01).rele
 <div class="snippet" id="snip-009" data-code-b64="c3RhY2soc2lsZW5jZSkgICAgICAgIC8vIEJhY2t1cDogaW5zdGFudC1zdG9wIG9obmUgU3RyZysu"><pre class="snippet-code"><code>stack(silence)        // Backup: instant-stop ohne Strg+.</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>stack(outro)</p>
-<h3>Mini-Zusammenfassung Kapitel 15</h3>
+<h3>Mini-Zusammenfassung Kapitel 16</h3>
 <pre><code>Vor dem Set:
   - Tempo + alle Sounds in Cache laden
   - Backup-File irgendwo
@@ -176,7 +176,7 @@ const bass_sub    = note(&quot;c2*4&quot;).s(&quot;sine&quot;).attack(0.01).rele
   - Übergangs-Sektionen explizit dazwischen
   - Backup-Stack(silence) als sicherer Stop
 </code></pre>
-<p>Weiter zu 16_eigene_helper.strudel.</p>
+<p>Weiter zu 17_eigene_helper.strudel.</p>
 </article>
 </main>
 <footer>

@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>16 — Eigene Helper — Strudel Kochbuch</title>
+<title>17 — Eigene Helper — Strudel Kochbuch</title>
 <link rel="stylesheet" href="style.css?v=708c002f46">
 </head>
 <body class="chapter">
 <header>
 <a href="index.html" class="back">← Inhalt</a>
-<nav class="chapter-nav"><a href="15_performance_hygiene.html" title="15 — Performance-Hygiene">← Zurück</a><a href="17_hap_internals.html" title="17 — Hap-Internals">Weiter →</a></nav>
+<nav class="chapter-nav"><a href="16_performance_hygiene.html" title="16 — Performance-Hygiene">← Zurück</a><a href="18_hap_internals.html" title="18 — Hap-Internals">Weiter →</a></nav>
 </header>
 <main>
 <article class="prose">
-<h1>Kapitel 16 — Eigene Helper-Funktionen</h1>
+<h1>Kapitel 17 — Eigene Helper-Funktionen</h1>
 <p>Bisher hast du Strudel benutzt wie es kommt. Jetzt baust du dir eigene Vokabeln. Helper-Funktionen die deine Sprache erweitern: ein Aufruf, viele Effekte. "macheBassWarm()" statt 8 Zeilen Filter-Distortion-Reverb-EQ.</p>
 <p>Das ist der Schritt vom Nutzer zum Live-Coder mit eigener Handschrift.</p>
 <h3>Warum eigene Helper</h3>
@@ -232,7 +232,7 @@ const pad   = note(&quot;[c4, eb4, g4]&quot;).s(&quot;sawtooth&quot;).attack(1).
 <ol>
 <li>EIN Helper, EIN Konzept. Nicht 10 Modi in einer Funktion. 2. Defaults die "richtig" klingen — bei Wert 0 transparent. 3. Range-Limits beachten. Nie lpf auf 0 oder gain auf 0    ohne Sicherheitsabstand → sonst Stille/Clipping. 4. Zwei Funktionen pro Achse: xLayer(x) und xShift(pat, x). 5. Composable — Helper können andere Helper nutzen. 6. Test-Snippet pro Helper im Helper-File.</li>
 </ol>
-<h3>Mini-Zusammenfassung Kapitel 16</h3>
+<h3>Mini-Zusammenfassung Kapitel 17</h3>
 <pre><code>  function name(pat) { return pat... }      → freie Funktion
   register('name', (pat) =&gt; ...)             → chainbar (nur in Prebake!)
   .fmap(v =&gt; transformation(v))               → pro Sample-Wert ändern
@@ -245,7 +245,7 @@ const pad   = note(&quot;[c4, eb4, g4]&quot;).s(&quot;sawtooth&quot;).attack(1).
   stack(xShift(scene, X), xLayer(X))
 </code></pre>
 <p>Mit eigenen Helpern wird Live-Coding zu KOMPONIEREN — du hast Vokabeln für Stimmungen, nicht nur für Filter.</p>
-<p>Weiter zu 17_hap_internals.strudel.</p>
+<p>Weiter zu 18_hap_internals.strudel.</p>
 </article>
 </main>
 <footer>

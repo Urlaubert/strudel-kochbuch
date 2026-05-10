@@ -175,10 +175,47 @@ stack(beat, groove)</code></pre><button class="snippet-play" type="button">▶ S
 
 <h3>▶ AUFGABE: Schreib deinen ersten Stack</h3>
 <p>Mindestens drei Spuren. Mindestens eine Pause-Spur (~). Mindestens eine melodische Spur. Eine Spur mit reduziertem Gain. Keine Regel ist heilig. Probier.</p>
+<h2>Akzente und Velocity</h2>
+<p>Ein durchlaufendes Hihat-Pattern klingt schnell wie ein Maschinengewehr. Echte Drummer setzen Akzente — manche Schlaege sind lauter, manche heller, manche kuerzer. Das macht den Unterschied zwischen "tickt im Hintergrund" und "groovet".</p>
+<p>Die naechsten Snippets gehen von einfach zu komplett: erst Gain als Pattern, dann velocity, dann Round-Robin gegen die Maschinengewehr-Symmetrie.</p>
+<h3>Gain als Pattern — die einfachste Variante</h3>
+<div class="snippet" id="snip-014" data-code-b64="cygiaGgqMTYiKS5nYWluKCIxIDAuNCAwLjQgMC40ICAgMC40IDAuNCAwLjQgMC40ICAgMSAwLjQgMC40IDAuNCAgIDAuNCAwLjQgMC40IDAuNCIp"><pre class="snippet-code"><code>s(&quot;hh*16&quot;).gain(&quot;1 0.4 0.4 0.4   0.4 0.4 0.4 0.4   1 0.4 0.4 0.4   0.4 0.4 0.4 0.4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Akzent auf 1 und 3 (Step 1 und Step 9 im 16tel-Raster). Vier mal lauter — sofort hoerst du den Puls.</p>
+<p>.gain() kann ein Pattern sein. Du legst die Velocity- Kurve direkt auf den Schlag.</p>
+<h3>velocity statt gain</h3>
+<div class="snippet" id="snip-015" data-code-b64="cygiaGgqMTYiKS52ZWxvY2l0eSgiMC40IDAuNCAwLjQgMC40ICAgMC40IDAuNCAwLjQgMC40ICAgMSAwLjQgMC40IDAuNCAgIDAuNCAwLjQgMC40IDAuNCIp"><pre class="snippet-code"><code>s(&quot;hh*16&quot;).velocity(&quot;0.4 0.4 0.4 0.4   0.4 0.4 0.4 0.4   1 0.4 0.4 0.4   0.4 0.4 0.4 0.4&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>.velocity() ist semantisch sauberer. Bei Drum-Samples triggert das oft auch Filter und Decay mit — wie bei einem echten Drumset, wo ein lauterer Schlag auch heller klingt. Bei Synths skaliert es zusaetzlich die Hull-Kurve.</p>
+<h3>Akzent-Spur per stack</h3>
+<div class="snippet" id="snip-016" data-code-b64="c3RhY2soCiAgcygiaGgqMTYiKS5nYWluKDAuNCksCiAgcygib2ggfiB+IH4gfiB+IH4gfiB+IH4gb2ggfiB+IH4gfiB+IikuZ2FpbigwLjYpLmN1dCgxKQop"><pre class="snippet-code"><code>stack(
+  s(&quot;hh*16&quot;).gain(0.4),
+  s(&quot;oh ~ ~ ~ ~ ~ ~ ~ ~ ~ oh ~ ~ ~ ~ ~&quot;).gain(0.6).cut(1)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Closed-Hihat durchgehend leise, Open-Hihat als Akzent. .cut(1) schneidet das Closed ab wenn das Open kommt — klassisches Drumkit-Verhalten (Closed und Open teilen sich in echt dieselbe Hihat).</p>
+<h3>Mit Klangfarbe und Round-Robin</h3>
+<div class="snippet" id="snip-017" data-code-b64="c3RhY2soCiAgcygiaGgqMTYiKS5uKGlyYW5kKDMpKS5nYWluKDAuNCkubHBmKDcwMDApLAogIHMoIm9oIH4gfiB+IH4gfiB+IH4gfiB+IG9oIH4gfiB+IH4gfiIpCiAgICAubihpcmFuZCgyKSkuZ2FpbigwLjY1KS5ocGYoMzAwKS5zcGVlZCgxLjAyKQogICAgLmF0dGFjaygwLjAwMSkucmVsZWFzZSgwLjE1KS5jdXQoMSkKKQ=="><pre class="snippet-code"><code>stack(
+  s(&quot;hh*16&quot;).n(irand(3)).gain(0.4).lpf(7000),
+  s(&quot;oh ~ ~ ~ ~ ~ ~ ~ ~ ~ oh ~ ~ ~ ~ ~&quot;)
+    .n(irand(2)).gain(0.65).hpf(300).speed(1.02)
+    .attack(0.001).release(0.15).cut(1)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>irand(3) waehlt pro Schlag eine andere Sample-Variante (0, 1 oder 2 — sofern das Pack so viele hat). Damit ist nie zwei mal hintereinander exakt derselbe Klang — das ist der Trick gegen Maschinengewehr.</p>
+<p>Akzent-Open: heller (hpf 300), leicht hoeher gepitcht (speed 1.02), knackiger Release. Das ist wie's ein E-Drum mit Velocity-Layern macht.</p>
+<h3>Funk-Hihat mit drei Akzent-Ebenen</h3>
+<div class="snippet" id="snip-018" data-code-b64="cygiaGgqMTYiKS5nYWluKCIxIDAuMyAwLjUgMC4zICAgMSAwLjMgMC41IDAuMyAgIDEgMC4zIDAuNSAwLjMgICAxIDAuMyAwLjUgMC4zIik="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).gain(&quot;1 0.3 0.5 0.3   1 0.3 0.5 0.3   1 0.3 0.5 0.3   1 0.3 0.5 0.3&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Viertel volle Akzente (1.0), 8tel-Off mittel (0.5), Rest leise (0.3). Drei Velocity-Ebenen statt zwei — das ist der Unterschied zwischen "robotisch zwei-laut" und "menschlich". Klassischer Funk-Groove, klingt nach Bernard Purdie auf Pillen.</p>
 <h3>Mini-Zusammenfassung Kapitel 03</h3>
 <pre><code>  stack(...)              → mehrere Pattern zugleich
   &quot;a, b, c&quot;               → Komma im String, gleicher Effekt
   .gain(0.3)              → Lautstärke nur dieser Spur
+  .gain(&quot;1 0.4 …&quot;)        → Velocity-Pattern, Akzente setzen
+  .velocity(…)            → wie gain, aber triggert Filter/Decay
+  .n(irand(3))            → Round-Robin gegen Maschinengewehr
+  .cut(1)                 → Closed/Open-Hihat-Choke
   slow(n)                 → diese Spur n-fach langsamer
   const x = ...           → Spuren als Variablen
 </code></pre>

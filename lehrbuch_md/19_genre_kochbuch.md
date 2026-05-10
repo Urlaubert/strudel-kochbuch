@@ -1,4 +1,4 @@
-# Kapitel 18 — Genre-Kochbuch
+# Kapitel 19 — Genre-Kochbuch
 
 Pro Genre eine kurze Strudel-Vorlage mit den typischen Defaults: Tempo, Drum-Bank, Bass-Charakter, Effekt-Reihen- folge. Zum Anhören und als Startpunkt.
 
@@ -354,7 +354,7 @@ Beispiele:
   - Drum&Bass-Reese + Ambient-Pad → "liquid DnB"
 ```
 
-### Mini-Zusammenfassung Kapitel 18
+### Mini-Zusammenfassung Kapitel 19
 
 Genre-Defaults sind Konventionen, keine Gesetze. Bewusst im Genre starten gibt dir Kontrast wenn du brichst.
 
@@ -374,4 +374,4 @@ Genre-Defaults sind Konventionen, keine Gesetze. Bewusst im Genre starten gibt d
   Cinematic      var.  Sub-Bass, Hybrid-Pads
 ```
 
-Weiter zu 19_valenz_und_arousal.strudel.
+Weiter zu 20_valenz_und_arousal.strudel.

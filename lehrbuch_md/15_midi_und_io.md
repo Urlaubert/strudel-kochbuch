@@ -1,4 +1,4 @@
-# Kapitel 14 — MIDI und IO
+# Kapitel 15 — MIDI und IO
 
 Strudel allein im Browser ist schon viel. Aber: Hardware kann rein (Knobs steuern Parameter, E-Drums triggern Patterns) und Hardware kann gesteuert werden (Strudel als Sequencer für externe Synths wie Vital, Ableton, MPC).
 
@@ -256,7 +256,7 @@ Vier Knobs steuern den Track:
 
 Code wird einmal evaluiert. Performance = Knobs drehen.
 
-### Mini-Zusammenfassung Kapitel 14
+### Mini-Zusammenfassung Kapitel 15
 
 ```
 Input:
@@ -282,4 +282,4 @@ Performance-Setup:
   Code als "Material" — zur Performance werden Knobs gedreht.
 ```
 
-Weiter zu 15_performance_hygiene.strudel.
+Weiter zu 16_performance_hygiene.strudel.
