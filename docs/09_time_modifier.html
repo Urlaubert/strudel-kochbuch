@@ -70,67 +70,81 @@ s(&quot;bd hh sd hh&quot;).fast(2)</code></pre><button class="snippet-play" type
 )</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>30% ist ein guter Default — selten genug dass es überrascht, häufig genug dass jeder 4-Cycle-Loop anders klingt.</p>
+<h3>degrade / degradeBy — Hits weg-würfeln</h3>
+<p>.degradeBy(p) wirft pro Event mit Wahrscheinlichkeit p den Hit komplett weg. .degrade() ist das gleiche mit p=0.5.</p>
+<p>Anders als sometimes (wendet eine Funktion an): degradeBy arbeitet pro Hit auf dem Pattern selbst.</p>
+<div class="snippet" id="snip-011" data-code-b64="cygiaGgqMTYiKS5kZWdyYWRlQnkoMC4zKQ=="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).degradeBy(0.3)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>30% der Hihats fallen aus. Pattern wird "luftiger". Klassisches Anti-Maschinen-Idiom.</p>
+<div class="snippet" id="snip-012" data-code-b64="cygiaGgqMTYiKS5kZWdyYWRlKCk="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).degrade()</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Identisch zu .degradeBy(0.5).</p>
+<p>Praktisch um eine Probability-Achse mit einem Slider zu bauen:</p>
+<div class="snippet" id="snip-013" data-code-b64="Y29uc3QgRSA9IHNsaWRlcigwLjUsIDAsIDEsIDAuMDUpCnMoImhoKjE2IikuZGVncmFkZUJ5KEUuZm1hcCh2ID0+IDEgLSB2KSk="><pre class="snippet-code"><code>const E = slider(0.5, 0, 1, 0.05)
+s(&quot;hh*16&quot;).degradeBy(E.fmap(v =&gt; 1 - v))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>E hoch = mehr Hits durchlassen. E niedrig = mehr werden weggewürfelt. Switch-Angel-Standard für Energie-Achsen.</p>
 <h3>Klassischer Build-Up</h3>
-<div class="snippet" id="snip-011" data-code-b64="cygiYmQqNCwgfiBjcCB+IGNwLCBoaCoxNiIpLmV2ZXJ5KDgsIHggPT4geC5mYXN0KDIpKQ=="><pre class="snippet-code"><code>s(&quot;bd*4, ~ cp ~ cp, hh*16&quot;).every(8, x =&gt; x.fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-014" data-code-b64="cygiYmQqNCwgfiBjcCB+IGNwLCBoaCoxNiIpLmV2ZXJ5KDgsIHggPT4geC5mYXN0KDIpKQ=="><pre class="snippet-code"><code>s(&quot;bd*4, ~ cp ~ cp, hh*16&quot;).every(8, x =&gt; x.fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Sieben Cycles normal, jeden 8. Cycle einen Roll. Klassischer "Drum-Fill am Ende der Phrase".</p>
 <h3>late / early — Timing-Versatz</h3>
-<div class="snippet" id="snip-012" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjgiKS5sYXRlKDAuMTI1KQop"><pre class="snippet-code"><code>stack(
+<div class="snippet" id="snip-015" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjgiKS5sYXRlKDAuMTI1KQop"><pre class="snippet-code"><code>stack(
   s(&quot;bd*4&quot;),
   s(&quot;hh*8&quot;).late(0.125)
 )</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Hihat ist um 1/8 Cycle versetzt. Klingt nach Off-Beat.</p>
-<div class="snippet" id="snip-013" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjgiKS5lYXJseSgwLjA1KQop"><pre class="snippet-code"><code>stack(
+<div class="snippet" id="snip-016" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoImhoKjgiKS5lYXJseSgwLjA1KQop"><pre class="snippet-code"><code>stack(
   s(&quot;bd*4&quot;),
   s(&quot;hh*8&quot;).early(0.05)
 )</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Hihat kommt 0.05 Cycle FRÜHER. Wirkt aggressiver, "vorne".</p>
 <h3>swing — Groove-Versatz</h3>
-<div class="snippet" id="snip-014" data-code-b64="cygiaGgqOCIpICAgICAgICAgICAvLyBzdHJpa3QgZ2xlaWNobcOkw59pZwpzKCJoaCo4Iikuc3dpbmcoNCkgIC8vIFN3aW5nLUZlZWwgYXVmIDR0ZWwtR3JpZApzKCJoaCo4Iikuc3dpbmdCeSgwLjYsIDQpICAvLyB3ZW5pZ2VyIFN3aW5nCnMoImhoKjgiKS5zd2luZ0J5KDEsIDQpICAgIC8vIHNlaHIgc3RhcmtlciBTd2luZyAoVHJpb2xlbik="><pre class="snippet-code"><code>s(&quot;hh*8&quot;)           // strikt gleichmäßig
+<div class="snippet" id="snip-017" data-code-b64="cygiaGgqOCIpICAgICAgICAgICAvLyBzdHJpa3QgZ2xlaWNobcOkw59pZwpzKCJoaCo4Iikuc3dpbmcoNCkgIC8vIFN3aW5nLUZlZWwgYXVmIDR0ZWwtR3JpZApzKCJoaCo4Iikuc3dpbmdCeSgwLjYsIDQpICAvLyB3ZW5pZ2VyIFN3aW5nCnMoImhoKjgiKS5zd2luZ0J5KDEsIDQpICAgIC8vIHNlaHIgc3RhcmtlciBTd2luZyAoVHJpb2xlbik="><pre class="snippet-code"><code>s(&quot;hh*8&quot;)           // strikt gleichmäßig
 s(&quot;hh*8&quot;).swing(4)  // Swing-Feel auf 4tel-Grid
 s(&quot;hh*8&quot;).swingBy(0.6, 4)  // weniger Swing
 s(&quot;hh*8&quot;).swingBy(1, 4)    // sehr starker Swing (Triolen)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <h3>compress / zoom — nur ein Teil des Cycles</h3>
-<div class="snippet" id="snip-015" data-code-b64="cygiYmQgaGggc2QgaGgiKS5jb21wcmVzcygwLjI1LCAwLjc1KQ=="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).compress(0.25, 0.75)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-018" data-code-b64="cygiYmQgaGggc2QgaGgiKS5jb21wcmVzcygwLjI1LCAwLjc1KQ=="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).compress(0.25, 0.75)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Pattern wird in Mitte zusammengedrückt — Stille davor und danach.</p>
-<div class="snippet" id="snip-016" data-code-b64="cygiYmQgaGggc2QgaGgiKS56b29tKDAsIDAuNSk="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).zoom(0, 0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-019" data-code-b64="cygiYmQgaGggc2QgaGgiKS56b29tKDAsIDAuNSk="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).zoom(0, 0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Nur erste Hälfte des Patterns, gestreckt auf vollen Cycle.</p>
-<div class="snippet" id="snip-017" data-code-b64="cygiYmQgaGggc2QgaGgiKS56b29tKDAuNSwgMSk="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).zoom(0.5, 1)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-020" data-code-b64="cygiYmQgaGggc2QgaGgiKS56b29tKDAuNSwgMSk="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).zoom(0.5, 1)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Nur zweite Hälfte.</p>
 <h3>linger — wiederholen</h3>
-<div class="snippet" id="snip-018" data-code-b64="bm90ZSgiYzQgZTQgZzQgYjQiKS5saW5nZXIoMC41KQ=="><pre class="snippet-code"><code>note(&quot;c4 e4 g4 b4&quot;).linger(0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-021" data-code-b64="bm90ZSgiYzQgZTQgZzQgYjQiKS5saW5nZXIoMC41KQ=="><pre class="snippet-code"><code>note(&quot;c4 e4 g4 b4&quot;).linger(0.5)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Spielt nur die ERSTE HÄLFTE des Patterns, aber zweimal pro Cycle. Ergibt: "c4 e4 c4 e4" pro Cycle.</p>
-<div class="snippet" id="snip-019" data-code-b64="bm90ZSgiYzQgZTQgZzQgYjQiKS5saW5nZXIoMC4yNSk="><pre class="snippet-code"><code>note(&quot;c4 e4 g4 b4&quot;).linger(0.25)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-022" data-code-b64="bm90ZSgiYzQgZTQgZzQgYjQiKS5saW5nZXIoMC4yNSk="><pre class="snippet-code"><code>note(&quot;c4 e4 g4 b4&quot;).linger(0.25)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Erste 25%, viermal — also "c4 c4 c4 c4".</p>
 <h3>ply — jedes Event vervielfältigen</h3>
-<div class="snippet" id="snip-020" data-code-b64="cygiYmQgY3Agc2QiKS5wbHkoMik="><pre class="snippet-code"><code>s(&quot;bd cp sd&quot;).ply(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-023" data-code-b64="cygiYmQgY3Agc2QiKS5wbHkoMik="><pre class="snippet-code"><code>s(&quot;bd cp sd&quot;).ply(2)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>"bd bd cp cp sd sd" — jeder Hit verdoppelt.</p>
-<div class="snippet" id="snip-021" data-code-b64="cygiYmQgY3Agc2QiKS5wbHkoIjwxIDIgMyA0PiIp"><pre class="snippet-code"><code>s(&quot;bd cp sd&quot;).ply(&quot;&lt;1 2 3 4&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-024" data-code-b64="cygiYmQgY3Agc2QiKS5wbHkoIjwxIDIgMyA0PiIp"><pre class="snippet-code"><code>s(&quot;bd cp sd&quot;).ply(&quot;&lt;1 2 3 4&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Pro Cycle anderer Vervielfacher: 1, 2, 3, 4, dann von vorn.</p>
 <h3>off — versetztes Echo im Pattern</h3>
-<div class="snippet" id="snip-022" data-code-b64="bm90ZSgiYyBkIGUgZyIpLm9mZigxLzgsIHggPT4geC5hZGQoNykp"><pre class="snippet-code"><code>note(&quot;c d e g&quot;).off(1/8, x =&gt; x.add(7))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-025" data-code-b64="bm90ZSgiYyBkIGUgZyIpLm9mZigxLzgsIHggPT4geC5hZGQoNykp"><pre class="snippet-code"><code>note(&quot;c d e g&quot;).off(1/8, x =&gt; x.add(7))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Original-Pattern + dasselbe Pattern 1/8 Cycle später, 7 Halbtöne (Quinte) höher. Ergibt einen Quint-Versatz-Effekt.</p>
 <h3>iter — Pattern jeden Cycle weiter rotieren</h3>
-<div class="snippet" id="snip-023" data-code-b64="bm90ZSgiMCAxIDIgMyA0IDUgNiA3Iikuc2NhbGUoIkM6bWFqb3IiKS5pdGVyKDQp"><pre class="snippet-code"><code>note(&quot;0 1 2 3 4 5 6 7&quot;).scale(&quot;C:major&quot;).iter(4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-026" data-code-b64="bm90ZSgiMCAxIDIgMyA0IDUgNiA3Iikuc2NhbGUoIkM6bWFqb3IiKS5pdGVyKDQp"><pre class="snippet-code"><code>note(&quot;0 1 2 3 4 5 6 7&quot;).scale(&quot;C:major&quot;).iter(4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Jeder Cycle startet das Pattern an einer anderen Stelle. Pattern wandert durch sich selbst.</p>
 <h3>palindrome</h3>
-<div class="snippet" id="snip-024" data-code-b64="cygiYmQgY3Agc2QgaGgiKS5wYWxpbmRyb21lKCk="><pre class="snippet-code"><code>s(&quot;bd cp sd hh&quot;).palindrome()</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-027" data-code-b64="cygiYmQgY3Agc2QgaGgiKS5wYWxpbmRyb21lKCk="><pre class="snippet-code"><code>s(&quot;bd cp sd hh&quot;).palindrome()</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Ein Cycle vorwärts, einer rückwärts, abwechselnd.</p>
 <h3>struct — Rhythmus auf Tonfolge anwenden</h3>
-<div class="snippet" id="snip-025" data-code-b64="bm90ZSgiYyBkIGUgZyIpLnN0cnVjdCgiMSAwIDEgMSAwIDEiKQ=="><pre class="snippet-code"><code>note(&quot;c d e g&quot;).struct(&quot;1 0 1 1 0 1&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-028" data-code-b64="bm90ZSgiYyBkIGUgZyIpLnN0cnVjdCgiMSAwIDEgMSAwIDEiKQ=="><pre class="snippet-code"><code>note(&quot;c d e g&quot;).struct(&quot;1 0 1 1 0 1&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Tonfolge wird über die struct-Maske gesteuert: 1 = spielen, 0 = Pause. Die Töne kommen reihum auf die 1en.</p>
 <pre><code>  Position:  1  2  3  4  5  6
@@ -139,7 +153,7 @@ s(&quot;hh*8&quot;).swingBy(1, 4)    // sehr starker Swing (Triolen)</code></pre
              ↑     ↑  ↑     ↑
             c      d  e     g  ← jede 1 schluckt eine Note
 </code></pre>
-<div class="snippet" id="snip-026" data-code-b64="bm90ZSgiYyBkIGUgZyIpLnN0cnVjdCgiMSAwIDEgMSAwIDEgMCAxIik="><pre class="snippet-code"><code>note(&quot;c d e g&quot;).struct(&quot;1 0 1 1 0 1 0 1&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-029" data-code-b64="bm90ZSgiYyBkIGUgZyIpLnN0cnVjdCgiMSAwIDEgMSAwIDEgMCAxIik="><pre class="snippet-code"><code>note(&quot;c d e g&quot;).struct(&quot;1 0 1 1 0 1 0 1&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>8 Steps mit 5 Hits — ergibt einen ungleichmäßigen Rhythmus.</p>
 <h3>mask — ganze Cycles ein/aus</h3>
@@ -150,10 +164,10 @@ s(&quot;hh*8&quot;).swingBy(1, 4)    // sehr starker Swing (Triolen)</code></pre
                     ↑               ↑
                   stumm           stumm
 </code></pre>
-<div class="snippet" id="snip-027" data-code-b64="cygiYmQqNCIpLm1hc2soIjwxIDEgMCAxPiIp"><pre class="snippet-code"><code>s(&quot;bd*4&quot;).mask(&quot;&lt;1 1 0 1&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-030" data-code-b64="cygiYmQqNCIpLm1hc2soIjwxIDEgMCAxPiIp"><pre class="snippet-code"><code>s(&quot;bd*4&quot;).mask(&quot;&lt;1 1 0 1&gt;&quot;)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Erste 2 Cycles spielt bd, 3. Cycle aus, 4. wieder an. Wichtig für Build-Ups: ein Layer kommt zu bestimmten Cycles dazu/fällt weg.</p>
-<div class="snippet" id="snip-028" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLm1hc2soIjwwIDEgMSAxPiIpLAogIHMoImhoKjE2IikuZ2FpbigwLjQpLm1hc2soIjwwIDAgMSAxPiIpCik="><pre class="snippet-code"><code>stack(
+<div class="snippet" id="snip-031" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLm1hc2soIjwwIDEgMSAxPiIpLAogIHMoImhoKjE2IikuZ2FpbigwLjQpLm1hc2soIjwwIDAgMSAxPiIpCik="><pre class="snippet-code"><code>stack(
   s(&quot;bd*4&quot;),
   s(&quot;~ cp ~ cp&quot;).mask(&quot;&lt;0 1 1 1&gt;&quot;),
   s(&quot;hh*16&quot;).gain(0.4).mask(&quot;&lt;0 0 1 1&gt;&quot;)
@@ -161,15 +175,15 @@ s(&quot;hh*8&quot;).swingBy(1, 4)    // sehr starker Swing (Triolen)</code></pre
 
 <p>Cycle 1: nur Kick. Cycle 2: + Snare. Cycle 3: + Snare + Hihats. Cycle 4: alles. Klassischer Aufbau einer Phrase.</p>
 <h3>chunk — N Cycles, jedes Mal auf einem anderen Step</h3>
-<div class="snippet" id="snip-029" data-code-b64="cygiYmQgaGggc2QgaGgiKS5jaHVuayg0LCBmYXN0KDIpKQ=="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).chunk(4, fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-032" data-code-b64="cygiYmQgaGggc2QgaGgiKS5jaHVuayg0LCBmYXN0KDIpKQ=="><pre class="snippet-code"><code>s(&quot;bd hh sd hh&quot;).chunk(4, fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>4 Cycles. Jeden Cycle wird ein anderer Step "doppelt schnell". Ergibt eine wandernde Akzent-Welle.</p>
 <h3>fastChunk</h3>
-<div class="snippet" id="snip-030" data-code-b64="cygiYmQgY3Agc2QgaGgiKS5mYXN0Q2h1bmsoNCwgZmFzdCgyKSk="><pre class="snippet-code"><code>s(&quot;bd cp sd hh&quot;).fastChunk(4, fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-033" data-code-b64="cygiYmQgY3Agc2QgaGgiKS5mYXN0Q2h1bmsoNCwgZmFzdCgyKSk="><pre class="snippet-code"><code>s(&quot;bd cp sd hh&quot;).fastChunk(4, fast(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Wie chunk, aber alles in einem Cycle gestaucht.</p>
 <h3>FINALE — Loop mit eingebauter Variation</h3>
-<div class="snippet" id="snip-031" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpCiAgICAuZXZlcnkoOCwgZmFzdCgyKSksCiAgcygifiBjcCB+IGNwIikKICAgIC5zb21ldGltZXMocmV2KSwKICBzKCJoaCoxNiIpCiAgICAuZ2FpbigwLjQpCiAgICAuZXZlcnkoNCwgeCA9PiB4LmZhc3QoMikpCiAgICAucGFuKHBlcmxpbi5yYW5nZSgwLjMsIDAuNykpLAogIG5vdGUoImMyIGMyIGViMiBnMiIpCiAgICAuc2NhbGUoIkM6bWlub3IiKQogICAgLnMoInNhd3Rvb3RoIikKICAgIC5scGYoc2luZS5yYW5nZSg0MDAsIDIwMDApLnNsb3coOCkpCiAgICAuZXZlcnkoOCwgcmV2KSwKICBub3RlKCIwIDQgNyA0IikKICAgIC5zY2FsZSgiQzptaW5vciIpCiAgICAuYWRkKDE0KQogICAgLnMoInRyaWFuZ2xlIikKICAgIC5nYWluKDAuNSkKICAgIC5yb29tKDAuNSkKICAgIC5ldmVyeSg4LCB4ID0+IHguZmFzdCgyKS5yZXYoKSkKKQ=="><pre class="snippet-code"><code>stack(
+<div class="snippet" id="snip-034" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpCiAgICAuZXZlcnkoOCwgZmFzdCgyKSksCiAgcygifiBjcCB+IGNwIikKICAgIC5zb21ldGltZXMocmV2KSwKICBzKCJoaCoxNiIpCiAgICAuZ2FpbigwLjQpCiAgICAuZXZlcnkoNCwgeCA9PiB4LmZhc3QoMikpCiAgICAucGFuKHBlcmxpbi5yYW5nZSgwLjMsIDAuNykpLAogIG5vdGUoImMyIGMyIGViMiBnMiIpCiAgICAuc2NhbGUoIkM6bWlub3IiKQogICAgLnMoInNhd3Rvb3RoIikKICAgIC5scGYoc2luZS5yYW5nZSg0MDAsIDIwMDApLnNsb3coOCkpCiAgICAuZXZlcnkoOCwgcmV2KSwKICBub3RlKCIwIDQgNyA0IikKICAgIC5zY2FsZSgiQzptaW5vciIpCiAgICAuYWRkKDE0KQogICAgLnMoInRyaWFuZ2xlIikKICAgIC5nYWluKDAuNSkKICAgIC5yb29tKDAuNSkKICAgIC5ldmVyeSg4LCB4ID0+IHguZmFzdCgyKS5yZXYoKSkKKQ=="><pre class="snippet-code"><code>stack(
   s(&quot;bd*4&quot;)
     .every(8, fast(2)),
   s(&quot;~ cp ~ cp&quot;)

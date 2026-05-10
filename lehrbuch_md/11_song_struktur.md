@@ -71,6 +71,22 @@ Das ist ein vollständiger 32-Cycle-Track-Verlauf, automatisch.
           intro  verse        drop             intro
 ```
 
+### cat — pro Cycle ein anderes Pattern
+
+cat(a, b, c) spielt a in Cycle 1, b in Cycle 2, c in Cycle 3, dann von vorn. Anders als arrange — keine Längen, jedes Pattern bekommt genau einen Cycle. Anders als stack — die Pattern laufen NACHEINANDER, nicht gleichzeitig.
+
+```strudel
+cat(
+  s("bd*4"),
+  s("bd cp bd cp"),
+  s("bd*8")
+)
+```
+
+Cycle 1: 4er-Bass. Cycle 2: Bass+Clap-Wechsel. Cycle 3: 8er-Bass.
+
+Praktisch wenn du eine kurze Variations-Sequenz willst ohne arrange's Längen-Notation. Mini-Notation-Variante: "<a b c>" innerhalb eines Patterns macht das Gleiche auf Step-Ebene.
+
 ### Multi-Layer-Track-Struktur
 
 ```strudel

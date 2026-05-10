@@ -205,6 +205,33 @@ s("pad").gain(square.range(0, 1).fast(8).slow(2))
 
 Pulsiert 4x über 2 Cycles — also 4 Mal in 2 Cycles = alle halben Cycle einmal.
 
+### pick — diskrete Auswahl aus einer Signal-Quelle
+
+Manche Parameter sind nicht kontinuierlich. Beispiel: Drum-Sample-Bank, Skala, Hihat-Variante. .pick() nimmt eine Liste und einen Index, gibt das passende Element zurück.
+
+```strudel
+const auswahl = sine.range(0, 4).fmap(Math.floor)
+
+note("c4*16").s("sawtooth")
+  .lpf(auswahl.pick([400, 800, 1500, 3000]))
+```
+
+Sinus liefert kontinuierlich 0-4, fmap rundet auf 0/1/2/3, pick wählt einen der vier Cutoff-Werte. Ergibt einen stufigen Filter-Sweep zwischen vier festen Stufen.
+
+Mit Slider: dynamische Auswahl
+
+```strudel
+const STUFE = slider(0, 0, 4, 1)
+
+note("c4*8").scale(
+  STUFE.pick(["C:major", "D:dorian", "F:lydian", "G:mixolydian", "A:minor"])
+)
+```
+
+Slider auf 0-4 ziehen — die Skala wechselt diskret zwischen fünf Modi. Anders als .range das interpoliert, springt pick zwischen festen Werten.
+
+pick() ist das Standard-Werkzeug wenn ein kontinuierlicher Wert (Signal, Slider) auf qualitativ unterschiedliche Sounds gemappt werden soll.
+
 ### rand und irand — pure Zufallszahlen
 
 Ohne Glättung. Pro Sample/Step ein neuer Würfelwurf.

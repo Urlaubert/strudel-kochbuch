@@ -131,27 +131,44 @@ note(&quot;c4*16&quot;).s(&quot;sawtooth&quot;)
 <div class="snippet" id="snip-018" data-code-b64="cygicGFkIikuZ2FpbihzcXVhcmUucmFuZ2UoMCwgMSkuZmFzdCg4KS5zbG93KDIpKQ=="><pre class="snippet-code"><code>s(&quot;pad&quot;).gain(square.range(0, 1).fast(8).slow(2))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Pulsiert 4x über 2 Cycles — also 4 Mal in 2 Cycles = alle halben Cycle einmal.</p>
+<h3>pick — diskrete Auswahl aus einer Signal-Quelle</h3>
+<p>Manche Parameter sind nicht kontinuierlich. Beispiel: Drum-Sample-Bank, Skala, Hihat-Variante. .pick() nimmt eine Liste und einen Index, gibt das passende Element zurück.</p>
+<div class="snippet" id="snip-019" data-code-b64="Y29uc3QgYXVzd2FobCA9IHNpbmUucmFuZ2UoMCwgNCkuZm1hcChNYXRoLmZsb29yKQoKbm90ZSgiYzQqMTYiKS5zKCJzYXd0b290aCIpCiAgLmxwZihhdXN3YWhsLnBpY2soWzQwMCwgODAwLCAxNTAwLCAzMDAwXSkp"><pre class="snippet-code"><code>const auswahl = sine.range(0, 4).fmap(Math.floor)
+
+note(&quot;c4*16&quot;).s(&quot;sawtooth&quot;)
+  .lpf(auswahl.pick([400, 800, 1500, 3000]))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Sinus liefert kontinuierlich 0-4, fmap rundet auf 0/1/2/3, pick wählt einen der vier Cutoff-Werte. Ergibt einen stufigen Filter-Sweep zwischen vier festen Stufen.</p>
+<p>Mit Slider: dynamische Auswahl</p>
+<div class="snippet" id="snip-020" data-code-b64="Y29uc3QgU1RVRkUgPSBzbGlkZXIoMCwgMCwgNCwgMSkKCm5vdGUoImM0KjgiKS5zY2FsZSgKICBTVFVGRS5waWNrKFsiQzptYWpvciIsICJEOmRvcmlhbiIsICJGOmx5ZGlhbiIsICJHOm1peG9seWRpYW4iLCAiQTptaW5vciJdKQop"><pre class="snippet-code"><code>const STUFE = slider(0, 0, 4, 1)
+
+note(&quot;c4*8&quot;).scale(
+  STUFE.pick([&quot;C:major&quot;, &quot;D:dorian&quot;, &quot;F:lydian&quot;, &quot;G:mixolydian&quot;, &quot;A:minor&quot;])
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Slider auf 0-4 ziehen — die Skala wechselt diskret zwischen fünf Modi. Anders als .range das interpoliert, springt pick zwischen festen Werten.</p>
+<p>pick() ist das Standard-Werkzeug wenn ein kontinuierlicher Wert (Signal, Slider) auf qualitativ unterschiedliche Sounds gemappt werden soll.</p>
 <h3>rand und irand — pure Zufallszahlen</h3>
 <p>Ohne Glättung. Pro Sample/Step ein neuer Würfelwurf.</p>
-<div class="snippet" id="snip-019" data-code-b64="cygiaGgqMTYiKS5nYWluKHJhbmQucmFuZ2UoMC4yLCAwLjgpKQ=="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).gain(rand.range(0.2, 0.8))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-021" data-code-b64="cygiaGgqMTYiKS5nYWluKHJhbmQucmFuZ2UoMC4yLCAwLjgpKQ=="><pre class="snippet-code"><code>s(&quot;hh*16&quot;).gain(rand.range(0.2, 0.8))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Jeder Hit eine andere Lautstärke, völlig zufällig. Wirkt chaotisch — anders als perlin (das fließt). Manchmal will man genau das.</p>
-<div class="snippet" id="snip-020" data-code-b64="cygiaGgqOCIpLm4oaXJhbmQoNCkp"><pre class="snippet-code"><code>s(&quot;hh*8&quot;).n(irand(4))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-022" data-code-b64="cygiaGgqOCIpLm4oaXJhbmQoNCkp"><pre class="snippet-code"><code>s(&quot;hh*8&quot;).n(irand(4))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>.n() wählt eine Sample-Variante. irand(4) gibt eine Zufallszahl 0-3. Heißt: jede Hihat ist eine andere von vier Varianten — Round-Robin-Effekt, kein "Maschinengewehr".</p>
 <h3>Maus als Signal — Quick-and-Dirty</h3>
-<div class="snippet" id="snip-021" data-code-b64="bm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikubHBmKG1vdXNlWC5yYW5nZSgyMDAsIDQwMDApKS5wYW4obW91c2VZLnJhbmdlKDAsIDEpKQ=="><pre class="snippet-code"><code>note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).lpf(mouseX.range(200, 4000)).pan(mouseY.range(0, 1))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-023" data-code-b64="bm90ZSgiYzQqOCIpLnMoInNhd3Rvb3RoIikubHBmKG1vdXNlWC5yYW5nZSgyMDAsIDQwMDApKS5wYW4obW91c2VZLnJhbmdlKDAsIDEpKQ=="><pre class="snippet-code"><code>note(&quot;c4*8&quot;).s(&quot;sawtooth&quot;).lpf(mouseX.range(200, 4000)).pan(mouseY.range(0, 1))</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>Strg+Enter. Beweg die Maus. Filter folgt X, Pan folgt Y.</p>
 <h3>Phasenversatz — zwei Spuren rotieren gegeneinander</h3>
-<div class="snippet" id="snip-022" data-code-b64="c3RhY2soCiAgcygiaGgqMTYiKS5wYW4oc2luZS5yYW5nZSgwLCAxKSksCiAgcygib2gqOCIpLnBhbihjb3NpbmUucmFuZ2UoMCwgMSkpCik="><pre class="snippet-code"><code>stack(
+<div class="snippet" id="snip-024" data-code-b64="c3RhY2soCiAgcygiaGgqMTYiKS5wYW4oc2luZS5yYW5nZSgwLCAxKSksCiAgcygib2gqOCIpLnBhbihjb3NpbmUucmFuZ2UoMCwgMSkpCik="><pre class="snippet-code"><code>stack(
   s(&quot;hh*16&quot;).pan(sine.range(0, 1)),
   s(&quot;oh*8&quot;).pan(cosine.range(0, 1))
 )</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>sine und cosine sind 90° versetzt. Wenn die eine Spur links ist, ist die andere mittig. Ergibt ein rotierendes Stereo-Bild.</p>
 <h3>FINALE — Track mit fünf automatischen Bewegungen</h3>
-<div class="snippet" id="snip-023" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLnJvb20ocGVybGluLnJhbmdlKDAuMiwgMC41KS5zbG93KDgpKSwKICBzKCJoaCoxNiIpCiAgICAuZ2FpbihzaW5lLnJhbmdlKDAuMywgMC43KS5zbG93KDQpKQogICAgLnBhbihwZXJsaW4ucmFuZ2UoMC4zLCAwLjcpLnNsb3coMikpLAogIG5vdGUoImMyIGMyIGViMiBnMiIpCiAgICAucygic2F3dG9vdGgiKQogICAgLmxwZihzaW5lLnJhbmdlKDQwMCwgMjAwMCkuc2xvdyg4KSkKICAgIC5nYWluKDAuNyksCiAgbm90ZShwZXJsaW4ucmFuZ2UoMCwgMTQpLnNlZ21lbnQoOCkpCiAgICAuc2NhbGUoIkM6bWlub3IiKQogICAgLmFkZCgxMikKICAgIC5zKCJ0cmlhbmdsZSIpCiAgICAubHBmKDIwMDApCiAgICAuZ2FpbigwLjQpCiAgICAucm9vbSgwLjUpCik="><pre class="snippet-code"><code>stack(
+<div class="snippet" id="snip-025" data-code-b64="c3RhY2soCiAgcygiYmQqNCIpLAogIHMoIn4gY3AgfiBjcCIpLnJvb20ocGVybGluLnJhbmdlKDAuMiwgMC41KS5zbG93KDgpKSwKICBzKCJoaCoxNiIpCiAgICAuZ2FpbihzaW5lLnJhbmdlKDAuMywgMC43KS5zbG93KDQpKQogICAgLnBhbihwZXJsaW4ucmFuZ2UoMC4zLCAwLjcpLnNsb3coMikpLAogIG5vdGUoImMyIGMyIGViMiBnMiIpCiAgICAucygic2F3dG9vdGgiKQogICAgLmxwZihzaW5lLnJhbmdlKDQwMCwgMjAwMCkuc2xvdyg4KSkKICAgIC5nYWluKDAuNyksCiAgbm90ZShwZXJsaW4ucmFuZ2UoMCwgMTQpLnNlZ21lbnQoOCkpCiAgICAuc2NhbGUoIkM6bWlub3IiKQogICAgLmFkZCgxMikKICAgIC5zKCJ0cmlhbmdsZSIpCiAgICAubHBmKDIwMDApCiAgICAuZ2FpbigwLjQpCiAgICAucm9vbSgwLjUpCik="><pre class="snippet-code"><code>stack(
   s(&quot;bd*4&quot;),
   s(&quot;~ cp ~ cp&quot;).room(perlin.range(0.2, 0.5).slow(8)),
   s(&quot;hh*16&quot;)

@@ -99,6 +99,33 @@ stack(
 
 30% ist ein guter Default — selten genug dass es überrascht, häufig genug dass jeder 4-Cycle-Loop anders klingt.
 
+### degrade / degradeBy — Hits weg-würfeln
+
+.degradeBy(p) wirft pro Event mit Wahrscheinlichkeit p den Hit komplett weg. .degrade() ist das gleiche mit p=0.5.
+
+Anders als sometimes (wendet eine Funktion an): degradeBy arbeitet pro Hit auf dem Pattern selbst.
+
+```strudel
+s("hh*16").degradeBy(0.3)
+```
+
+30% der Hihats fallen aus. Pattern wird "luftiger". Klassisches Anti-Maschinen-Idiom.
+
+```strudel
+s("hh*16").degrade()
+```
+
+Identisch zu .degradeBy(0.5).
+
+Praktisch um eine Probability-Achse mit einem Slider zu bauen:
+
+```strudel
+const E = slider(0.5, 0, 1, 0.05)
+s("hh*16").degradeBy(E.fmap(v => 1 - v))
+```
+
+E hoch = mehr Hits durchlassen. E niedrig = mehr werden weggewürfelt. Switch-Angel-Standard für Energie-Achsen.
+
 ### Klassischer Build-Up
 
 ```strudel

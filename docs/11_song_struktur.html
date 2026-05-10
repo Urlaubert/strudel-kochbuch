@@ -63,8 +63,18 @@ drop_drums</code></pre><button class="snippet-play" type="button">▶ Spielen</b
           |----|---------|-------------------|-------|
           intro  verse        drop             intro
 </code></pre>
+<h3>cat — pro Cycle ein anderes Pattern</h3>
+<p>cat(a, b, c) spielt a in Cycle 1, b in Cycle 2, c in Cycle 3, dann von vorn. Anders als arrange — keine Längen, jedes Pattern bekommt genau einen Cycle. Anders als stack — die Pattern laufen NACHEINANDER, nicht gleichzeitig.</p>
+<div class="snippet" id="snip-004" data-code-b64="Y2F0KAogIHMoImJkKjQiKSwKICBzKCJiZCBjcCBiZCBjcCIpLAogIHMoImJkKjgiKQop"><pre class="snippet-code"><code>cat(
+  s(&quot;bd*4&quot;),
+  s(&quot;bd cp bd cp&quot;),
+  s(&quot;bd*8&quot;)
+)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+
+<p>Cycle 1: 4er-Bass. Cycle 2: Bass+Clap-Wechsel. Cycle 3: 8er-Bass.</p>
+<p>Praktisch wenn du eine kurze Variations-Sequenz willst ohne arrange's Längen-Notation. Mini-Notation-Variante: "<a b c>" innerhalb eines Patterns macht das Gleiche auf Step-Ebene.</p>
 <h3>Multi-Layer-Track-Struktur</h3>
-<div class="snippet" id="snip-004" data-code-b64="Y29uc3QgZHJ1bXNfaW50cm8gPSBzKCJiZCIpLmV1Y2xpZCgzLCA4KQpjb25zdCBkcnVtc192ZXJzZSA9IHN0YWNrKHMoImJkKjQiKSwgcygifiBjcCB+IGNwIikpCmNvbnN0IGRydW1zX2Ryb3AgPSBzdGFjayhzKCJiZCo0IiksIHMoImNwKjIiKS5sYXRlKDAuNSksIHMoImhoKjE2IikuZ2FpbigwLjUpKQoKY29uc3QgYmFzc19pbnRybyA9IHNpbGVuY2UKY29uc3QgYmFzc192ZXJzZSA9IG5vdGUoImMyIGMyIGViMiBnMiIpLnMoInNhd3Rvb3RoIikubHBmKDQwMCkKY29uc3QgYmFzc19kcm9wID0gbm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKDgwMCkubHBlbnYoOCkubHBhKDApLmxwZCgwLjEpCgpjb25zdCBsZWFkX2ludHJvID0gc2lsZW5jZQpjb25zdCBsZWFkX3ZlcnNlID0gc2lsZW5jZQpjb25zdCBsZWFkX2Ryb3AgPSBub3RlKCJjNSBlYjUgZzUgYzUiKS5zKCJ0cmlhbmdsZSIpLmdhaW4oMC41KS5yb29tKDAuNCkKCmFycmFuZ2UoCiAgWzgsIHN0YWNrKGRydW1zX2ludHJvKV0sCiAgWzgsIHN0YWNrKGRydW1zX3ZlcnNlLCBiYXNzX3ZlcnNlKV0sCiAgWzE2LCBzdGFjayhkcnVtc19kcm9wLCBiYXNzX2Ryb3AsIGxlYWRfZHJvcCldLAogIFs0LCBzdGFjayhkcnVtc19pbnRybyldCik="><pre class="snippet-code"><code>const drums_intro = s(&quot;bd&quot;).euclid(3, 8)
+<div class="snippet" id="snip-005" data-code-b64="Y29uc3QgZHJ1bXNfaW50cm8gPSBzKCJiZCIpLmV1Y2xpZCgzLCA4KQpjb25zdCBkcnVtc192ZXJzZSA9IHN0YWNrKHMoImJkKjQiKSwgcygifiBjcCB+IGNwIikpCmNvbnN0IGRydW1zX2Ryb3AgPSBzdGFjayhzKCJiZCo0IiksIHMoImNwKjIiKS5sYXRlKDAuNSksIHMoImhoKjE2IikuZ2FpbigwLjUpKQoKY29uc3QgYmFzc19pbnRybyA9IHNpbGVuY2UKY29uc3QgYmFzc192ZXJzZSA9IG5vdGUoImMyIGMyIGViMiBnMiIpLnMoInNhd3Rvb3RoIikubHBmKDQwMCkKY29uc3QgYmFzc19kcm9wID0gbm90ZSgiYzIqOCIpLnMoInNhd3Rvb3RoIikubHBmKDgwMCkubHBlbnYoOCkubHBhKDApLmxwZCgwLjEpCgpjb25zdCBsZWFkX2ludHJvID0gc2lsZW5jZQpjb25zdCBsZWFkX3ZlcnNlID0gc2lsZW5jZQpjb25zdCBsZWFkX2Ryb3AgPSBub3RlKCJjNSBlYjUgZzUgYzUiKS5zKCJ0cmlhbmdsZSIpLmdhaW4oMC41KS5yb29tKDAuNCkKCmFycmFuZ2UoCiAgWzgsIHN0YWNrKGRydW1zX2ludHJvKV0sCiAgWzgsIHN0YWNrKGRydW1zX3ZlcnNlLCBiYXNzX3ZlcnNlKV0sCiAgWzE2LCBzdGFjayhkcnVtc19kcm9wLCBiYXNzX2Ryb3AsIGxlYWRfZHJvcCldLAogIFs0LCBzdGFjayhkcnVtc19pbnRybyldCik="><pre class="snippet-code"><code>const drums_intro = s(&quot;bd&quot;).euclid(3, 8)
 const drums_verse = stack(s(&quot;bd*4&quot;), s(&quot;~ cp ~ cp&quot;))
 const drums_drop = stack(s(&quot;bd*4&quot;), s(&quot;cp*2&quot;).late(0.5), s(&quot;hh*16&quot;).gain(0.5))
 
@@ -86,7 +96,7 @@ arrange(
 <p>36 Cycles vom Intro über Verse bis Drop und zurück. Jede Sektion ist ein eigenes stack() mit den passenden Layern. "silence" ist ein eingebautes leeres Pattern.</p>
 <h3>mask — Layer cycle-weise an/aus</h3>
 <p>arrange tauscht GANZE Patterns aus. mask schaltet einen Layer in einem Pattern ein und aus.</p>
-<div class="snippet" id="snip-005" data-code-b64="Y29uc3QgZHJ1bXMgPSBzKCJiZCo0IikKY29uc3QgYmFzcyA9IG5vdGUoImMyKjgiKS5zKCJzYXd0b290aCIpLmxwZig1MDApCmNvbnN0IGxlYWQgPSBub3RlKCJjNSBlYjUgZzUgYzUiKS5zKCJ0cmlhbmdsZSIpCgpzdGFjaygKICBkcnVtcywKICBiYXNzLm1hc2soIjwwIDAgMSAxPiIpLCAgICAgLy8gZXJzdCBuYWNoIDIgQ3ljbGVzCiAgbGVhZC5tYXNrKCI8MCAwIDAgMT4iKSAgICAgIC8vIGVyc3QgaW0gNC4gQ3ljbGUKKQ=="><pre class="snippet-code"><code>const drums = s(&quot;bd*4&quot;)
+<div class="snippet" id="snip-006" data-code-b64="Y29uc3QgZHJ1bXMgPSBzKCJiZCo0IikKY29uc3QgYmFzcyA9IG5vdGUoImMyKjgiKS5zKCJzYXd0b290aCIpLmxwZig1MDApCmNvbnN0IGxlYWQgPSBub3RlKCJjNSBlYjUgZzUgYzUiKS5zKCJ0cmlhbmdsZSIpCgpzdGFjaygKICBkcnVtcywKICBiYXNzLm1hc2soIjwwIDAgMSAxPiIpLCAgICAgLy8gZXJzdCBuYWNoIDIgQ3ljbGVzCiAgbGVhZC5tYXNrKCI8MCAwIDAgMT4iKSAgICAgIC8vIGVyc3QgaW0gNC4gQ3ljbGUKKQ=="><pre class="snippet-code"><code>const drums = s(&quot;bd*4&quot;)
 const bass = note(&quot;c2*8&quot;).s(&quot;sawtooth&quot;).lpf(500)
 const lead = note(&quot;c5 eb5 g5 c5&quot;).s(&quot;triangle&quot;)
 
@@ -99,7 +109,7 @@ stack(
 <p>Cycle:    1    2    3    4 drums:    X    X    X    X bass:     -    -    X    X lead:     -    -    -    X          ─────────────────────          dünn  dünn dichter voll</p>
 <p>Klassischer 4-Cycle-Build-Up.</p>
 <h3>mask mit längeren Patterns</h3>
-<div class="snippet" id="snip-006" data-code-b64="c3RhY2soCiAgZHJ1bXMsCiAgYmFzcy5tYXNrKCI8MCAwIDAgMCAxIDEgMSAxPiIpLAogIGxlYWQubWFzaygiPDAgMCAwIDAgMCAwIDEgMT4iKQop"><pre class="snippet-code"><code>stack(
+<div class="snippet" id="snip-007" data-code-b64="c3RhY2soCiAgZHJ1bXMsCiAgYmFzcy5tYXNrKCI8MCAwIDAgMCAxIDEgMSAxPiIpLAogIGxlYWQubWFzaygiPDAgMCAwIDAgMCAwIDEgMT4iKQop"><pre class="snippet-code"><code>stack(
   drums,
   bass.mask(&quot;&lt;0 0 0 0 1 1 1 1&gt;&quot;),
   lead.mask(&quot;&lt;0 0 0 0 0 0 1 1&gt;&quot;)
@@ -115,7 +125,7 @@ stack(
                  Überlappung: beide spielen
 </code></pre>
 <p>Asymmetrische Grenzen sind das Ohr-Goldstück. Wenn alle Sektionen exakt am 4er- oder 8er-Raster wechseln, klingt das gepatched. Eine Spur die einen halben Takt früher startet wirkt komponiert.</p>
-<div class="snippet" id="snip-007" data-code-b64="Y29uc3Qgc2VrdGlvbl9hID0gc3RhY2socygiYmQqNCIpLCBub3RlKCJjMio0Iikucygic2F3dG9vdGgiKSkKY29uc3Qgc2VrdGlvbl9iID0gc3RhY2socygiYmQgY3Agc2QgY3AiKSwgbm90ZSgiYTEqNCIpLnMoInNhd3Rvb3RoIikpCgpzdGFjaygKICBzZWt0aW9uX2EubWFzaygiPDEgMSAxIDA+IiksICAgIC8vIDMgQ3ljbGVzIGFrdGl2LCAxIGF1cwogIHNla3Rpb25fYi5tYXNrKCI8MCAwIDEgMT4iKSAgICAgLy8gMiBDeWNsZXMgYXVzLCAyIGFrdGl2ICjDnGJlcmxhcHAhKQop"><pre class="snippet-code"><code>const sektion_a = stack(s(&quot;bd*4&quot;), note(&quot;c2*4&quot;).s(&quot;sawtooth&quot;))
+<div class="snippet" id="snip-008" data-code-b64="Y29uc3Qgc2VrdGlvbl9hID0gc3RhY2socygiYmQqNCIpLCBub3RlKCJjMio0Iikucygic2F3dG9vdGgiKSkKY29uc3Qgc2VrdGlvbl9iID0gc3RhY2socygiYmQgY3Agc2QgY3AiKSwgbm90ZSgiYTEqNCIpLnMoInNhd3Rvb3RoIikpCgpzdGFjaygKICBzZWt0aW9uX2EubWFzaygiPDEgMSAxIDA+IiksICAgIC8vIDMgQ3ljbGVzIGFrdGl2LCAxIGF1cwogIHNla3Rpb25fYi5tYXNrKCI8MCAwIDEgMT4iKSAgICAgLy8gMiBDeWNsZXMgYXVzLCAyIGFrdGl2ICjDnGJlcmxhcHAhKQop"><pre class="snippet-code"><code>const sektion_a = stack(s(&quot;bd*4&quot;), note(&quot;c2*4&quot;).s(&quot;sawtooth&quot;))
 const sektion_b = stack(s(&quot;bd cp sd cp&quot;), note(&quot;a1*4&quot;).s(&quot;sawtooth&quot;))
 
 stack(
@@ -124,7 +134,7 @@ stack(
 )</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <h3>Transitions — Sweep / Riser zwischen Sektionen</h3>
-<div class="snippet" id="snip-008" data-code-b64="Y29uc3QgcmlzZXIgPSBub3RlKCJjMiozMiIpCiAgLnMoInNhd3Rvb3RoIikKICAubHBmKHNhdy5yYW5nZSgyMDAsIDgwMDApLnNsb3coNCkpCiAgLmdhaW4oc2F3LnJhbmdlKDAuMiwgMSkuc2xvdyg0KSkKICAucm9vbSgwLjUpCgphcnJhbmdlKAogIFs0LCBpbnRyb19kcnVtc10sCiAgWzQsIHN0YWNrKGludHJvX2RydW1zLCByaXNlcildLCAgIC8vIFJpc2VyIMO8YmVyIEludHJvCiAgWzE2LCBkcm9wX2RydW1zXSwKICBbNCwgaW50cm9fZHJ1bXNdCik="><pre class="snippet-code"><code>const riser = note(&quot;c2*32&quot;)
+<div class="snippet" id="snip-009" data-code-b64="Y29uc3QgcmlzZXIgPSBub3RlKCJjMiozMiIpCiAgLnMoInNhd3Rvb3RoIikKICAubHBmKHNhdy5yYW5nZSgyMDAsIDgwMDApLnNsb3coNCkpCiAgLmdhaW4oc2F3LnJhbmdlKDAuMiwgMSkuc2xvdyg0KSkKICAucm9vbSgwLjUpCgphcnJhbmdlKAogIFs0LCBpbnRyb19kcnVtc10sCiAgWzQsIHN0YWNrKGludHJvX2RydW1zLCByaXNlcildLCAgIC8vIFJpc2VyIMO8YmVyIEludHJvCiAgWzE2LCBkcm9wX2RydW1zXSwKICBbNCwgaW50cm9fZHJ1bXNdCik="><pre class="snippet-code"><code>const riser = note(&quot;c2*32&quot;)
   .s(&quot;sawtooth&quot;)
   .lpf(saw.range(200, 8000).slow(4))
   .gain(saw.range(0.2, 1).slow(4))
@@ -139,10 +149,10 @@ arrange(
 
 <p>4 Cycles Intro, 4 Cycles Intro + Riser (Build-Up), dann Drop. Der Riser baut Spannung auf bevor der Drop kommt.</p>
 <h3>Vollständige Song-Struktur</h3>
-<div class="snippet" id="snip-009" data-code-b64="Y29uc3Qgc2tsID0gIkM6bWlub3Ii"><pre class="snippet-code"><code>const skl = &quot;C:minor&quot;</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-010" data-code-b64="Y29uc3Qgc2tsID0gIkM6bWlub3Ii"><pre class="snippet-code"><code>const skl = &quot;C:minor&quot;</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>=== Material ===</p>
-<div class="snippet" id="snip-010" data-code-b64="Y29uc3QgZHJtX2tpY2sgICAgPSBzKCJiZCo0IikKY29uc3QgZHJtX2NsYXAgICAgPSBzKCJ+IGNwIH4gY3AiKQpjb25zdCBkcm1faGggICAgICA9IHMoImhoKjE2IikuZ2FpbigwLjQpCmNvbnN0IGRybV9vaCAgICAgID0gcygiW34gfiB+IG9oXS8yIikuZ2FpbigwLjUpCmNvbnN0IGJhc3Nfc2ltcGxlID0gbm90ZSgiYzIgYzIgZWIyIGcyIikuc2NhbGUoc2tsKS5zKCJzYXd0b290aCIpLmxwZig1MDApLmdhaW4oMC43KQpjb25zdCBiYXNzX2FjaWQgICA9IG5vdGUoImMyKjgiKS5zY2FsZShza2wpLnMoInNhd3Rvb3RoIikKICAgICAgICAgICAgICAgICAgICAgIC5scGYoNDAwKS5scGVudig4KS5scGEoMCkubHBkKDAuMSkubHBxKDEwKS5nYWluKDAuNykKY29uc3QgbGVhZF9wYWQgICAgPSBub3RlKCJbMCwyLDRdIikuc2NhbGUoc2tsKS5zKCJ0cmlhbmdsZSIpCiAgICAgICAgICAgICAgICAgICAgICAuYXR0YWNrKDAuNSkucmVsZWFzZSgyKS5scGYoMjAwMCkuZ2FpbigwLjQpCmNvbnN0IGxlYWRfYXJwICAgID0gbm90ZSgiMCA0IDcgNCIpLnNjYWxlKHNrbCkuYWRkKDE0KS5zKCJwaWFubyIpLmdhaW4oMC40KQ=="><pre class="snippet-code"><code>const drm_kick    = s(&quot;bd*4&quot;)
+<div class="snippet" id="snip-011" data-code-b64="Y29uc3QgZHJtX2tpY2sgICAgPSBzKCJiZCo0IikKY29uc3QgZHJtX2NsYXAgICAgPSBzKCJ+IGNwIH4gY3AiKQpjb25zdCBkcm1faGggICAgICA9IHMoImhoKjE2IikuZ2FpbigwLjQpCmNvbnN0IGRybV9vaCAgICAgID0gcygiW34gfiB+IG9oXS8yIikuZ2FpbigwLjUpCmNvbnN0IGJhc3Nfc2ltcGxlID0gbm90ZSgiYzIgYzIgZWIyIGcyIikuc2NhbGUoc2tsKS5zKCJzYXd0b290aCIpLmxwZig1MDApLmdhaW4oMC43KQpjb25zdCBiYXNzX2FjaWQgICA9IG5vdGUoImMyKjgiKS5zY2FsZShza2wpLnMoInNhd3Rvb3RoIikKICAgICAgICAgICAgICAgICAgICAgIC5scGYoNDAwKS5scGVudig4KS5scGEoMCkubHBkKDAuMSkubHBxKDEwKS5nYWluKDAuNykKY29uc3QgbGVhZF9wYWQgICAgPSBub3RlKCJbMCwyLDRdIikuc2NhbGUoc2tsKS5zKCJ0cmlhbmdsZSIpCiAgICAgICAgICAgICAgICAgICAgICAuYXR0YWNrKDAuNSkucmVsZWFzZSgyKS5scGYoMjAwMCkuZ2FpbigwLjQpCmNvbnN0IGxlYWRfYXJwICAgID0gbm90ZSgiMCA0IDcgNCIpLnNjYWxlKHNrbCkuYWRkKDE0KS5zKCJwaWFubyIpLmdhaW4oMC40KQ=="><pre class="snippet-code"><code>const drm_kick    = s(&quot;bd*4&quot;)
 const drm_clap    = s(&quot;~ cp ~ cp&quot;)
 const drm_hh      = s(&quot;hh*16&quot;).gain(0.4)
 const drm_oh      = s(&quot;[~ ~ ~ oh]/2&quot;).gain(0.5)
@@ -154,7 +164,7 @@ const lead_pad    = note(&quot;[0,2,4]&quot;).scale(skl).s(&quot;triangle&quot;)
 const lead_arp    = note(&quot;0 4 7 4&quot;).scale(skl).add(14).s(&quot;piano&quot;).gain(0.4)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>=== Sektionen ===</p>
-<div class="snippet" id="snip-011" data-code-b64="Y29uc3QgaW50cm8gICAgPSBzdGFjayhkcm1fa2ljay5nYWluKDAuNyksIGRybV9oaCwgbGVhZF9wYWQpCmNvbnN0IHZlcnNlICAgID0gc3RhY2soZHJtX2tpY2ssIGRybV9jbGFwLCBkcm1faGgsIGJhc3Nfc2ltcGxlKQpjb25zdCBwcmVjaG9yICA9IHN0YWNrKGRybV9raWNrLCBkcm1fY2xhcCwgZHJtX2hoLCBkcm1fb2gsIGJhc3Nfc2ltcGxlLCBsZWFkX3BhZCkKY29uc3QgY2hvcnVzICAgPSBzdGFjayhkcm1fa2ljaywgZHJtX2NsYXAsIGRybV9oaCwgZHJtX29oLCBiYXNzX2FjaWQsIGxlYWRfcGFkLCBsZWFkX2FycCkKY29uc3QgYnJpZGdlICAgPSBzdGFjayhkcm1fa2ljay5nYWluKDAuNiksIGRybV9oaC5nYWluKDAuMyksIGJhc3Nfc2ltcGxlLCBsZWFkX3BhZCkKY29uc3Qgb3V0cm8gICAgPSBzdGFjayhkcm1fa2ljay5nYWluKDAuNyksIGRybV9oaCwgbGVhZF9wYWQp"><pre class="snippet-code"><code>const intro    = stack(drm_kick.gain(0.7), drm_hh, lead_pad)
+<div class="snippet" id="snip-012" data-code-b64="Y29uc3QgaW50cm8gICAgPSBzdGFjayhkcm1fa2ljay5nYWluKDAuNyksIGRybV9oaCwgbGVhZF9wYWQpCmNvbnN0IHZlcnNlICAgID0gc3RhY2soZHJtX2tpY2ssIGRybV9jbGFwLCBkcm1faGgsIGJhc3Nfc2ltcGxlKQpjb25zdCBwcmVjaG9yICA9IHN0YWNrKGRybV9raWNrLCBkcm1fY2xhcCwgZHJtX2hoLCBkcm1fb2gsIGJhc3Nfc2ltcGxlLCBsZWFkX3BhZCkKY29uc3QgY2hvcnVzICAgPSBzdGFjayhkcm1fa2ljaywgZHJtX2NsYXAsIGRybV9oaCwgZHJtX29oLCBiYXNzX2FjaWQsIGxlYWRfcGFkLCBsZWFkX2FycCkKY29uc3QgYnJpZGdlICAgPSBzdGFjayhkcm1fa2ljay5nYWluKDAuNiksIGRybV9oaC5nYWluKDAuMyksIGJhc3Nfc2ltcGxlLCBsZWFkX3BhZCkKY29uc3Qgb3V0cm8gICAgPSBzdGFjayhkcm1fa2ljay5nYWluKDAuNyksIGRybV9oaCwgbGVhZF9wYWQp"><pre class="snippet-code"><code>const intro    = stack(drm_kick.gain(0.7), drm_hh, lead_pad)
 const verse    = stack(drm_kick, drm_clap, drm_hh, bass_simple)
 const prechor  = stack(drm_kick, drm_clap, drm_hh, drm_oh, bass_simple, lead_pad)
 const chorus   = stack(drm_kick, drm_clap, drm_hh, drm_oh, bass_acid, lead_pad, lead_arp)
@@ -162,7 +172,7 @@ const bridge   = stack(drm_kick.gain(0.6), drm_hh.gain(0.3), bass_simple, lead_p
 const outro    = stack(drm_kick.gain(0.7), drm_hh, lead_pad)</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>=== Arrangement ===</p>
-<div class="snippet" id="snip-012" data-code-b64="YXJyYW5nZSgKICBbNCwgaW50cm9dLAogIFs4LCB2ZXJzZV0sCiAgWzQsIHByZWNob3JdLAogIFsxNiwgY2hvcnVzXSwKICBbOCwgYnJpZGdlXSwKICBbMTYsIGNob3J1c10sCiAgWzQsIG91dHJvXQop"><pre class="snippet-code"><code>arrange(
+<div class="snippet" id="snip-013" data-code-b64="YXJyYW5nZSgKICBbNCwgaW50cm9dLAogIFs4LCB2ZXJzZV0sCiAgWzQsIHByZWNob3JdLAogIFsxNiwgY2hvcnVzXSwKICBbOCwgYnJpZGdlXSwKICBbMTYsIGNob3J1c10sCiAgWzQsIG91dHJvXQop"><pre class="snippet-code"><code>arrange(
   [4, intro],
   [8, verse],
   [4, prechor],
@@ -177,7 +187,7 @@ const outro    = stack(drm_kick.gain(0.7), drm_hh, lead_pad)</code></pre><button
 <p>Im Live-Set willst du oft NICHT arrange, sondern manuelles Wechseln. So sieht die Datei dann aus:</p>
 <p>(Material und Sektionen wie oben — gekürzt)</p>
 <p>stack(intro) stack(verse) stack(prechor)</p>
-<div class="snippet" id="snip-013" data-code-b64="c3RhY2soY2hvcnVzKSAgICAgICAgIC8vIOKGkCBha3R1ZWxsIGzDpHVmdCBkYXM="><pre class="snippet-code"><code>stack(chorus)         // ← aktuell läuft das</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
+<div class="snippet" id="snip-014" data-code-b64="c3RhY2soY2hvcnVzKSAgICAgICAgIC8vIOKGkCBha3R1ZWxsIGzDpHVmdCBkYXM="><pre class="snippet-code"><code>stack(chorus)         // ← aktuell läuft das</code></pre><button class="snippet-play" type="button">▶ Spielen</button></div>
 
 <p>stack(bridge) stack(outro)</p>
 <p>Während der Performance: 1. Fertige Variablen-Bibliothek im oberen Teil der Datei. 2. Unten in der Sektions-Liste die Zeile aktivieren die    spielen soll, alle anderen kommentieren. 3. Strg+Enter — Strudel macht Crossfade.</p>
